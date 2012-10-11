@@ -5,7 +5,7 @@
   },
   "name": "jagat",
   "description": "JAGAT server for implementing trendy concepts: Live Collaboration, WebGL+HTML5+ResponsiveGrid, Live Content Update.",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "keywords": [
     "webgl",
     "live",
