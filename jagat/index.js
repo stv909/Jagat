@@ -1,3 +1,1 @@
-var util = require('util');
-
-util.puts('I am JAGAT.index.js.');
+exports.version = '0.0.4'
