@@ -1,0 +1,224 @@
+{
+	"node":
+	{
+		"name": "SpaceRoot",
+		"position": {"x": 0, "y": 0, "z": 0},
+		"children":
+		[
+			{
+				"node":
+				{
+					"name": "Earth",
+					"position": {"x": 0, "y": 0, "z": 0},
+					"children":
+					[
+						{
+							"node":
+							{
+								"name": "Russia",
+								"position": {"x": 0, "y": 0, "z": 0},
+								"children":
+								[
+									{
+										"node":
+										{
+											"name": "Voronezh",
+											"position": {"x": 0, "y": 0, "z": 0},
+											"children":
+											[
+												{
+													"node":
+													{
+														"name": "Spartak Cinema",
+														"position": {"x": 0, "y": 0, "z": 0},
+														"children":
+														[
+														
+														]
+													}
+												},
+												{
+													"node":
+													{
+														"name": "Theatre of Opera and Ballette",
+														"position": {"x": 0, "y": 0, "z": 0},
+														"children":
+														[
+														
+														]
+													}
+												},
+												{
+													"node":
+													{
+														"name": "100 Ruchyev",
+														"position": {"x": 0, "y": 0, "z": 0},
+														"children":
+														[
+														
+														]
+													}
+												},
+												{
+													"node":
+													{
+														"name": "Nasha Sreda Obitaniya",
+														"position": {"x": 0, "y": 0, "z": 0},
+														"children":
+														[
+														
+														]
+													}
+												},
+												{
+													"node":
+													{
+														"name": "Apteka #1",
+														"position": {"x": 0, "y": 0, "z": 0},
+														"children":
+														[
+														
+														]
+													}
+												},
+												{
+													"node":
+													{
+														"name": "Gallery of Chizhov",
+														"position": {"x": 0, "y": 0, "z": 0},
+														"children":
+														[
+														
+														]
+													}
+												}												
+											]
+										}
+									},
+									{
+										"node":
+										{
+											"name": "Perm",
+											"position": {"x": 0, "y": 0, "z": 0},
+											"children":
+											[
+											
+											]
+										}
+									},
+									{
+										"node":
+										{
+											"name": "Moscow",
+											"position": {"x": 0, "y": 0, "z": 0},
+											"children":
+											[
+											
+											]
+										}
+									},						
+									{
+										"node":
+										{
+											"name": "St. Petersburg",
+											"position": {"x": 0, "y": 0, "z": 0},
+											"children":
+											[
+											
+											]
+										}
+									}
+								]
+							}
+						},
+						{
+							"node":
+							{
+								"name": "USA",
+								"position": {"x": 0, "y": 0, "z": 0},
+								"children":
+								[
+									{
+										"node":
+										{
+											"name": "CA",
+											"position": {"x": 0, "y": 0, "z": 0},
+											"children":
+											[
+											
+											]
+										}
+									},
+									{
+										"node":
+										{
+											"name": "TX",
+											"position": {"x": 0, "y": 0, "z": 0},
+											"children":
+											[
+											
+											]
+										}
+									},
+									{
+										"node":
+										{
+											"name": "AZ",
+											"position": {"x": 0, "y": 0, "z": 0},
+											"children":
+											[
+											
+											]
+										}
+									}						
+								]
+							}
+						},
+						{
+							"node":
+							{
+								"name": "China",
+								"position": {"x": 0, "y": 0, "z": 0},
+								"children":
+								[
+									{
+										"node": 
+										{
+											"name": "North",
+											"position": {"x": 0, "y": 0, "z": 0},
+											"children":
+											[
+									
+											]
+										}
+									},
+									{
+										"name": 
+										{
+											"name": "South",
+											"position": {"x": 0, "y": 0, "z": 0},
+											"children":
+											[
+									
+											]
+										}
+									}
+								]
+							}
+						}				
+					]
+				}
+			},
+			{
+				"node":
+				{
+					"name": "Moon",
+					"position": {"x": 0, "y": 150, "z": 0},
+					"children":
+					[
+					]
+				}
+			}
+		]
+	}
+}

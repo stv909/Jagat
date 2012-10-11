@@ -1,0 +1,37 @@
+{
+  "author": {
+    "name": "Stanislav Rodionov",
+    "email": "x.rodionov@gmail.com"
+  },
+  "name": "jagat",
+  "description": "JAGAT server for implementing trendy concepts: Live Collaboration, WebGL+HTML5+ResponsiveGrid, Live Content Update.",
+  "version": "0.0.2",
+  "keywords": [
+    "webgl",
+    "live",
+    "operational transformation",
+    "ot",
+    "concurrent",
+    "collaborative",
+    "database",
+    "server"
+  ],
+  "main": "index.js",
+  "bin": {
+    "jagat": "bin/jagat.js"
+  },
+  "dependencies": {
+    "redis": ">= 0.8.1",
+    "share": ">= 0.5.0"
+  },
+  "devDependencies": {},
+  "optionalDependencies": {},
+  "engines": {
+    "node": "*"
+  },
+  "licenses": [
+    {
+      "type": "MIT"
+    }
+  ]
+}
