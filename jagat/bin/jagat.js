@@ -4,19 +4,16 @@ var util = require('util');
 
 util.puts('JAGAT server starting...');
 
-require('coffee-script'); // remove - ???
-
 var connect = require('connect'),
-    sys = require('sys'),
-	sharejs = require('../node_modules/share/src'), // require('share') - ???
-	server,
-    jagat = require('../');
+    jagat = require('../'),
+	sharejs = require('share'),
+	server;
 
 server = connect(connect.logger());
 
 options = require('./options') || {};
 
-sys.puts("JAGAT server v" + jagat.version + " on ShareJS v" + sharejs.version);
+util.puts("JAGAT server v" + jagat.version + " on ShareJS v" + sharejs.version);
 
 // Attach the sharejs REST and Socket.io interfaces to the server
 sharejs.server.attach(server, options);
@@ -24,7 +21,7 @@ sharejs.server.attach(server, options);
 var port = options.port || 8000;
 
 server.listen(port);
-sys.puts('Server running at' + process.env.IP + ':' + port + '/');
+util.puts('Server running at' + process.env.IP + ':' + port + '/');
 
 process.title = 'sharejs'
 process.on('uncaughtException', function (err) {
