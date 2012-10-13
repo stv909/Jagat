@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 var util = require('util');
 
 util.puts('JAGAT server starting...');
@@ -11,7 +9,7 @@ var connect = require('connect'),
 
 server = connect(connect.logger());
 
-options = require('./options') || {};
+var options = require('./options') || {};
 
 util.puts("JAGAT server v" + jagat.version + " on ShareJS v" + sharejs.version);
 
@@ -24,9 +22,12 @@ server.listen(port);
 util.puts('Server running at' + process.env.IP + ':' + port + '/');
 
 process.title = 'sharejs'
-process.on('uncaughtException', function (err) {
-  console.error('An error has occurred. Please file a ticket here: https://github.com/josephg/ShareJS/issues');
-  console.error('Version ' + sharejs.version + ': ' + err.stack);
-});
+process.on(
+    'uncaughtException', 
+    function (err) {
+        console.error('An error has occurred. Please file a ticket here: https://github.com/josephg/ShareJS/issues');
+        console.error('Version ' + sharejs.version + ': ' + err.stack);
+    }
+);
 
 util.puts('JAGAT is on duty.');
