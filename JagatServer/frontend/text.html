@@ -4,8 +4,8 @@
 			body {
 				overflow: hidden;
 			}
-			
-			#editor { 
+
+			#editor {
 				margin: 0;
 				position: absolute;
 				top: 0;
@@ -20,32 +20,41 @@
 	<body>
 		<div id="editor">Connecting...</div>
 		<script src="/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/lib/ace/mode-javascript.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/lib/ace/mode-json.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/lib/ace/theme-pastel_on_dark.js" type="text/javascript" charset="utf-8"></script>
 		<script src="/channel/bcsocket.js"></script>
 		<script src="/share/share.uncompressed.js"></script>
 		<script src="/share/ace.js"></script>
 		<script>
-			window.onload = function() 
+			window.onload = function()
 			{
-		        var editor = ace.edit("editor");
+				var editor = ace.edit("editor");
 				editor.setReadOnly(true);
-		
+				editor.setTheme("ace/theme/pastel_on_dark");
+				var JsonMode = require("ace/mode/json").Mode;
+				editor.getSession().setMode(new JsonMode());
+
 				var docName = "pad:" + document.location.hash.slice(1);
-		
-				sharejs.open(docName, 'text', function(error, doc) {
-					if (error) {
-						console.error(error);
-						return;
+				sharejs.open(
+					docName, 'text',
+					function(error, doc)
+					{
+						if (error)
+						{
+							console.error(error);
+							return;
+						}
+						if (doc.created)
+						{
+							doc.submitOp({i:'Edit me!'});
+						}
+						doc.attach_ace(editor);
+						editor.setReadOnly(false);
 					}
-		
-					if (doc.created) {
-						doc.submitOp({i:'Edit me!'});
-					}
-		
-					doc.attach_ace(editor);
-					editor.setReadOnly(false);
-				});
+				);
 			};
 		</script>
 	</body>
-</html>	
+</html>
 
