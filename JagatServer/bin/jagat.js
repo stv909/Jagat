@@ -7,7 +7,7 @@ var connect = require('connect'),
 	sharejs = require('share'),
 	hat = require('hat'),
 	server;
-
+	
 var server = connect(
 	connect.logger(),
 	// TODO: upgrade to connect 2.6.0+ and express for modern routing
@@ -40,6 +40,9 @@ var server = connect(
 	})
 );
 
+// TODO: link 'src-min-noconflict' ace build in the future
+server.use(require('connect-ace').middleware('/ace'));
+
 var options = require('./options') || {};
 
 util.puts("JAGAT server v" + jagat.version + " on ShareJS v" + sharejs.version);
@@ -52,7 +55,7 @@ var port = options.port || 8000;
 server.listen(port);
 util.puts('Server running at' + process.env.IP + ':' + port + '/');
 
-process.title = 'sharejs'
+process.title = 'sharejs';
 process.on(
 	'uncaughtException', 
 	function (err) {

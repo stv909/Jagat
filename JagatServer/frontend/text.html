@@ -19,16 +19,35 @@
 
 	<body>
 		<div id="editor">Connecting...</div>
-		<script src="/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
-		<script src="/lib/ace/mode-javascript.js" type="text/javascript" charset="utf-8"></script>
-		<script src="/lib/ace/mode-json.js" type="text/javascript" charset="utf-8"></script>
-		<script src="/lib/ace/theme-pastel_on_dark.js" type="text/javascript" charset="utf-8"></script>
+		
+	<!--
+		// github alternative - compatable with current sharejs
+		<script src="http://ajaxorg.github.com/ace-builds/src-min/ace.js"></script>
+		<script src="http://ajaxorg.github.com/ace-builds/src-min/mode-javascript.js"></script>
+		<script src="http://ajaxorg.github.com/ace-builds/src-min/mode-json.js"></script>
+		<script src="http://ajaxorg.github.com/ace-builds/src-min/theme-pastel_on_dark.js"></script>
+		
+		// cloudfront alternative - incompatable with curretn sharejs: use 'ace.require' instead of 'require' in /share/ace.js:5:11 for satisfaction.
+		<script src="http://d1n0x3qji82z53.cloudfront.net/src-min-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
+		<script src="http://d1n0x3qji82z53.cloudfront.net/src-min-noconflict/mode-javascript.js" type="text/javascript" charset="utf-8"></script>
+		<script src="http://d1n0x3qji82z53.cloudfront.net/src-min-noconflict/mode-json.js" type="text/javascript" charset="utf-8"></script>
+		<script src="http://d1n0x3qji82z53.cloudfront.net/src-min-noconflict/theme-pastel_on_dark.js" type="text/javascript" charset="utf-8"></script>
+		
+		// connect-ace middleware // TODO: use 'src-min' ('src-min-noconflict' is better) insted of 'src'. for it I need in changed in connect-ace and sharejs packages.
+	-->
+		<script src="/ace/ace.js"></script>
+		<script src="/ace/mode-javascript.js"></script>
+		<script src="/ace/mode-json.js"></script>
+		<script src="/ace/theme-pastel_on_dark.js"></script>
+	
 		<script src="/channel/bcsocket.js"></script>
 		<script src="/share/share.uncompressed.js"></script>
 		<script src="/share/ace.js"></script>
 		<script>
 			window.onload = function()
 			{
+				//ace_middleware = require('connect-ace');
+				
 				var editor = ace.edit("editor");
 				editor.setReadOnly(true);
 				editor.setTheme("ace/theme/pastel_on_dark");
