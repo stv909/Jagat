@@ -34,6 +34,7 @@ function main()
 		this.textData = "";
 		this.jsonObject = null;
 		this.objectUpdated = false;
+		this.onChange = null;
 	};
 	
 	EventsController.prototype.setData = function(text)
@@ -65,11 +66,17 @@ function main()
 		return this.jsonObject;
 	};
 
-	// OT3D object
-	var OT3D = function(eventsController) // TODO: implement eventsController: .setData(...); .getData(); .on('change', ...);
+	EventsController.prototype.elementChanged = function(id, newPosition)
 	{
-		// TODO: implement
+		if (this.onChange)
+		{
+			this.onChange({"action" : "positionUpdate", "id": id, "position": newPosition});
+		}
+	};
 
+	// OT3D object
+	var OT3D = function(eventsController) // TODO: implement eventsController: .on('change', ...);
+	{
 		var docName = "pad:" + document.location.hash.slice(1);
 		sharejs.open(
 			docName, 'text',
@@ -88,10 +95,52 @@ function main()
 			}
 		);
 		
-		function applyToShareJS(eventsController, delta, doc)
+		function applyToShareJS(eventsController, change, doc)
 		{
-			// TODO: implement
-			console.log("apply changes not implemented yet");
+			var posStartEnd = getPositionInterval(eventsController, change.id);
+			if (!posStartEnd)
+			{
+				console.error("Can not update object changed in 3d:");
+				console.error(change);
+				return;
+			}
+			switch (change.action)
+			{
+				case 'positionUpdate':
+					// apply changes for local text cache
+					var text = eventsController.getData();
+					var newText = 
+						text.substring(0, posStartEnd.start) + 
+						getJsonPosition(change.position) + 
+						text.substring(posStartEnd.end + 1);
+					eventsController.setData(newText);
+					// apply changes for OT
+					doc.del(posStartEnd.start, posStartEnd.end - posStartEnd.start + 1);
+					doc.insert(posStartEnd.start, getJsonPosition(change.position));
+					break;
+				default:
+					throw new Error("unknown action: " + change.action);
+			}
+			
+			function getPositionInterval(eventsController, elemId)
+			{
+				var text = eventsController.getData();
+				var idIndex = text.indexOf("\"name\": \"" + elemId + "\""); // TODO: handle different formatting.
+				if (idIndex < 0) // TODO: handle case of invalid object id in JSON
+					return null;
+				var posStartIndex = text.indexOf("\"position\": {", idIndex);
+				if (posStartIndex < 0) // TODO: handle case of invalid object position in JSON
+					return null;
+				var posEndIndex = text.indexOf("}", posStartIndex);
+				if (posEndIndex < 0) // TODO: handle case of invalid object position in JSON
+					return null;
+				
+				return {"start": posStartIndex, "end": posEndIndex};
+			}
+			function getJsonPosition(position)
+			{
+				return "\"position\": {\"x\": " + position.x + ", \"y\": " + position.y + ", \"z\": " + position.z + "}"; // TODO: use standard serialization to JSON
+			}
 		}
 			
 		window.sharejs.extendDoc(
@@ -106,7 +155,7 @@ function main()
 			    eventsController.setData(doc.getText());
 				check();
 				var suppress = false;
-				//eventsController.on('change', eventsControllerListener);
+				eventsController.onChange = eventsControllerListener;
 				
 				doc.on(
 					'insert', 
@@ -153,13 +202,13 @@ function main()
 				{
 					if (suppress)
 						return;
-					applyToShareJS(eventsController, change.data, doc);
+					applyToShareJS(eventsController, change, doc);
 					return check();
 				};
 				
 				doc.detach_ace = function()
 				{
-					eventsController.removeListener('change', eventsControllerListener);
+					eventsController.onChange = null;
 					return delete doc.detach_ace;
 				};
 			}
@@ -167,13 +216,10 @@ function main()
 	};
 	
 	// standard global variables
-	//var clock = new THREE.Clock();	
-	//var keyboard = new THREEx.KeyboardState();
     var mouse = new THREEx.MouseState();
     var container, scene, camera, renderer, controls, stats, projector;
 	
 	// custom global variables
-	//var venue01, venue02, venue03;
 	var sphereGeom, sceneMaterial, seatMaterial, highlightMaterial, selectMaterial;
 	var 
         INTERSECTED = null, 
@@ -185,12 +231,6 @@ function main()
 	var canvas1, context1;
 	var sprite1, texture1;
 	var subscene;
-	/*
-	var 
-		space, 
-		events, 
-		interiors;
-	*/
 	var currentSpacePath = "";
 	
 	var eventsController = new EventsController();
@@ -244,9 +284,6 @@ function main()
 		$('#yMove').mousedown(onMovingYMouseDown);
 		$('#xzMove').mousedown(onMovingXZMouseDown);
 		
-		// load resources
-		//loadResources();
-        
 		function initCommon()
 		{
 			// SCENE
@@ -290,11 +327,6 @@ function main()
 			// SUBSCENE
 			subscene = new SubScene(scene);
 			currentSpacePath = "SpaceRoot";
-			var objs = getSpaceLayer(currentSpacePath);
-			if (objs)
-			{
-				subscene.fill(objs);
-			}
 		}
         
 		function onDocumentMouseMove(event)
@@ -337,6 +369,7 @@ function main()
 					if (intersects.length > 0)
 					{
 						MOVING.position = intersects[0].point;
+						MOVING.updated = true;
 					}
 				}
 				else if (MOVINGstate == "Oy")
@@ -347,6 +380,7 @@ function main()
 					if (point)
 					{
 						MOVING.position.set(point.x, point.y, point.z);						
+						MOVING.updated = true;
 					}
 				}
 			}
@@ -422,45 +456,14 @@ function main()
 			{
 				controls.enabled = true;
 				MOVINGstate = "none";
+				if (MOVING && MOVING.updated)
+				{
+					eventsController.elementChanged(MOVING.name, MOVING.position); // TODO: use 'id' instead of 'name'
+					MOVING.updated = false;
+				}
 			}
 		}
-        
-        /*
-		function loadResources()
-		{
-			var countJSONs = 0;
-			var totalJSONs = 3;
-			
-			$.getJSON("resources/space.json", function(data) {
-				space = data;
-				if (++countJSONs == totalJSONs)
-				{
-					onLoadingComplete();
-				}
-			});		
-			$.getJSON("resources/interiors.json", function(data) {
-				interiors = data;
-				if (++countJSONs == totalJSONs)
-				{
-					onLoadingComplete();
-				}
-			});		
-			$.getJSON("resources/events.json", function(data) {
-				events = data;
-				if (++countJSONs == totalJSONs)
-				{
-					onLoadingComplete();
-				}
-			});		
-			
-			function onLoadingComplete()
-			{
-				currentSpacePath = "SpaceRoot";
-				subscene.fill(getSpaceLayer(currentSpacePath));
-			}
-		}
-		*/
-		
+
 		function onSpaceBackClock()
 		{
 			var lastDotIndex = currentSpacePath.lastIndexOf('.');
@@ -719,13 +722,30 @@ function main()
 			{
 				if (eventsController.objectUpdated)
 				{
+					eventsController.objectUpdated = false;
+					var safeMovingId = MOVING ? MOVING.name : null; // TODO: use 'id' instead of 'name'
 					subscene.clear();
 					var objs = getSpaceLayer(currentSpacePath);
 					if (objs)
 					{
 						subscene.fill(objs);
 					}
-					eventsController.objectUpdated = false;
+					var restoreMoving = safeMovingId ? getObjectById(safeMovingId) : null;
+					if (restoreMoving)
+					{
+						MOVING = restoreMoving;
+					}
+				}
+				
+				function getObjectById(id)
+				{
+					var len = subscene.sceneObjects.length;
+					for (var i = 0; i < len; ++i)
+					{
+						if (subscene.sceneObjects[i].name == id) // TODO: use 'id' instead of 'name'
+							return subscene.sceneObjects[i];
+					}
+					return null;
 				}
 			}
 			
