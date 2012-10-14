@@ -1,0 +1,67 @@
+[
+	{
+		"event": 
+		{
+			"name": "Concert of Vitas",
+			"position": {"x": 0, "y": 0, "z": 0},
+			"timeInterval":
+			{
+				"begin": "2012.09.10 10:00:00",
+				"end": "2012.09.10 14:30:00"
+			},
+			"interior": "bigOne"
+		}
+	},
+	{
+		"event": 
+		{
+			"name": "Concert of Skorodead",
+			"position": {"x": 0, "y": 0, "z": 0},
+			"timeInterval":
+			{
+				"begin": "2012.09.15 23:00:00",
+				"end": "2012.09.16 2:15:00"
+			},
+			"interior": "smallOne"
+		}
+	},
+	{
+		"event": 
+		{
+			"name": "Drug Sale",
+			"position": {"x": 0, "y": 0, "z": 0},
+			"timeInterval":
+			{
+				"begin": "2012.09.12 08:00:00",
+				"end": "2012.09.12 22:00:00"
+			},
+			"interior": "shop"
+		}
+	},
+	{
+		"event": 
+		{
+			"name": "Drug Sale",
+			"position": {"x": 0, "y": 0, "z": 0},
+			"timeInterval":
+			{
+				"begin": "2012.09.13 08:00:00",
+				"end": "2012.09.13 22:00:00"
+			},
+			"interior": "shop"
+		}
+	},
+	{
+		"event": 
+		{
+			"name": "Art Cinema: Ghost Dog",
+			"position": {"x": 0, "y": 0, "z": 0},
+			"timeInterval":
+			{
+				"begin": "2012.09.14 20:00:00",
+				"end": "2012.09.14 21:45:00"
+			},
+			"interior": "smallOne"
+		}
+	}
+]

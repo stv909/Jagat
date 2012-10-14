@@ -1,0 +1,47 @@
+[
+	{
+		"interior":
+		{
+			"name": "shop",
+			"seats":
+			[
+			],
+			"arena":
+			{
+			},
+			"exit":
+			{
+			}
+		}
+	},
+	{
+		"interior":
+		{
+			"name": "smallOne",
+			"seats":
+			[
+			],
+			"arena":
+			{
+			},
+			"exit":
+			{
+			}
+		}
+	},
+	{
+		"interior":
+		{
+			"name": "bigOne",
+			"seats":
+			[
+			],
+			"arena":
+			{
+			},
+			"exit":
+			{
+			}
+		}
+	}
+]
