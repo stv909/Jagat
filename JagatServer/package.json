@@ -18,10 +18,10 @@
 	],
 	"main": "index.js",
 	"dependencies": {
-		"connect": ">= 2.5.0",
+		"connect": "~1",
 		"connect-ace": ">= 1.0.0",
 		"redis": ">= 0.8.1",
-		"share": ">= 0.5.0"
+		"share": "~0.5"
 	},
 	"devDependencies": {},
 	"optionalDependencies": {},

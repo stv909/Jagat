@@ -1,5 +1,5 @@
 // THREEx.MouseState extension	
-var THREEx = THREEx || {}; // TODO: uncomment it after placing in separated module file
+var THREEx = THREEx || {};
 THREEx.MouseState = function()
 {
 	// to store the current state

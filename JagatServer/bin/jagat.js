@@ -2,10 +2,13 @@ var util = require('util');
 
 util.puts('JAGAT server starting...');
 
-var connect = require('connect'),
-	jagat = require('../'),
-	sharejs = require('share'),
+var 
+	connect = require('connect'),
+	ace = require('connect-ace'),
 	hat = require('hat'),
+	sharejs = require('share'),
+	jagat = require('../'),
+	options = require('./options') || {},
 	server;
 	
 var server = connect(
@@ -41,9 +44,7 @@ var server = connect(
 );
 
 // TODO: link 'src-min-noconflict' ace build in the future
-server.use(require('connect-ace').middleware('/ace'));
-
-var options = require('./options') || {};
+server.use(ace.middleware('/ace'));
 
 util.puts("JAGAT server v" + jagat.version + " on ShareJS v" + sharejs.version);
 
@@ -55,12 +56,12 @@ var port = options.port || 8000;
 server.listen(port);
 util.puts('Server running at' + process.env.IP + ':' + port + '/');
 
-process.title = 'sharejs';
+process.title = 'jagat';
 process.on(
 	'uncaughtException', 
 	function (err) {
-		console.error('An error has occurred. Please file a ticket here: https://github.com/josephg/ShareJS/issues');
-		console.error('Version ' + sharejs.version + ': ' + err.stack);
+		console.error('An error has occurred. Please file a ticket here: https://github.com/stv909/Jagat/issues');
+		console.error('Version ' + jagat.version + ': ' + err.stack);
 	}
 );
 

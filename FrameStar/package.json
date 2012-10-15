@@ -1,0 +1,27 @@
+{
+	"author": {
+		"name": "Stanislav Rodionov",
+		"email": "x.rodionov@gmail.com"
+	},
+	"name": "frame-star",
+	"description": "Representation of data set using tags.",
+	"version": "0.0.1",
+	"keywords": [
+		"frame",
+		"tag",
+		"representation"
+	],
+	"main": "index.js",
+	"dependencies": {
+	},
+	"devDependencies": {},
+	"optionalDependencies": {},
+	"engines": {
+		"node": "*"
+	},
+	"licenses": [
+		{
+			"type": "MIT"
+		}
+	]
+}
