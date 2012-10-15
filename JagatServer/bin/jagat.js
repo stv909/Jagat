@@ -6,6 +6,8 @@ var
 	connect = require('connect'),
 	ace = require('connect-ace'),
 	hat = require('hat'),
+	// TODO: think about using nonconflict version of ACE ('/connect-ace/ace-build/src-min-noconflict') 
+	//       in the future - 'ace.middleware('/ace', true, true)'.
 	sharejs = require('share'),
 	jagat = require('../'),
 	options = require('./options') || {},
@@ -43,8 +45,7 @@ var server = connect(
 	})
 );
 
-// TODO: link 'src-min-noconflict' ace build in the future
-server.use(ace.middleware('/ace'));
+server.use(ace.middleware('/ace', true));
 
 util.puts("JAGAT server v" + jagat.version + " on ShareJS v" + sharejs.version);
 
