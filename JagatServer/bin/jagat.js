@@ -45,7 +45,7 @@ var server = connect(
 	})
 );
 
-server.use(ace.middleware('/ace', true));
+server.use(ace.middleware('/ace', false));
 
 util.puts("JAGAT server v" + jagat.version + " on ShareJS v" + sharejs.version);
 
