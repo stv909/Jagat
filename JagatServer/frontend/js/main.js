@@ -143,7 +143,7 @@ function main()
 			}
 			function getJsonPosition(position)
 			{
-				return "\"position\": {\"x\": " + position.x + ", \"y\": " + position.y + ", \"z\": " + position.z + "}"; // TODO: use standard serialization to JSON
+				return '"position": ' + JSON.stringify(position).replace(/:/g, ': ').replace(/,/g, ', ');
 			}
 		}
 			
@@ -330,7 +330,6 @@ function main()
 			
 			// SUBSCENE
 			subscene = new SubScene(scene);
-			//currentSpacePath = "2ae6fd51307eac6f2a75e84e6328e47e"; // TODO: avoid hardcoded guid.
 		}
         
 		function onDocumentMouseMove(event)
