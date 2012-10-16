@@ -44,6 +44,10 @@ function main()
 		try
 		{
 			json = eval("(" + this.textData + ")"); // TODO: avoid evil
+			if (currentSpacePath === "")
+			{
+				currentSpacePath = json.node.guid;
+			}
 		}
 		catch(e)
 		{
@@ -66,16 +70,16 @@ function main()
 		return this.jsonObject;
 	};
 
-	EventsController.prototype.elementChanged = function(id, newPosition)
+	EventsController.prototype.elementChanged = function(guid, newPosition)
 	{
 		if (this.onChange)
 		{
-			this.onChange({"action" : "positionUpdate", "id": id, "position": newPosition});
+			this.onChange({"action" : "positionUpdate", "guid": guid, "position": newPosition});
 		}
 	};
 
 	// OT3D object
-	var OT3D = function(eventsController) // TODO: implement eventsController: .on('change', ...);
+	var OT3D = function(eventsController)
 	{
 		var docName = "pad:" + document.location.hash.slice(1);
 		sharejs.open(
@@ -97,7 +101,7 @@ function main()
 		
 		function applyToShareJS(eventsController, change, doc)
 		{
-			var posStartEnd = getPositionInterval(eventsController, change.id);
+			var posStartEnd = getPositionInterval(eventsController, change.guid);
 			if (!posStartEnd)
 			{
 				console.error("Can not update object changed in 3d:");
@@ -125,8 +129,8 @@ function main()
 			function getPositionInterval(eventsController, elemId)
 			{
 				var text = eventsController.getData();
-				var idIndex = text.indexOf("\"name\": \"" + elemId + "\""); // TODO: handle different formatting.
-				if (idIndex < 0) // TODO: handle case of invalid object id in JSON
+				var idIndex = text.indexOf("\"guid\": \"" + elemId + "\""); // TODO: handle different formatting.
+				if (idIndex < 0) // TODO: handle case of invalid object guid in JSON
 					return null;
 				var posStartIndex = text.indexOf("\"position\": {", idIndex);
 				if (posStartIndex < 0) // TODO: handle case of invalid object position in JSON
@@ -326,7 +330,7 @@ function main()
 			
 			// SUBSCENE
 			subscene = new SubScene(scene);
-			currentSpacePath = "SpaceRoot";
+			//currentSpacePath = "2ae6fd51307eac6f2a75e84e6328e47e"; // TODO: avoid hardcoded guid.
 		}
         
 		function onDocumentMouseMove(event)
@@ -458,7 +462,7 @@ function main()
 				MOVINGstate = "none";
 				if (MOVING && MOVING.updated)
 				{
-					eventsController.elementChanged(MOVING.name, MOVING.position); // TODO: use 'id' instead of 'name'
+					eventsController.elementChanged(MOVING.guid, MOVING.position);
 					MOVING.updated = false;
 				}
 			}
@@ -534,7 +538,7 @@ function main()
 			{
 				if (i === 0)
 				{
-					if (!jsonObject.node || jsonObject.node.name != crumbs[i])
+					if (!jsonObject.node || jsonObject.node.guid != crumbs[i])
 						return null;
 					resultNode = jsonObject.node;
 				}
@@ -543,7 +547,7 @@ function main()
 					var found = false;
 					for (var j = 0; j < resultNode.children.length; ++j)
 					{
-						if (resultNode.children[j].node.name == crumbs[i])
+						if (resultNode.children[j].node.guid == crumbs[i])
 						{
 							resultNode = resultNode.children[j].node;
 							found = true;
@@ -564,9 +568,10 @@ function main()
 			{
 				var sceneObjectDesc = layerRootNode.children[i].node;
 				var sceneObject = new THREE.Mesh(THREE.GeometryUtils.clone(sphereGeom), seatMaterial);
+				sceneObject.guid = sceneObjectDesc.guid;
+				sceneObject.name = sceneObjectDesc.name;
 				var pos = sceneObjectDesc.position;
 				sceneObject.position.set(pos.x, pos.y, pos.z);
-				sceneObject.name = sceneObjectDesc.name;
 				sceneObjects.push(sceneObject);
 			}
 			var plane = new THREE.PlaneGeometry(500, 500, 1, 1);
@@ -619,12 +624,12 @@ function main()
 			return venues;
 		}
 			
-		function getVenueObjects(id)
+		function getVenueObjects(idObj)
 		{
 			var venueObjects = new Array();
 			var planeGeometry = null;
 			
-			if (id == 1)
+			if (idObj == 1)
 			{
 				camera.position.set(-300, 500, -800);
 				camera.lookAt(scene.position);	
@@ -636,7 +641,7 @@ function main()
 			
 				planeGeometry = new THREE.PlaneGeometry(400, 160, 1, 1);
 			}
-			else if (id == 2)
+			else if (idObj == 2)
 			{
 				camera.position.set(-700, 800, -1500);
 				camera.lookAt(scene.position);	
@@ -648,7 +653,7 @@ function main()
 			
 				planeGeometry = new THREE.PlaneGeometry(400, 160, 1, 1);
 			}
-			else if (id == 3)
+			else if (idObj == 3)
 			{
 				camera.position.set(-900, 750, -1700);
 				camera.lookAt(scene.position);	
@@ -723,26 +728,26 @@ function main()
 				if (eventsController.objectUpdated)
 				{
 					eventsController.objectUpdated = false;
-					var safeMovingId = MOVING ? MOVING.name : null; // TODO: use 'id' instead of 'name'
+					var safeMovingGuid = MOVING ? MOVING.guid : null;
 					subscene.clear();
 					var objs = getSpaceLayer(currentSpacePath);
 					if (objs)
 					{
 						subscene.fill(objs);
 					}
-					var restoreMoving = safeMovingId ? getObjectById(safeMovingId) : null;
+					var restoreMoving = safeMovingGuid ? getObjectByGuid(safeMovingGuid) : null;
 					if (restoreMoving)
 					{
 						MOVING = restoreMoving;
 					}
 				}
 				
-				function getObjectById(id)
+				function getObjectByGuid(guid)
 				{
 					var len = subscene.sceneObjects.length;
 					for (var i = 0; i < len; ++i)
 					{
-						if (subscene.sceneObjects[i].name == id) // TODO: use 'id' instead of 'name'
+						if (subscene.sceneObjects[i].guid == guid)
 							return subscene.sceneObjects[i];
 					}
 					return null;
@@ -859,7 +864,7 @@ function main()
 						SELECTED.material = selectMaterial;
 						//controls.target.set(SELECTED.position.x, SELECTED.position.y, SELECTED.position.z);
 						
-						var newCurrentSpacePath = currentSpacePath + "." + SELECTED.name;
+						var newCurrentSpacePath = currentSpacePath + "." + SELECTED.guid;
 						var objs = getSpaceLayer(newCurrentSpacePath);
 						if (objs)
 						{
