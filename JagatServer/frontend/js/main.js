@@ -27,6 +27,22 @@ function main()
 		SELECTED = null;
 		INTERSECTED = null;
 	};
+	
+	SubScene.prototype.replaceSceneObject = function(sceneObject)
+	{
+		for (var i = 0; i < this.sceneObjects.length; ++i)
+		{
+			if (this.sceneObjects[i].guid === sceneObject.guid)
+			{
+				this.scene.remove(this.sceneObjects[i]);
+				this.sceneObjects[i] = sceneObject;
+				this.scene.add(sceneObject);
+				return;
+			}
+		}
+		console.log("Can't replace object:");
+		console.log(sceneObject);
+	}
 
 	// EventsController object
 	var EventsController = function()
@@ -225,6 +241,7 @@ function main()
 	
 	// custom global variables
 	var sphereGeom, sceneMaterial, seatMaterial, highlightMaterial, selectMaterial;
+	var boxGeom; // debug // TODO: remove
 	var 
         INTERSECTED = null, 
         SELECTED = null, 
@@ -327,6 +344,8 @@ function main()
 			seatMaterial = new THREE.MeshBasicMaterial({color: 0xeeee00, transparent: true, opacity: 0.5});
 			highlightMaterial = new THREE.MeshBasicMaterial({color: 0x0000ee, transparent: true, opacity: 0.75});
 			selectMaterial = new THREE.MeshBasicMaterial({color: 0x00ee00, transparent: true, opacity: 0.25});
+			
+			boxGeom = new THREE.CubeGeometry(50, 50, 50); // debug // TODO: remove
 			
 			// SUBSCENE
 			subscene = new SubScene(scene);
@@ -565,139 +584,132 @@ function main()
 			var sceneObjects = [];
 			for (var i = 0; i < layerRootNode.children.length; ++i)
 			{
+				var sceneObject;
 				var sceneObjectDesc = layerRootNode.children[i].node;
-				var sceneObject = new THREE.Mesh(THREE.GeometryUtils.clone(sphereGeom), seatMaterial);
-				sceneObject.guid = sceneObjectDesc.guid;
-				sceneObject.name = sceneObjectDesc.name;
-				var pos = sceneObjectDesc.position;
-				sceneObject.position.set(pos.x, pos.y, pos.z);
-				sceneObjects.push(sceneObject);
+				var geom = null;
+				if (sceneObjectDesc.shape)
+				{
+					geom = createShapeGeom(sceneObjectDesc);
+				}
+				else
+				{
+					geom = THREE.GeometryUtils.clone(sphereGeom);
+				}
+				
+				// TODO: work with multiple and nested geometries
+				if (geom)
+				{
+					var sceneObject = new THREE.Mesh(geom, seatMaterial);
+					sceneObject.guid = sceneObjectDesc.guid;
+					sceneObject.name = sceneObjectDesc.name;
+					var pos = sceneObjectDesc.position;
+					sceneObject.position.set(pos.x, pos.y, pos.z);
+					sceneObject.originalMaterial = sceneObject.material;
+					sceneObjects.push(sceneObject);
+				}
+				else
+				{
+					console.log("failed to create geometry for node:");
+					console.log(sceneObjectDesc);
+				}
 			}
+			
+			// zero-plane to simplefy user orientation.
 			var plane = new THREE.PlaneGeometry(500, 500, 1, 1);
 			sceneMaterial = new THREE.MeshBasicMaterial({color: 0x888888, transparent: true, opacity: 1.0});
 			var planeMesh = new THREE.Mesh(plane, sceneMaterial);
+			planeMesh.originalMaterial = planeMesh.material;
 			planeMesh.doubleSided = true;
 			sceneObjects.push(planeMesh);
 			
 			return sceneObjects;			
 		}
-	}
-/*		
-	function getSubSceneObjects(name)
-	{
-		if (name == "city")
-			return getCityObjects();
-		else if (name == "interior01")
-			return getVenueObjects(1);
-		else if (name == "interior02")
-			return getVenueObjects(2);
-		else if (name == "interior03")
-			return getVenueObjects(3);
-		else
-			return null;
 		
-		function getCityObjects()
+		function createShapeGeom(objectDesc)
 		{
-			camera.position.set(-300, 500, -800);
-			camera.lookAt(scene.position);	
-		
-			var venues = new Array();
-			venue01 = new THREE.Mesh(THREE.GeometryUtils.clone(sphereGeom), seatMaterial);
-			venue01.position.set(-120, -15, 170);
-			venue01.name = "venue 01";
-			venue01.command = "goto interior01";
-			venues.push(venue01);
-			
-			venue02 = new THREE.Mesh(THREE.GeometryUtils.clone(sphereGeom), seatMaterial);
-			venue02.position.set(230, 60, -70);
-			venue02.name = "venue 02";
-			venue02.command = "goto interior02";
-			venues.push(venue02);
-			
-			venue03 = new THREE.Mesh(THREE.GeometryUtils.clone(sphereGeom), seatMaterial);
-			venue03.position.set(-120, -40, -230);
-			venue03.name = "venue 03";
-			venue03.command = "goto interior03";
-			venues.push(venue03);
-			
-			return venues;
-		}
-			
-		function getVenueObjects(idObj)
-		{
-			var venueObjects = new Array();
-			var planeGeometry = null;
-			
-			if (idObj == 1)
+			var shapeDesc = objectDesc.shape;
+			var geom = null;
+			if (shapeDesc.radius)
 			{
-				camera.position.set(-300, 500, -800);
-				camera.lookAt(scene.position);	
-			
-				sceneMaterial = new THREE.MeshBasicMaterial({color: 0xeeff00, transparent: true, opacity: 1.0});
-			
-				var stepOffset = {x: 100, y: 80, z:120};
-				createPointsSector(sphereGeom, seatMaterial, stepOffset, 10, 3);
-			
-				planeGeometry = new THREE.PlaneGeometry(400, 160, 1, 1);
-			}
-			else if (idObj == 2)
-			{
-				camera.position.set(-700, 800, -1500);
-				camera.lookAt(scene.position);	
-			
-				sceneMaterial = new THREE.MeshBasicMaterial({color: 0xffaa00, transparent: true, opacity: 1.0});
-			
-				var stepOffset = {x: 100, y: 80, z:120};
-				createPointsSector(sphereGeom, seatMaterial, stepOffset, 15, 2);
-			
-				planeGeometry = new THREE.PlaneGeometry(400, 160, 1, 1);
-			}
-			else if (idObj == 3)
-			{
-				camera.position.set(-900, 750, -1700);
-				camera.lookAt(scene.position);	
-			
-				sceneMaterial = new THREE.MeshBasicMaterial({color: 0xff00aa, transparent: true, opacity: 1.0});
-			
-				var stepOffset = {x: 100, y: 80, z:120};
-				createPointsSector(sphereGeom, seatMaterial, stepOffset, 8, 6);
-			
-				planeGeometry = new THREE.PlaneGeometry(400, 160, 1, 1);
-			}
-	
-			if (!planeGeometry)
-			{
-				planeGeometry = new THREE.PlaneGeometry(400, 160, 1, 1);			
-			}
-			var plane = new THREE.Mesh(planeGeometry, sceneMaterial);
-			plane.position.set(-50, 10, -250);
-			plane.doubleSided = true;
-			plane.name = "action scene";
-			plane.command = "goto city";
-			venueObjects.push(plane);
-			
-			return venueObjects;
-			
-			function createPointsSector(patternGeom, patternMaterial, stepOffset, widthUnits, depthUnits)
-			{
-				var centerX = - widthUnits * stepOffset.x / 2;
-				var position = {x: centerX, y: 0, z: 0};
-				for (var depthUnit = 0; depthUnit < depthUnits; ++depthUnit)
+				if (shapeDesc.heightIntervals)
 				{
-					position.x = centerX;
-					for (var widthUnit = 0; widthUnit < widthUnits; ++widthUnit)
-					{
-						var geom = new THREE.Mesh(THREE.GeometryUtils.clone(patternGeom), patternMaterial);
-						geom.position.set(position.x, position.y, position.z);
-						geom.name = "seat " + (depthUnit+1) + " x " + (widthUnit+1);
-						venueObjects.push( geom );	
-			
-						position.x = position.x + stepOffset.x;
-					}
-					position.y = position.y + stepOffset.y;
-					position.z = position.z + stepOffset.z;
+					// cylinder
+					var height = shapeDesc.heightIntervals[0][1] - shapeDesc.heightIntervals[0][0];
+					// TODO: handle multi intervals
+					geom = new THREE.CylinderGeometry(shapeDesc.radius, shapeDesc.radius, height, 16, 1, false);
+				}
+				else
+				{
+					// sphere
+					geom =  new THREE.SphereGeometry(shapeDesc.radius, 16, 16);
 				}
 			}
+			else if (shapeDesc.sides)
+			{
+				// box
+				geom = new THREE.CubeGeometry(shapeDesc.sides[0], shapeDesc.sides[1], shapeDesc.sides[2]);
+			}
+			else if (shapeDesc.vertices)
+			{
+				if (shapeDesc.heightIntervals)
+				{
+					// volumetric polygone
+					// TODO: implement
+				}
+				else
+				{
+					// flat polygone
+					// TODO: implement
+				}
+			}
+			else if (shapeDesc.mesh)
+			{
+				// mesh			
+				
+				// placeholder
+				geom = new THREE.SphereGeometry(shapeDesc.radius, 16, 16);				
+
+				// loading model
+				var loader = new THREE.JSONLoader();
+				var getGeom = function( geometry )
+				{
+					console.log("Geometry loaded:");
+					console.log(geometry);
+					
+					var sceneObject = new THREE.Mesh(geometry, new THREE.MeshFaceMaterial());
+					sceneObject.guid = objectDesc.guid;
+					sceneObject.name = objectDesc.name;
+					var pos = objectDesc.position;
+					sceneObject.position.set(pos.x, pos.y, pos.z);
+					sceneObject.originalMaterial = sceneObject.material;
+					subscene.replaceSceneObject(sceneObject);
+				};
+				
+				loader.load( 'resources/models/' + shapeDesc.mesh, getGeom );
+			}
+			
+			return geom;
+		}
+	}
+/*		
+	function createPointsSector(patternGeom, patternMaterial, stepOffset, widthUnits, depthUnits)
+	{
+		var centerX = - widthUnits * stepOffset.x / 2;
+		var position = {x: centerX, y: 0, z: 0};
+		for (var depthUnit = 0; depthUnit < depthUnits; ++depthUnit)
+		{
+			position.x = centerX;
+			for (var widthUnit = 0; widthUnit < widthUnits; ++widthUnit)
+			{
+				var geom = new THREE.Mesh(THREE.GeometryUtils.clone(patternGeom), patternMaterial);
+				geom.position.set(position.x, position.y, position.z);
+				geom.name = "seat " + (depthUnit+1) + " x " + (widthUnit+1);
+				venueObjects.push( geom );	
+	
+				position.x = position.x + stepOffset.x;
+			}
+			position.y = position.y + stepOffset.y;
+			position.z = position.z + stepOffset.z;
 		}
 	}
 */							
@@ -772,10 +784,16 @@ function main()
 						// restore previous intersection object (if it exists) to its original color
 						if (INTERSECTED)
 						{
-							INTERSECTED.material = INTERSECTED == SELECTED ? selectMaterial : seatMaterial;
+							INTERSECTED.material = 
+								INTERSECTED == SELECTED ? selectMaterial : 
+									INTERSECTED.originalMaterial ? INTERSECTED.originalMaterial : 
+										seatMaterial;
 						}
 						// store reference to closest object as current intersection object
 						INTERSECTED = newINTERSECTED;
+						
+						// set highlight via material
+						INTERSECTED.material = highlightMaterial;
 					}
 				} 
 				else // there are no intersections
@@ -783,7 +801,10 @@ function main()
 					// restore previous intersection object (if it exists) to its original color
 					if (INTERSECTED)
 					{
-						INTERSECTED.material = INTERSECTED == SELECTED ? selectMaterial : seatMaterial;
+							INTERSECTED.material = 
+								INTERSECTED == SELECTED ? selectMaterial : 
+									INTERSECTED.originalMaterial ? INTERSECTED.originalMaterial : 
+										seatMaterial;
 					}
 					// remove previous intersection object reference
 					//     by setting current intersection object to "nothing"
@@ -810,10 +831,7 @@ function main()
 				{
 					// update text, if it has a "name" field.
 					if (sceneObject && sceneObject.name)
-					{
-						// set a new color for closest object
-						sceneObject.material = highlightMaterial;
-                        
+					{                        
 						context1.clearRect(0, 0, 640, 480);
 						var message1 = sceneObject.name; 
 						var width = context1.measureText(message1).width;
@@ -860,7 +878,7 @@ function main()
 					if (sceneObject !== null)
 					{
 						SELECTED = sceneObject;
-						SELECTED.material = selectMaterial;
+						SELECTED.material = SELECTED.originalMaterial ? SELECTED.originalMaterial : selectMaterial;
 						//controls.target.set(SELECTED.position.x, SELECTED.position.y, SELECTED.position.z);
 						
 						var newCurrentSpacePath = currentSpacePath + "." + SELECTED.guid;
