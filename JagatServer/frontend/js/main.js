@@ -241,7 +241,6 @@ function main()
 	
 	// custom global variables
 	var sphereGeom, sceneMaterial, seatMaterial, highlightMaterial, selectMaterial;
-	var boxGeom; // debug // TODO: remove
 	var 
         INTERSECTED = null, 
         SELECTED = null, 
@@ -344,8 +343,6 @@ function main()
 			seatMaterial = new THREE.MeshBasicMaterial({color: 0xeeee00, transparent: true, opacity: 0.5});
 			highlightMaterial = new THREE.MeshBasicMaterial({color: 0x0000ee, transparent: true, opacity: 0.75});
 			selectMaterial = new THREE.MeshBasicMaterial({color: 0x00ee00, transparent: true, opacity: 0.25});
-			
-			boxGeom = new THREE.CubeGeometry(50, 50, 50); // debug // TODO: remove
 			
 			// SUBSCENE
 			subscene = new SubScene(scene);
