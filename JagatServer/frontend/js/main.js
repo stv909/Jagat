@@ -321,7 +321,6 @@ function main()
 
 			renderer = new THREE.WebGLRenderer({antialias: true});
 			renderer.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
-			//container.appendChild(renderer.domElement);
 
 			// CONTROLS
 			controls = new THREE.TrackballControls(camera);
@@ -347,9 +346,8 @@ function main()
 			selectMaterial = new THREE.MeshBasicMaterial({color: 0x00ee00, transparent: true, opacity: 0.25});
 
 			// EFFECT
-			effect = new THREE.AsciiEffect( renderer );
-			effect.setSize( SCREEN_WIDTH, SCREEN_HEIGHT );
-			//container.appendChild( effect.domElement );
+			effect = new THREE.AsciiEffect(renderer, ' .,:;=|iI+hHOE#`$');
+			effect.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
 
 			// EVENTS
 			THREEx.WindowResize(renderer, camera, effect);
@@ -357,7 +355,7 @@ function main()
 			// SUBSCENE
 			subscene = new SubScene(scene);
 
-			setActiveRenderer(renderer); // renderer | effect
+			setActiveRenderer(renderer);
 		}
 
 		function setActiveRenderer(newrenderer)
@@ -370,7 +368,7 @@ function main()
 				if (children[i] == renderer.domElement || children[i] == effect.domElement)
 				{
 					container.removeChild(children[i]);
-					i--; //Decrement counter since we are removing an item from the list
+					i--;
 				}
 			}
 			container.appendChild(activerenderer.domElement);
