@@ -250,6 +250,7 @@ function main()
         MOVINGcontroloffset = {x: 0, y: 0};
 	var canvas1, context1;
 	var sprite1, texture1;
+	var effect, activerenderer;
 	var subscene;
 	var currentSpacePath = "";
 
@@ -301,6 +302,7 @@ function main()
 		$('#loader').fadeOut(1000);
 		$('#spaceBack').click(onSpaceBackClock);
 		$('#fullscreenToggle').click(onFullscreen);
+		$('#asciiToggle').click(onAscii);
 		$('#yMove').mousedown(onMovingYMouseDown);
 		$('#xzMove').mousedown(onMovingXZMouseDown);
 
@@ -314,13 +316,13 @@ function main()
 			camera = new THREE.PerspectiveCamera(VIEW_ANGLE, ASPECT, NEAR, FAR);
 			scene.add(camera);
 			// RENDERER
-			renderer = new THREE.WebGLRenderer({antialias: true});
-			renderer.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
 			container = document.createElement('div');
 			document.body.appendChild(container);
-			container.appendChild(renderer.domElement);
-			// EVENTS
-			THREEx.WindowResize(renderer, camera);
+
+			renderer = new THREE.WebGLRenderer({antialias: true});
+			renderer.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
+			//container.appendChild(renderer.domElement);
+
 			// CONTROLS
 			controls = new THREE.TrackballControls(camera);
 			controls.noPan = true;
@@ -344,8 +346,34 @@ function main()
 			highlightMaterial = new THREE.MeshBasicMaterial({color: 0x0000ee, transparent: true, opacity: 0.75});
 			selectMaterial = new THREE.MeshBasicMaterial({color: 0x00ee00, transparent: true, opacity: 0.25});
 
+			// EFFECT
+			effect = new THREE.AsciiEffect( renderer );
+			effect.setSize( SCREEN_WIDTH, SCREEN_HEIGHT );
+			//container.appendChild( effect.domElement );
+
+			// EVENTS
+			THREEx.WindowResize(renderer, camera, effect);
+
 			// SUBSCENE
 			subscene = new SubScene(scene);
+
+			setActiveRenderer(renderer); // renderer | effect
+		}
+
+		function setActiveRenderer(newrenderer)
+		{
+			activerenderer = newrenderer;
+
+			var children = container.childNodes;
+			for (var i = 0; i<children.length; i++)
+			{
+				if (children[i] == renderer.domElement || children[i] == effect.domElement)
+				{
+					container.removeChild(children[i]);
+					i--; //Decrement counter since we are removing an item from the list
+				}
+			}
+			container.appendChild(activerenderer.domElement);
 		}
 
 		function onDocumentMouseMove(event)
@@ -509,6 +537,11 @@ function main()
 			{
 				THREEx.FullScreen.cancel();
 			}
+		}
+
+		function onAscii()
+		{
+			setActiveRenderer(activerenderer == effect ? renderer : effect);
 		}
 
 		function onMovingYMouseDown(event)
@@ -764,7 +797,7 @@ function main()
 
 		function render()
 		{
-			renderer.render(scene, camera);
+			activerenderer.render(scene, camera);
 		}
 
 		function update()
