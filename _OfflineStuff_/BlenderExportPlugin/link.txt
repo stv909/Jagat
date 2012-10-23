@@ -1,0 +1,2 @@
+http://www.blender.org/download/get-blender/
+http://wiki.blender.org/index.php/Doc:2.6/Manual/Extensions/Python/Add-Ons
