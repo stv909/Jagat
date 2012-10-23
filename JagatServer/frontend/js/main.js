@@ -27,7 +27,7 @@ function main()
 		SELECTED = null;
 		INTERSECTED = null;
 	};
-	
+
 	SubScene.prototype.replaceSceneObject = function(sceneObject)
 	{
 		for (var i = 0; i < this.sceneObjects.length; ++i)
@@ -52,7 +52,7 @@ function main()
 		this.objectUpdated = false;
 		this.onChange = null;
 	};
-	
+
 	EventsController.prototype.setData = function(text)
 	{
 		this.textData = text;
@@ -114,7 +114,7 @@ function main()
 				doc.attach_events(eventsController);
 			}
 		);
-		
+
 		function applyToShareJS(eventsController, change, doc)
 		{
 			var posStartEnd = getPositionInterval(eventsController, change.guid);
@@ -129,9 +129,9 @@ function main()
 				case 'positionUpdate':
 					// apply changes for local text cache
 					var text = eventsController.getData();
-					var newText = 
-						text.substring(0, posStartEnd.start) + 
-						getJsonPosition(change.position) + 
+					var newText =
+						text.substring(0, posStartEnd.start) +
+						getJsonPosition(change.position) +
 						text.substring(posStartEnd.end + 1);
 					eventsController.setData(newText);
 					// apply changes for OT
@@ -141,7 +141,7 @@ function main()
 				default:
 					throw new Error("unknown action: " + change.action);
 			}
-			
+
 			function getPositionInterval(eventsController, elemId)
 			{
 				var text = eventsController.getData();
@@ -154,7 +154,7 @@ function main()
 				var posEndIndex = text.indexOf("}", posStartIndex);
 				if (posEndIndex < 0) // TODO: handle case of invalid object position in JSON
 					return null;
-				
+
 				return {"start": posStartIndex, "end": posEndIndex};
 			}
 			function getJsonPosition(position)
@@ -162,7 +162,7 @@ function main()
 				return '"position": ' + JSON.stringify(position).replace(/:/g, ': ').replace(/,/g, ', ');
 			}
 		}
-			
+
 		window.sharejs.extendDoc(
 			"attach_events",
 			function(eventsController)
@@ -171,14 +171,14 @@ function main()
 				if (!doc.provides['text'])
 				{
 					throw new Error('Only text documents can be attached to ace');
-				}			    
+				}
 			    eventsController.setData(doc.getText());
 				check();
 				var suppress = false;
 				eventsController.onChange = eventsControllerListener;
-				
+
 				doc.on(
-					'insert', 
+					'insert',
 					function(pos, text)
 					{
 						suppress = true;
@@ -189,7 +189,7 @@ function main()
 				);
 
 				doc.on(
-					'delete', 
+					'delete',
 					function(pos, text)
 					{
 						suppress = true;
@@ -199,7 +199,7 @@ function main()
 					}
 				);
 
-				function check() 
+				function check()
 				{
 					return window.setTimeout(
 						function()
@@ -213,11 +213,11 @@ function main()
 								console.error("editor: " + editorText);
 								return console.error("ot:     " + otText);
 							}
-						}, 
+						},
 						0
 					);
 			    }
-				
+
 				function eventsControllerListener(change)
 				{
 					if (suppress)
@@ -225,7 +225,7 @@ function main()
 					applyToShareJS(eventsController, change, doc);
 					return check();
 				};
-				
+
 				doc.detach_ace = function()
 				{
 					eventsController.onChange = null;
@@ -234,76 +234,76 @@ function main()
 			}
 		);
 	};
-	
+
 	// standard global variables
     var mouse = new THREEx.MouseState();
     var container, scene, camera, renderer, controls, stats, projector;
-	
+
 	// custom global variables
 	var sphereGeom, sceneMaterial, seatMaterial, highlightMaterial, selectMaterial;
-	var 
-        INTERSECTED = null, 
-        SELECTED = null, 
-        selectionDone = false, 
-        MOVING = null, 
-        MOVINGstate = "none", 
+	var
+        INTERSECTED = null,
+        SELECTED = null,
+        selectionDone = false,
+        MOVING = null,
+        MOVINGstate = "none",
         MOVINGcontroloffset = {x: 0, y: 0};
 	var canvas1, context1;
 	var sprite1, texture1;
 	var subscene;
 	var currentSpacePath = "";
-	
+
 	var eventsController = new EventsController();
 	var ot3d = new OT3D(eventsController);
-	
+
 	init();
 	animate();
-	
+
 	// FUNCTIONS
 
 	function init()
-	{		
+	{
 		initCommon();
-        
+
 		////////////////////////////
 		// HIGHLIGHT AND TOOLTOPS //
 		////////////////////////////
-	
+
 		// initialize object to perform world/screen calculations
 		projector = new THREE.Projector();
-        
+
 		/////// draw text on canvas /////////
-        
+
 		// create a canvas element
 		canvas1 = document.createElement('canvas');
 		context1 = canvas1.getContext('2d');
 		context1.font = "Bold 20px Arial";
 		context1.fillStyle = "rgba(0,0,0,0.95)";
 		context1.fillText('Hello, world!', 0, 20);
-		
+
 		// canvas contents will be used for a texture
-		texture1 = new THREE.Texture(canvas1) 
+		texture1 = new THREE.Texture(canvas1)
 		texture1.needsUpdate = true;
-        
+
         ////////////////////////////////////////
-		
+
 		sprite1 = new THREE.Sprite({map: texture1, useScreenCoordinates: true, alignment: THREE.SpriteAlignment.topLeft});
 		sprite1.position.set(50, 50, 0);
 		scene.add(sprite1);
-        
-		// update position of sprite1 depending of mouse move		
+
+		// update position of sprite1 depending of mouse move
 		document.addEventListener('mousemove', onDocumentMouseMove, false);
 		document.addEventListener('mouseup', onDocumentMouseUp, false);
-        
+
 		//////////////////////////////////////////
-	
-		selectionDone = false;		
+
+		selectionDone = false;
 		$('#loader').fadeOut(1000);
 		$('#spaceBack').click(onSpaceBackClock);
 		$('#fullscreenToggle').click(onFullscreen);
 		$('#yMove').mousedown(onMovingYMouseDown);
 		$('#xzMove').mousedown(onMovingXZMouseDown);
-		
+
 		function initCommon()
 		{
 			// SCENE
@@ -336,49 +336,50 @@ function main()
 			scene.add(light);
 			// SKYBOX/FOG
 			scene.fog = new THREE.FogExp2(0x9999ff, 0.00025);
-            
+
 			// radius, segments along width, segments along height
 			sphereGeom =  new THREE.SphereGeometry(40, 32, 16);
 			sceneMaterial = new THREE.MeshBasicMaterial({color: 0xff00aa, transparent: true, opacity: 1.0});
 			seatMaterial = new THREE.MeshBasicMaterial({color: 0xeeee00, transparent: true, opacity: 0.5});
 			highlightMaterial = new THREE.MeshBasicMaterial({color: 0x0000ee, transparent: true, opacity: 0.75});
 			selectMaterial = new THREE.MeshBasicMaterial({color: 0x00ee00, transparent: true, opacity: 0.25});
-			
+
 			// SUBSCENE
 			subscene = new SubScene(scene);
 		}
-        
+
 		function onDocumentMouseMove(event)
 		{
 			// the following line would stop any other event handler from firing
 			// (such as the mouse's TrackballControls)
 			// event.preventDefault();
-            
+
 			// update sprite position
 			sprite1.position.set(event.clientX, event.clientY, 0);
-			
+
 			if (MOVINGstate != "none" && MOVING)
 			{
-				// place moving control				
+				// place moving control
 				var newOffset = {
 					top: event.clientY + MOVINGcontroloffset.y,
 					left: event.clientX + MOVINGcontroloffset.x
 				};
-				
+
 				// create a Ray with origin at the position and direction into the scene
 				var vector = new THREE.Vector3(
-					( newOffset.left / window.innerWidth ) * 2.0 - 1.0, 
-					- ( newOffset.top / window.innerHeight ) * 2.0 + 1.0, 
+					( newOffset.left / window.innerWidth ) * 2.0 - 1.0,
+					- ( newOffset.top / window.innerHeight ) * 2.0 + 1.0,
 					1
 				);
 				projector.unprojectVector(vector, camera);
 				var ray = new THREE.Ray(camera.position, vector.subSelf(camera.position).normalize());
-                
+
 				if (MOVINGstate == "xOz")
-				{					
+				{
 					// create plane mesh for xOz plane of MOVING object for projection
 					var plane = new THREE.PlaneGeometry(50000, 50000, 1, 1);
-					var planeMesh = new THREE.Mesh(plane, null);
+					var planeMesh = new THREE.Mesh(plane, seatMaterial);
+					planeMesh.rotation.set(-Math.PI * 0.5, 0, 0);
 					planeMesh.position.set(0, MOVING.position.y, 0);
 					planeMesh.doubleSided = true;
 					planeMesh.updateMatrix();
@@ -398,12 +399,12 @@ function main()
 					var point = getProjectionPoint(rayObject, ray);
 					if (point)
 					{
-						MOVING.position.set(point.x, point.y, point.z);						
+						MOVING.position.set(point.x, point.y, point.z);
 						MOVING.updated = true;
 					}
 				}
 			}
-			
+
 			function getProjectionPoint(rayObject, rayUser)
 			{
 				var lineObject = {a: getRayPoint(rayObject, -5000), b: getRayPoint(rayObject, 5000)};
@@ -413,7 +414,7 @@ function main()
 					return shortestLine.a;
 				return null;
 			}
-			
+
 			function getRayPoint(ray, t)
 			{
 				return new THREE.Vector3(
@@ -422,7 +423,7 @@ function main()
 					ray.origin.z + t * ray.direction.z
 				);
 			}
-			
+
 			function getShortestLine(line1, line2)
 			{
 				var p1 = new THREE.Vector3(line1.a.x, line1.a.y, line1.a.z);
@@ -435,26 +436,26 @@ function main()
 				p43.sub(p4, p3);
 				var p21 = new THREE.Vector3()
 				p21.sub(p2, p1);
-                
+
 				if (p43.lengthSq() < 0.00001)
 					return null;
 				if (p21.lengthSq() < 0.00001)
 					return null;
-                
+
 				var d1343 = p13.x * p43.x + p13.y * p43.y + p13.z * p43.z;
 				var d4321 = p43.x * p21.x + p43.y * p21.y + p43.z * p21.z;
 				var d1321 = p13.x * p21.x + p13.y * p21.y + p13.z * p21.z;
 				var d4343 = p43.x * p43.x + p43.y * p43.y + p43.z * p43.z;
 				var d2121 = p21.x * p21.x + p21.y * p21.y + p21.z * p21.z;
-                
+
 				var denom = d2121 * d4343 - d4321 * d4321;
 				if (Math.abs(denom) < Math.Epsilon)
 					return null;
-					
+
 				var numer = d1343 * d4321 - d1321 * d4343;
 				var mua = numer / denom;
 				var mub = (d1343 + d4321 * mua) / d4343;
-                
+
 				var result1 = new THREE.Vector3(
 					p1.x + mua * p21.x,
 					p1.y + mua * p21.y,
@@ -468,7 +469,7 @@ function main()
 				return {a: result1, b: result2};
 			}
 		}
-        
+
 		function onDocumentMouseUp(event)
 		{
 			if (MOVINGstate != "none")
@@ -497,7 +498,7 @@ function main()
 				}
 			}
 		}
-		
+
 		function onFullscreen()
 		{
 			if (!THREEx.FullScreen.activated())
@@ -509,17 +510,17 @@ function main()
 				THREEx.FullScreen.cancel();
 			}
 		}
-		
+
 		function onMovingYMouseDown(event)
 		{
 			_onMovingXYZ(event, "Oy");
 		}
-		
+
 		function onMovingXZMouseDown(event)
 		{
 			_onMovingXYZ(event, "xOz");
 		}
-		
+
 		function _onMovingXYZ(event, state)
 		{
 			controls.enabled = false;
@@ -531,18 +532,18 @@ function main()
 			};
 		}
 	}
-		
+
 	function getSpaceLayer(path)
 	{
 		var layerRootNode = getNodeByPath(eventsController.getObject(), path);
 		if (!layerRootNode)
 			return null;
-        
+
 		camera.position.set(-300, 500, -800);
-		camera.lookAt(scene.position);	
-        
+		camera.lookAt(scene.position);
+
 		return createChildrenForNode(layerRootNode);
-		
+
 		function getNodeByPath(jsonObject, path)
 		{
 			if (!jsonObject)
@@ -575,7 +576,7 @@ function main()
 			}
 			return resultNode;
 		}
-        
+
 		function createChildrenForNode(layerRootNode)
 		{
 			var sceneObjects = [];
@@ -586,14 +587,13 @@ function main()
 				var geom = null;
 				if (sceneObjectDesc.shape)
 				{
-					geom = createShapeGeom(sceneObjectDesc);
+					geom = createShapeGeom(sceneObjectDesc, sceneObjectDesc.shape);
 				}
 				else
 				{
 					geom = THREE.GeometryUtils.clone(sphereGeom);
 				}
-				
-				// TODO: work with multiple and nested geometries
+
 				if (geom)
 				{
 					var sceneObject = new THREE.Mesh(geom, seatMaterial);
@@ -610,30 +610,37 @@ function main()
 					console.log(sceneObjectDesc);
 				}
 			}
-			
+
 			// zero-plane to simplefy user orientation.
 			var plane = new THREE.PlaneGeometry(500, 500, 1, 1);
 			sceneMaterial = new THREE.MeshBasicMaterial({color: 0x888888, transparent: true, opacity: 1.0});
 			var planeMesh = new THREE.Mesh(plane, sceneMaterial);
+			planeMesh.rotation.set(-Math.PI * 0.5, 0, 0);
 			planeMesh.originalMaterial = planeMesh.material;
 			planeMesh.doubleSided = true;
 			sceneObjects.push(planeMesh);
-			
-			return sceneObjects;			
+
+			return sceneObjects;
 		}
-		
-		function createShapeGeom(objectDesc)
+
+		function createShapeGeom(objectDesc, shapeDesc)
 		{
-			var shapeDesc = objectDesc.shape;
+			var ignoreChildren = false;
 			var geom = null;
 			if (shapeDesc.radius)
 			{
 				if (shapeDesc.heightIntervals)
 				{
 					// cylinder
-					var height = shapeDesc.heightIntervals[0][1] - shapeDesc.heightIntervals[0][0];
-					// TODO: handle multi intervals
-					geom = new THREE.CylinderGeometry(shapeDesc.radius, shapeDesc.radius, height, 16, 1, false);
+					geom = new THREE.Geometry();
+					for (var i = 0; i < shapeDesc.heightIntervals.length; ++i)
+					{
+						var height = shapeDesc.heightIntervals[i][1] - shapeDesc.heightIntervals[i][0];
+						var singleCylinderGeom = new THREE.CylinderGeometry(shapeDesc.radius, shapeDesc.radius, height, 16, 1, false);
+						var mesh = new THREE.Mesh(singleCylinderGeom, seatMaterial);
+						mesh.position.y = 0.5 * (shapeDesc.heightIntervals[i][1] + shapeDesc.heightIntervals[i][0]);
+						THREE.GeometryUtils.merge(geom, mesh);
+					}
 				}
 				else
 				{
@@ -648,23 +655,41 @@ function main()
 			}
 			else if (shapeDesc.vertices)
 			{
+				// polygone
+				var shape = new THREE.Shape( shapeDesc.vertices );
+
 				if (shapeDesc.heightIntervals)
 				{
-					// volumetric polygone
-					// TODO: implement
+					// 3d polygone
+					geom = new THREE.Geometry();
+					for (var i = 0; i < shapeDesc.heightIntervals.length; ++i)
+					{
+						var height = shapeDesc.heightIntervals[i][1] - shapeDesc.heightIntervals[i][0];
+						var extrudeSettings = { amount: height }; // bevelSegments: 2, steps: 2 , bevelSegments: 5, bevelSize: 8, bevelThickness:5
+						var singleShapeGeom = new THREE.ExtrudeGeometry( shape, extrudeSettings );
+						var mesh = new THREE.Mesh(singleShapeGeom, seatMaterial);
+						mesh.rotation.x = -Math.PI * 0.5;
+						mesh.position.y = shapeDesc.heightIntervals[i][0];
+						THREE.GeometryUtils.merge(geom, mesh);
+					}
 				}
 				else
 				{
 					// flat polygone
-					// TODO: implement
+					geom = new THREE.Geometry();
+					var singleShapeGeom = new THREE.ShapeGeometry( shape );
+					var mesh = new THREE.Mesh(singleShapeGeom, seatMaterial);
+					mesh.rotation.x = -Math.PI * 0.5;
+					THREE.GeometryUtils.merge(geom, mesh);
 				}
 			}
 			else if (shapeDesc.mesh)
 			{
-				// mesh			
-				
+				// mesh
+
 				// placeholder
-				geom = new THREE.SphereGeometry(shapeDesc.radius, 16, 16);				
+				geom = new THREE.SphereGeometry(shapeDesc.radius, 16, 16);
+				ignoreChildren = true;
 
 				// loading model
 				var loader = new THREE.JSONLoader();
@@ -672,7 +697,7 @@ function main()
 				{
 					console.log("Geometry loaded:");
 					console.log(geometry);
-					
+
 					var sceneObject = new THREE.Mesh(geometry, new THREE.MeshFaceMaterial());
 					sceneObject.guid = objectDesc.guid;
 					sceneObject.name = objectDesc.name;
@@ -681,14 +706,35 @@ function main()
 					sceneObject.originalMaterial = sceneObject.material;
 					subscene.replaceSceneObject(sceneObject);
 				};
-				
 				loader.load( 'resources/models/' + shapeDesc.mesh, getGeom );
 			}
-			
+
+			if (shapeDesc.children)
+			{
+				if (ignoreChildren)
+				{
+					console.log("Mesh geometry ignores children.");
+				}
+				else
+				{
+					if (!geom)
+					{
+						geom = new THREE.Geometry();
+					}
+					for (var i = 0; i < shapeDesc.children.length; ++i)
+					{
+						var geomChild = createShapeGeom(objectDesc, shapeDesc.children[i].shape);
+						if (geomChild)
+						{
+							THREE.GeometryUtils.merge(geom, geomChild);
+						}
+					}
+				}
+			}
 			return geom;
 		}
 	}
-/*		
+/*
 	function createPointsSector(patternGeom, patternMaterial, stepOffset, widthUnits, depthUnits)
 	{
 		var centerX = - widthUnits * stepOffset.x / 2;
@@ -701,36 +747,36 @@ function main()
 				var geom = new THREE.Mesh(THREE.GeometryUtils.clone(patternGeom), patternMaterial);
 				geom.position.set(position.x, position.y, position.z);
 				geom.name = "seat " + (depthUnit+1) + " x " + (widthUnit+1);
-				venueObjects.push( geom );	
-	
+				venueObjects.push( geom );
+
 				position.x = position.x + stepOffset.x;
 			}
 			position.y = position.y + stepOffset.y;
 			position.z = position.z + stepOffset.z;
 		}
 	}
-*/							
-	function animate() 
+*/
+	function animate()
 	{
 		requestAnimationFrame(animate);
-		render();		
+		render();
 		update();
-		
-		function render() 
+
+		function render()
 		{
 			renderer.render(scene, camera);
 		}
-        
+
 		function update()
 		{
 			updateContent();
 			updateHighlighting();
 			updateSelection();
 			updateMoving();
-			
+
 			controls.update();
 			stats.update();
-			
+
 			function updateContent()
 			{
 				if (eventsController.objectUpdated)
@@ -749,7 +795,7 @@ function main()
 						MOVING = restoreMoving;
 					}
 				}
-				
+
 				function getObjectByGuid(guid)
 				{
 					var len = subscene.sceneObjects.length;
@@ -761,9 +807,9 @@ function main()
 					return null;
 				}
 			}
-			
+
 			function updateHighlighting()
-			{			
+			{
 				// INTERSECTED = the object in the scene currently closest to the camera
                 //      and intersected by the Ray projected from the mouse position
 				var newINTERSECTED = getClosestMouseRayIntersectionSceneObject();
@@ -781,34 +827,34 @@ function main()
 						// restore previous intersection object (if it exists) to its original color
 						if (INTERSECTED)
 						{
-							INTERSECTED.material = 
-								INTERSECTED == SELECTED ? selectMaterial : 
-									INTERSECTED.originalMaterial ? INTERSECTED.originalMaterial : 
+							INTERSECTED.material =
+								INTERSECTED == SELECTED ? selectMaterial :
+									INTERSECTED.originalMaterial ? INTERSECTED.originalMaterial :
 										seatMaterial;
 						}
 						// store reference to closest object as current intersection object
 						INTERSECTED = newINTERSECTED;
-						
+
 						// set highlight via material
 						INTERSECTED.material = highlightMaterial;
 					}
-				} 
+				}
 				else // there are no intersections
 				{
 					// restore previous intersection object (if it exists) to its original color
 					if (INTERSECTED)
 					{
-							INTERSECTED.material = 
-								INTERSECTED == SELECTED ? selectMaterial : 
-									INTERSECTED.originalMaterial ? INTERSECTED.originalMaterial : 
+							INTERSECTED.material =
+								INTERSECTED == SELECTED ? selectMaterial :
+									INTERSECTED.originalMaterial ? INTERSECTED.originalMaterial :
 										seatMaterial;
 					}
 					// remove previous intersection object reference
 					//     by setting current intersection object to "nothing"
 					INTERSECTED = null;
 				}
-				updateSceneObjectHint(INTERSECTED);		
-                
+				updateSceneObjectHint(INTERSECTED);
+
 				function getClosestMouseRayIntersectionSceneObject()
 				{
 					// create a Ray with origin at the mouse position
@@ -816,21 +862,21 @@ function main()
 					var vector = new THREE.Vector3(mouse.position.x, mouse.position.y, 1);
 					projector.unprojectVector(vector, camera);
 					var ray = new THREE.Ray(camera.position, vector.subSelf(camera.position).normalize());
-				
+
 					// create an array containing all objects in the scene with which the ray intersects
 					var intersects = ray.intersectObjects(scene.children);
 					if (intersects.length > 0)
 						return intersects[0].object;
 					return null;
 				}
-                
+
 				function updateSceneObjectHint(sceneObject)
 				{
 					// update text, if it has a "name" field.
 					if (sceneObject && sceneObject.name)
-					{                        
+					{
 						context1.clearRect(0, 0, 640, 480);
-						var message1 = sceneObject.name; 
+						var message1 = sceneObject.name;
 						var width = context1.measureText(message1).width;
 						var height = 20;
 						context1.fillStyle = "rgba(0, 0, 0, 0.95)"; // black border
@@ -838,7 +884,7 @@ function main()
 						context1.fillStyle = "rgba(255, 255, 255, 0.95)"; // white filler
 						context1.fillRect(2, 2, width + 4, height + 4);
 						context1.fillStyle = "rgba(0, 0, 0, 1)"; // text color
-						
+
 						context1.fillText(message1, 4, 20);
 						texture1.needsUpdate = true;
 					}
@@ -848,15 +894,15 @@ function main()
 						texture1.needsUpdate = true;
 					}
 				}
-			}		
-			
+			}
+
 			function updateSelection()
 			{
-				if (mouse.pressed("lmb") && MOVINGstate == "none") 
+				if (mouse.pressed("lmb") && MOVINGstate == "none")
 				{
 					if (!selectionDone)
 					{
-						setSelectedObject(INTERSECTED);					
+						setSelectedObject(INTERSECTED);
 						selectionDone = true;
 					}
 				}
@@ -864,20 +910,20 @@ function main()
 				{
 					selectionDone = false;
 				}
-				
+
 				function setSelectedObject(sceneObject)
 				{
 					var resetSelection = false;
 					if (SELECTED !== null)
 					{
-						SELECTED.material = seatMaterial;				
+						SELECTED.material = seatMaterial;
 					}
 					if (sceneObject !== null)
 					{
 						SELECTED = sceneObject;
 						SELECTED.material = SELECTED.originalMaterial ? SELECTED.originalMaterial : selectMaterial;
 						//controls.target.set(SELECTED.position.x, SELECTED.position.y, SELECTED.position.z);
-						
+
 						var newCurrentSpacePath = currentSpacePath + "." + SELECTED.guid;
 						var objs = getSpaceLayer(newCurrentSpacePath);
 						if (objs)
@@ -898,17 +944,17 @@ function main()
 						//controls.target.set(scene.position.x, scene.position.y, scene.position.z);
 					}
 				}
-			}		
-            
+			}
+
 			function updateMoving()
 			{
 				var movingControl = $('#moving');
-				
-				if (mouse.pressed("rmb")) 
+
+				if (mouse.pressed("rmb"))
 				{
 					MOVING = INTERSECTED;
 				}
-				
+
 				if (!MOVING)
 				{
 					if (movingControl.is(':visible'))
@@ -926,20 +972,20 @@ function main()
 					var movingScreenPos = PositionSceneToScreen(MOVING.position, camera, $('body'));
 					movingControl.offset({top: movingScreenPos.y, left: movingScreenPos.x});
 				}
-				
+
 				function PositionSceneToScreen(position, camera, jqdiv)
 				{
 					var pos = position.clone();
 					var projScreenMat = new THREE.Matrix4();
 					projScreenMat.multiply(camera.projectionMatrix, camera.matrixWorldInverse);
 					projScreenMat.multiplyVector3(pos);
-                    return { 
+                    return {
                         x: ( pos.x + 1 ) * jqdiv.width() / 2 + jqdiv.offset().left,
-                        y: ( - pos.y + 1) * jqdiv.height() / 2 + jqdiv.offset().top 
+                        y: ( - pos.y + 1) * jqdiv.height() / 2 + jqdiv.offset().top
                     };
-				}				
+				}
 			}
-		}		
+		}
 	}
 }
 
