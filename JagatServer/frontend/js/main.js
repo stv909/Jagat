@@ -240,7 +240,7 @@ function main()
     var container, scene, camera, renderer, controls, stats, projector;
 
 	// custom global variables
-	var sphereGeom, sceneMaterial, seatMaterial, highlightMaterial, selectMaterial;
+	var sphereGeom, sceneMaterial, seatMaterial, stageMaterial, highlightMaterial, selectMaterial;
 	var
         INTERSECTED = null,
         SELECTED = null,
@@ -340,8 +340,9 @@ function main()
 
 			// radius, segments along width, segments along height
 			sphereGeom =  new THREE.SphereGeometry(40, 32, 16);
-			sceneMaterial = new THREE.MeshBasicMaterial({color: 0xff00aa, transparent: true, opacity: 1.0});
+			sceneMaterial = new THREE.MeshBasicMaterial({color: 0x888888, transparent: true, opacity: 1.0, side: THREE.DoubleSide});
 			seatMaterial = new THREE.MeshBasicMaterial({color: 0xeeee00, transparent: true, opacity: 0.5});
+			stageMaterial = new THREE.MeshBasicMaterial({color: 0xee00ee, transparent: true, opacity: 0.5, side: THREE.DoubleSide});
 			highlightMaterial = new THREE.MeshBasicMaterial({color: 0x0000ee, transparent: true, opacity: 0.75});
 			selectMaterial = new THREE.MeshBasicMaterial({color: 0x00ee00, transparent: true, opacity: 0.25});
 
@@ -404,10 +405,9 @@ function main()
 				{
 					// create plane mesh for xOz plane of MOVING object for projection
 					var plane = new THREE.PlaneGeometry(50000, 50000, 1, 1);
-					var planeMesh = new THREE.Mesh(plane, seatMaterial);
+					var planeMesh = new THREE.Mesh(plane, stageMaterial);
 					planeMesh.rotation.set(-Math.PI * 0.5, 0, 0);
 					planeMesh.position.set(0, MOVING.position.y, 0);
-					planeMesh.doubleSided = true;
 					planeMesh.updateMatrix();
 					planeMesh.updateMatrixWorld();
 					// find intersection of ray and plane
@@ -644,11 +644,9 @@ function main()
 
 			// zero-plane to simplefy user orientation.
 			var plane = new THREE.PlaneGeometry(500, 500, 1, 1);
-			sceneMaterial = new THREE.MeshBasicMaterial({color: 0x888888, transparent: true, opacity: 1.0});
 			var planeMesh = new THREE.Mesh(plane, sceneMaterial);
 			planeMesh.rotation.set(-Math.PI * 0.5, 0, 0);
 			planeMesh.originalMaterial = planeMesh.material;
-			planeMesh.doubleSided = true;
 			sceneObjects.push(planeMesh);
 
 			return sceneObjects;
@@ -709,7 +707,7 @@ function main()
 					// flat polygone
 					geom = new THREE.Geometry();
 					var singleShapeGeom = new THREE.ShapeGeometry( shape );
-					var mesh = new THREE.Mesh(singleShapeGeom, seatMaterial);
+					var mesh = new THREE.Mesh(singleShapeGeom, stageMaterial);
 					mesh.rotation.x = -Math.PI * 0.5;
 					THREE.GeometryUtils.merge(geom, mesh);
 				}
