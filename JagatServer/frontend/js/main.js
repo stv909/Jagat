@@ -34,9 +34,19 @@ function main()
 		{
 			if (this.sceneObjects[i].guid === sceneObject.guid)
 			{
+				var makeMoving = (MOVING === this.sceneObjects[i]);
+				var makeSelected = (SELECTED === this.sceneObjects[i]);
 				this.scene.remove(this.sceneObjects[i]);
 				this.sceneObjects[i] = sceneObject;
 				this.scene.add(sceneObject);
+				if (makeMoving)
+				{
+					MOVING = sceneObject;
+				}
+				if (makeSelected)
+				{
+					SELECTED = sceneObject;
+				}
 				return;
 			}
 		}
@@ -306,6 +316,8 @@ function main()
 		$('#yMove').mousedown(onMovingYMouseDown);
 		$('#xzMove').mousedown(onMovingXZMouseDown);
 
+		focusCameraOnCurrentSpaceLayer();
+
 		function initCommon()
 		{
 			// SCENE
@@ -522,6 +534,7 @@ function main()
 				{
 					subscene.fill(objs);
 				}
+				focusCameraOnCurrentSpaceLayer();
 			}
 		}
 
@@ -564,15 +577,17 @@ function main()
 		}
 	}
 
+	function focusCameraOnCurrentSpaceLayer()
+	{
+		camera.position.set(-300, 500, -800);
+		camera.lookAt(scene.position);
+	}
+
 	function getSpaceLayer(path)
 	{
 		var layerRootNode = getNodeByPath(eventsController.getObject(), path);
 		if (!layerRootNode)
 			return null;
-
-		camera.position.set(-300, 500, -800);
-		camera.lookAt(scene.position);
-
 		return createChildrenForNode(layerRootNode);
 
 		function getNodeByPath(jsonObject, path)
@@ -627,7 +642,10 @@ function main()
 
 				if (geom)
 				{
-					var sceneObject = new THREE.Mesh(geom, seatMaterial);
+					var sceneObject = new THREE.Mesh(
+						geom,
+						geom.doubleSided ? stageMaterial : seatMaterial
+					);
 					sceneObject.guid = sceneObjectDesc.guid;
 					sceneObject.name = sceneObjectDesc.name;
 					var pos = sceneObjectDesc.position;
@@ -710,6 +728,7 @@ function main()
 					var mesh = new THREE.Mesh(singleShapeGeom, stageMaterial);
 					mesh.rotation.x = -Math.PI * 0.5;
 					THREE.GeometryUtils.merge(geom, mesh);
+					geom.doubleSided = true;
 				}
 			}
 			else if (shapeDesc.mesh)
@@ -812,16 +831,24 @@ function main()
 				{
 					eventsController.objectUpdated = false;
 					var safeMovingGuid = MOVING ? MOVING.guid : null;
+					var safeSelectedGuid = SELECTED ? SELECTED.guid : null;
+
 					subscene.clear();
 					var objs = getSpaceLayer(currentSpacePath);
 					if (objs)
 					{
 						subscene.fill(objs);
 					}
+
 					var restoreMoving = safeMovingGuid ? getObjectByGuid(safeMovingGuid) : null;
 					if (restoreMoving)
 					{
 						MOVING = restoreMoving;
+					}
+					var restoreSelected = safeSelectedGuid ? getObjectByGuid(safeSelectedGuid) : null;
+					if (restoreSelected)
+					{
+						SELECTED = restoreSelected;
 					}
 				}
 
@@ -940,26 +967,31 @@ function main()
 					selectionDone = false;
 				}
 
+				if (SELECTED && SELECTED.material !== selectMaterial)
+				{
+					SELECTED.material = selectMaterial;
+				}
+
 				function setSelectedObject(sceneObject)
 				{
 					var resetSelection = false;
 					if (SELECTED !== null)
 					{
-						SELECTED.material = seatMaterial;
+						SELECTED.material = SELECTED.originalMaterial ? SELECTED.originalMaterial : seatMaterial;
 					}
 					if (sceneObject !== null)
 					{
 						SELECTED = sceneObject;
-						SELECTED.material = SELECTED.originalMaterial ? SELECTED.originalMaterial : selectMaterial;
 						//controls.target.set(SELECTED.position.x, SELECTED.position.y, SELECTED.position.z);
 
 						var newCurrentSpacePath = currentSpacePath + "." + SELECTED.guid;
 						var objs = getSpaceLayer(newCurrentSpacePath);
-						if (objs)
+						if (objs && objs.length > 1) // not 0 because of planeGeometry that adds to every space layer
 						{
 							currentSpacePath = newCurrentSpacePath;
 							subscene.clear();
 							subscene.fill(objs);
+							focusCameraOnCurrentSpaceLayer();
 						}
 					}
 					else
@@ -968,7 +1000,7 @@ function main()
 					}
 					if (resetSelection && SELECTED !== null)
 					{
-						SELECTED.material = seatMaterial;
+						SELECTED.material = SELECTED.originalMaterial ? SELECTED.originalMaterial : seatMaterial;
 						SELECTED = null;
 						//controls.target.set(scene.position.x, scene.position.y, scene.position.z);
 					}
