@@ -4,6 +4,8 @@ function main()
 	var SubScene = function(parentScene)
 	{
 		this.sceneObjects = [];
+		this.sceneHelpers = [];
+		this.lineHelper = null;
 		this.scene = parentScene;
 	};
 
@@ -18,6 +20,7 @@ function main()
 
 	SubScene.prototype.clear = function()
 	{
+		this.clearHelpers();
 		for (var i = 0; i < this.sceneObjects.length; ++i)
 		{
 			this.scene.remove(this.sceneObjects[i]);
@@ -45,13 +48,45 @@ function main()
 				}
 				if (makeSelected)
 				{
-					SELECTED = sceneObject;
+					setSelectedObject(sceneObject);
 				}
 				return;
 			}
 		}
 		console.log("Can't replace object:");
 		console.log(sceneObject);
+	}
+
+	SubScene.prototype.fillHelpers = function(sceneHelpers)
+	{
+		var lineGeom = new THREE.Geometry();
+		for (var i = 0; i < sceneHelpers.length; ++i)
+		{
+			lineGeom.vertices.push(sceneHelpers[i].position);
+			this.sceneHelpers.push(sceneHelpers[i]);
+			this.scene.add(sceneHelpers[i]);
+		}
+		this.lineHelper = new THREE.Line(lineGeom, helperLineMaterial);
+		this.lineHelper.guid = 'helper_line';
+		this.sceneHelpers.push(this.lineHelper);
+		this.scene.add(this.lineHelper);
+	};
+
+	SubScene.prototype.clearHelpers = function()
+	{
+		for (var i = 0; i < this.sceneHelpers.length; ++i)
+		{
+			this.scene.remove(this.sceneHelpers[i]);
+		}
+		this.sceneHelpers = [];
+		this.lineHelper = null;
+	};
+
+	SubScene.prototype.updateHelperLineVertex = function(vertexObject)
+	{
+		if (!this.lineHelper || !vertexObject.helperIndex)
+			return;
+		this.lineHelper.geometry.vertices[vertexObject.helperIndex] = vertexObject.position; // TODO: update line drawing somehow
 	}
 
 	// EventsController object
@@ -96,11 +131,18 @@ function main()
 		return this.jsonObject;
 	};
 
-	EventsController.prototype.elementChanged = function(guid, newPosition)
+	EventsController.prototype.elementChanged = function(guid, helperIndex, newPosition)
 	{
 		if (this.onChange)
 		{
-			this.onChange({"action" : "positionUpdate", "guid": guid, "position": newPosition});
+			if (!helperIndex)
+			{
+				this.onChange({"action" : "positionUpdate", "guid": guid, "position": newPosition});
+			}
+			else
+			{
+				this.onChange({"action" : "vertexUpdate", "guid": guid, "index": helperIndex, "position": newPosition});
+			}
 		}
 	};
 
@@ -127,26 +169,45 @@ function main()
 
 		function applyToShareJS(eventsController, change, doc)
 		{
-			var posStartEnd = getPositionInterval(eventsController, change.guid);
-			if (!posStartEnd)
-			{
-				console.error("Can not update object changed in 3d:");
-				console.error(change);
-				return;
-			}
 			switch (change.action)
 			{
 				case 'positionUpdate':
+					var posStartEnd = getPositionInterval(eventsController, change.guid);
+					if (!posStartEnd)
+					{
+						console.error("Can not update object's position changed in 3d:");
+						console.error(change);
+						return;
+					}
 					// apply changes for local text cache
 					var text = eventsController.getData();
 					var newText =
 						text.substring(0, posStartEnd.start) +
-						getJsonPosition(change.position) +
+						getJsonNodePosition(change.position) +
 						text.substring(posStartEnd.end + 1);
 					eventsController.setData(newText);
 					// apply changes for OT
 					doc.del(posStartEnd.start, posStartEnd.end - posStartEnd.start + 1);
-					doc.insert(posStartEnd.start, getJsonPosition(change.position));
+					doc.insert(posStartEnd.start, getJsonNodePosition(change.position));
+					break;
+				case 'vertexUpdate':
+					var posStartEnd = getVerticesInterval(eventsController, change.guid, change.index);
+					if (!posStartEnd)
+					{
+						console.error("Can not update object's vertex changed in 3d:");
+						console.error(change);
+						return;
+					}
+					// apply changes for local text cache
+					var text = eventsController.getData();
+					var newText =
+						text.substring(0, posStartEnd.start) +
+						getJsonVertexPosition(change.position) +
+						text.substring(posStartEnd.end + 1);
+					eventsController.setData(newText);
+					// apply changes for OT
+					doc.del(posStartEnd.start, posStartEnd.end - posStartEnd.start + 1);
+					doc.insert(posStartEnd.start, getJsonVertexPosition(change.position));
 					break;
 				default:
 					throw new Error("unknown action: " + change.action);
@@ -167,9 +228,48 @@ function main()
 
 				return {"start": posStartIndex, "end": posEndIndex};
 			}
-			function getJsonPosition(position)
+
+			function getJsonNodePosition(position)
 			{
 				return '"position": ' + JSON.stringify(position).replace(/:/g, ': ').replace(/,/g, ', ');
+			}
+
+			function getVerticesInterval(eventsController, elemId, vertexIndex)
+			{
+				var text = eventsController.getData();
+				var idIndex = text.indexOf("\"guid\": \"" + elemId + "\""); // TODO: handle different formatting.
+				if (idIndex < 0) // TODO: handle case of invalid object guid in JSON
+					return null;
+				var posStartIndex = text.indexOf("\"vertices\": [", idIndex);
+				if (posStartIndex < 0) // TODO: handle case of invalid object position in JSON
+					return null;
+				var posEndIndex = text.indexOf("]", posStartIndex);
+				if (posEndIndex < 0) // TODO: handle case of invalid object position in JSON
+					return null;
+
+				var currentVertexIndex = -1;
+				for (var i = posStartIndex; i < posEndIndex; ++i)
+				{
+					if (text[i] == '{')
+					{
+						++currentVertexIndex;
+					}
+					if (currentVertexIndex == vertexIndex)
+					{
+						for (var j = i; j < posEndIndex; ++j)
+						{
+							if (text[j] == '}')
+								return {"start": i, "end": j};
+						}
+					}
+				}
+
+				return null;
+			}
+
+			function getJsonVertexPosition(position)
+			{
+				return JSON.stringify(position).replace(/:/g, ': ').replace(/,/g, ', ');
 			}
 		}
 
@@ -250,7 +350,7 @@ function main()
     var container, scene, camera, renderer, controls, stats, projector;
 
 	// custom global variables
-	var sphereGeom, sceneMaterial, seatMaterial, stageMaterial, highlightMaterial, selectMaterial;
+	var sphereGeom, helperGeom, sceneMaterial, seatMaterial, stageMaterial, helperMaterial, helperLineMaterial, highlightMaterial, selectMaterial;
 	var
         INTERSECTED = null,
         SELECTED = null,
@@ -352,8 +452,11 @@ function main()
 
 			// radius, segments along width, segments along height
 			sphereGeom =  new THREE.SphereGeometry(40, 32, 16);
+			helperGeom =  new THREE.SphereGeometry(10, 8, 8);
 			sceneMaterial = new THREE.MeshBasicMaterial({color: 0x888888, transparent: true, opacity: 1.0, side: THREE.DoubleSide});
 			seatMaterial = new THREE.MeshBasicMaterial({color: 0xeeee00, transparent: true, opacity: 0.5});
+			helperMaterial = new THREE.MeshBasicMaterial({color: 0x000000, transparent: false});
+			helperLineMaterial = new THREE.LineBasicMaterial({color: 0x000000, transparent: false});
 			stageMaterial = new THREE.MeshBasicMaterial({color: 0xee00ee, transparent: true, opacity: 0.5, side: THREE.DoubleSide});
 			highlightMaterial = new THREE.MeshBasicMaterial({color: 0x0000ee, transparent: true, opacity: 0.75});
 			selectMaterial = new THREE.MeshBasicMaterial({color: 0x00ee00, transparent: true, opacity: 0.25});
@@ -428,6 +531,11 @@ function main()
 					{
 						MOVING.position = intersects[0].point;
 						MOVING.updated = true;
+					}
+					// update helpers drawing if needed
+					if (MOVING.helperOwner)
+					{
+						subscene.updateHelperLineVertex(MOVING);
 					}
 				}
 				else if (MOVINGstate == "Oy")
@@ -516,7 +624,17 @@ function main()
 				MOVINGstate = "none";
 				if (MOVING && MOVING.updated)
 				{
-					eventsController.elementChanged(MOVING.guid, MOVING.position);
+					if (!MOVING.helperOwner)
+					{
+						eventsController.elementChanged(MOVING.guid, null, MOVING.position);
+					}
+					else
+					{
+						var localPos = new THREE.Vector3();
+						localPos.sub(MOVING.position, MOVING.helperOwner.position);
+						var newVertexPosition = new THREE.Vector2(localPos.x, -localPos.z);
+						eventsController.elementChanged(MOVING.helperOwner.guid, MOVING.helperIndex, newVertexPosition);
+					}
 					MOVING.updated = false;
 				}
 			}
@@ -646,6 +764,10 @@ function main()
 						geom,
 						geom.doubleSided ? stageMaterial : seatMaterial
 					);
+					if (geom.verticesDesc)
+					{
+						sceneObject.verticesDesc = geom.verticesDesc;
+					}
 					sceneObject.guid = sceneObjectDesc.guid;
 					sceneObject.name = sceneObjectDesc.name;
 					var pos = sceneObjectDesc.position;
@@ -703,7 +825,7 @@ function main()
 			else if (shapeDesc.vertices)
 			{
 				// polygone
-				var shape = new THREE.Shape( shapeDesc.vertices );
+				var shape = new THREE.Shape(shapeDesc.vertices);
 
 				if (shapeDesc.heightIntervals)
 				{
@@ -730,6 +852,7 @@ function main()
 					THREE.GeometryUtils.merge(geom, mesh);
 					geom.doubleSided = true;
 				}
+				geom.verticesDesc = shapeDesc.vertices;
 			}
 			else if (shapeDesc.mesh)
 			{
@@ -781,6 +904,33 @@ function main()
 			}
 			return geom;
 		}
+	}
+
+	function getPolygoneHelpers(polygone)
+	{
+		if (!polygone || !polygone.verticesDesc || !polygone.verticesDesc.length)
+			return [];
+		var helperObject = [];
+		for (var i = 0; i < polygone.verticesDesc.length; ++i)
+		{
+			var geom = THREE.GeometryUtils.clone(helperGeom);
+			var sceneObject = new THREE.Mesh(
+				geom, helperMaterial
+			);
+			sceneObject.helperOwner = polygone;
+			sceneObject.helperIndex = i;
+			sceneObject.guid = 'helper' + i;
+			sceneObject.name = 'vertex # ' + i;
+			var pos = polygone.verticesDesc[i];
+			sceneObject.position.set(
+				polygone.position.x + pos.x,
+				polygone.position.y,
+				polygone.position.z - pos.y
+			);
+			sceneObject.originalMaterial = sceneObject.material;
+			helperObject.push(sceneObject);
+		}
+		return helperObject;
 	}
 /*
 	function createPointsSector(patternGeom, patternMaterial, stepOffset, widthUnits, depthUnits)
@@ -840,15 +990,15 @@ function main()
 						subscene.fill(objs);
 					}
 
-					var restoreMoving = safeMovingGuid ? getObjectByGuid(safeMovingGuid) : null;
-					if (restoreMoving)
-					{
-						MOVING = restoreMoving;
-					}
 					var restoreSelected = safeSelectedGuid ? getObjectByGuid(safeSelectedGuid) : null;
 					if (restoreSelected)
 					{
-						SELECTED = restoreSelected;
+						setSelectedObject(restoreSelected);
+					}
+					var restoreMoving = safeMovingGuid ? getHelperByGuid(safeMovingGuid) : null;
+					if (restoreMoving)
+					{
+						MOVING = restoreMoving;
 					}
 				}
 
@@ -859,6 +1009,17 @@ function main()
 					{
 						if (subscene.sceneObjects[i].guid == guid)
 							return subscene.sceneObjects[i];
+					}
+					return null;
+				}
+
+				function getHelperByGuid(guid)
+				{
+					var len = subscene.sceneHelpers.length;
+					for (var i = 0; i < len; ++i)
+					{
+						if (subscene.sceneHelpers[i].guid == guid)
+							return subscene.sceneHelpers[i];
 					}
 					return null;
 				}
@@ -966,45 +1127,6 @@ function main()
 				{
 					selectionDone = false;
 				}
-
-				if (SELECTED && SELECTED.material !== selectMaterial)
-				{
-					SELECTED.material = selectMaterial;
-				}
-
-				function setSelectedObject(sceneObject)
-				{
-					var resetSelection = false;
-					if (SELECTED !== null)
-					{
-						SELECTED.material = SELECTED.originalMaterial ? SELECTED.originalMaterial : seatMaterial;
-					}
-					if (sceneObject !== null)
-					{
-						SELECTED = sceneObject;
-						//controls.target.set(SELECTED.position.x, SELECTED.position.y, SELECTED.position.z);
-
-						var newCurrentSpacePath = currentSpacePath + "." + SELECTED.guid;
-						var objs = getSpaceLayer(newCurrentSpacePath);
-						if (objs && objs.length > 1) // not 0 because of planeGeometry that adds to every space layer
-						{
-							currentSpacePath = newCurrentSpacePath;
-							subscene.clear();
-							subscene.fill(objs);
-							focusCameraOnCurrentSpaceLayer();
-						}
-					}
-					else
-					{
-						resetSelection = true;
-					}
-					if (resetSelection && SELECTED !== null)
-					{
-						SELECTED.material = SELECTED.originalMaterial ? SELECTED.originalMaterial : seatMaterial;
-						SELECTED = null;
-						//controls.target.set(scene.position.x, scene.position.y, scene.position.z);
-					}
-				}
 			}
 
 			function updateMoving()
@@ -1046,6 +1168,44 @@ function main()
                     };
 				}
 			}
+		}
+	}
+
+	function setSelectedObject(sceneObject)
+	{
+		var resetSelection = false;
+		if (SELECTED !== null)
+		{
+			SELECTED.material = SELECTED.originalMaterial ? SELECTED.originalMaterial : seatMaterial;
+			subscene.clearHelpers();
+		}
+		if (sceneObject !== null)
+		{
+			SELECTED = sceneObject;
+			SELECTED.material = selectMaterial;
+			subscene.fillHelpers(getPolygoneHelpers(SELECTED));
+			//controls.target.set(SELECTED.position.x, SELECTED.position.y, SELECTED.position.z);
+
+			var newCurrentSpacePath = currentSpacePath + "." + SELECTED.guid;
+			var objs = getSpaceLayer(newCurrentSpacePath);
+			if (objs && objs.length > 1) // HACK: not 0 because of planeGeometry that adds to every space layer
+			{
+				currentSpacePath = newCurrentSpacePath;
+				subscene.clear();
+				subscene.fill(objs);
+				focusCameraOnCurrentSpaceLayer();
+			}
+		}
+		else
+		{
+			resetSelection = true;
+		}
+		if (resetSelection && SELECTED !== null)
+		{
+			SELECTED.material = SELECTED.originalMaterial ? SELECTED.originalMaterial : seatMaterial;
+			subscene.clearHelpers();
+			SELECTED = null;
+			//controls.target.set(scene.position.x, scene.position.y, scene.position.z);
 		}
 	}
 }
