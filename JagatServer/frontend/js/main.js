@@ -97,6 +97,7 @@ function main()
 		this.jsonObject = null;
 		this.objectUpdated = false;
 		this.onChange = null;
+		this.lastUpdateWasSuccessful = false;
 	};
 
 	EventsController.prototype.setData = function(text)
@@ -106,19 +107,115 @@ function main()
 		try
 		{
 			json = eval("(" + this.textData + ")"); // TODO: avoid evil
-			if (currentSpacePath === "")
-			{
-				currentSpacePath = json.node.guid;
-			}
 		}
 		catch(e)
 		{
 			json = null;
+			console.log('-Data changed but not updated. Given text is not a correct JSON.');
 		}
+
+		var updatedResult = false;
 		if (json !== null)
 		{
-			this.jsonObject = json;
-			this.objectUpdated = true;
+			var conflictedGuids = getDescObjectConflictedGuids(json);
+			if (conflictedGuids.length > 0)
+			{
+				json = null;
+				console.log('-Data changed but not updated. There are conflicted guids:');
+				for (var i = 0; i < conflictedGuids.length; ++i)
+				{
+					console.log('\t' + i + ': ' + conflictedGuids[i]);
+				}
+			}
+			else
+			{
+				if (currentSpacePath === "")
+				{
+					currentSpacePath = json.node.guid;
+				}
+				this.jsonObject = json;
+				this.objectUpdated = true;
+				updatedResult = true;
+				if (!this.lastUpdateWasSuccessful)
+				{
+					console.log('+Data changed and updated successfully.');
+				}
+			}
+		}
+		this.lastUpdateWasSuccessful = updatedResult;
+
+		function getDescObjectConflictedGuids(descObject)
+		{
+			var conflicts = [];
+
+			var guidCount = 0;
+			var guids = new Object();
+
+			++guidCount;
+			guids[descObject.node.guid] = 1;
+			pushNodeArrayGuids(descObject.node.children);
+
+			++guidCount;
+			var cur = descObject.event.guid;
+			if (!guids[cur])
+			{
+				guids[cur] = 1;
+			}
+			else
+			{
+				guids[cur]++;
+			}
+			pushEventArrayGuids(descObject.event.children);
+
+			for (var guid in guids)
+			{
+				if (guids[guid] > 1)
+				{
+					conflicts.push(guid + ' <- x' + guids[guid]);
+				}
+			}
+
+			return conflicts;
+
+			function pushNodeArrayGuids(nodes)
+			{
+				if (!nodes)
+					return;
+				for (var i = 0; i < nodes.length; ++i)
+				{
+					++guidCount;
+					var cur = nodes[i].node.guid;
+					if (!guids[cur])
+					{
+						guids[cur] = 1;
+					}
+					else
+					{
+						guids[cur]++;
+					}
+					pushNodeArrayGuids(nodes[i].node.children);
+				}
+			}
+
+			function pushEventArrayGuids(events)
+			{
+				if (!events)
+					return;
+				for (var i = 0; i < events.length; ++i)
+				{
+					++guidCount;
+					var cur = events[i].event.guid;
+					if (!guids[cur])
+					{
+						guids[cur] = 1;
+					}
+					else
+					{
+						guids[cur]++;
+					}
+					pushEventArrayGuids(events[i].event.children);
+				}
+			}
 		}
 	};
 
