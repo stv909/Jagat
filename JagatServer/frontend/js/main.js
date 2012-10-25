@@ -86,7 +86,8 @@ function main()
 	{
 		if (!this.lineHelper || !vertexObject.helperIndex)
 			return;
-		this.lineHelper.geometry.vertices[vertexObject.helperIndex] = vertexObject.position; // TODO: update line drawing somehow
+		this.lineHelper.geometry.vertices[vertexObject.helperIndex] = vertexObject.position;
+		this.lineHelper.geometry.verticesNeedUpdate = true;
 	}
 
 	// EventsController object

@@ -2,17 +2,17 @@ var util = require('util');
 
 util.puts('JAGAT server starting...');
 
-var 
+var
 	connect = require('connect'),
 	ace = require('connect-ace'),
 	hat = require('hat'),
-	// TODO: think about using nonconflict version of ACE ('/connect-ace/ace-build/src-min-noconflict') 
+	// TODO: think about using nonconflict version of ACE ('/connect-ace/ace-build/src-min-noconflict')
 	//       in the future - 'ace.middleware('/ace', true, true)'.
 	sharejs = require('share'),
 	jagat = require('../'),
 	options = require('./options') || {},
 	server;
-	
+
 var server = connect(
 	connect.logger(),
 	// TODO: upgrade to connect 2.6.0+ and express for modern routing
@@ -59,11 +59,12 @@ util.puts('Server running at' + process.env.IP + ':' + port + '/');
 
 process.title = 'jagat';
 process.on(
-	'uncaughtException', 
+	'uncaughtException',
 	function (err) {
 		console.error('An error has occurred. Please file a ticket here: https://github.com/stv909/Jagat/issues');
 		console.error('Version ' + jagat.version + ': ' + err.stack);
 	}
 );
 
+// TODO: fix warning on start - 'warn  - error raised: Error: listen EADDRINUSE'
 util.puts('JAGAT is on duty.');
