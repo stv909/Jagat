@@ -106,7 +106,7 @@ function main()
 		var json = null;
 		try
 		{
-			json = eval("(" + this.textData + ")"); // TODO: avoid evil
+			json = JSON.parse(this.textData);
 		}
 		catch(e)
 		{
@@ -129,6 +129,7 @@ function main()
 			}
 			else
 			{
+				convertDatetimesInActionArray(json.action.children);
 				if (currentSpacePath === "")
 				{
 					currentSpacePath = json.node.guid;
@@ -156,7 +157,7 @@ function main()
 			pushNodeArrayGuids(descObject.node.children);
 
 			++guidCount;
-			var cur = descObject.event.guid;
+			var cur = descObject.action.guid;
 			if (!guids[cur])
 			{
 				guids[cur] = 1;
@@ -165,7 +166,7 @@ function main()
 			{
 				guids[cur]++;
 			}
-			pushEventArrayGuids(descObject.event.children);
+			pushActionArrayGuids(descObject.action.children);
 
 			for (var guid in guids)
 			{
@@ -197,14 +198,14 @@ function main()
 				}
 			}
 
-			function pushEventArrayGuids(events)
+			function pushActionArrayGuids(actions)
 			{
-				if (!events)
+				if (!actions)
 					return;
-				for (var i = 0; i < events.length; ++i)
+				for (var i = 0; i < actions.length; ++i)
 				{
 					++guidCount;
-					var cur = events[i].event.guid;
+					var cur = actions[i].action.guid;
 					if (!guids[cur])
 					{
 						guids[cur] = 1;
@@ -213,8 +214,28 @@ function main()
 					{
 						guids[cur]++;
 					}
-					pushEventArrayGuids(events[i].event.children);
+					pushActionArrayGuids(actions[i].action.children);
 				}
+			}
+		}
+
+		function convertDatetimesInActionArray(actions)
+		{
+			if (!actions)
+				return;
+			for (var i = 0; i < actions.length; ++i)
+			{
+				var cur = actions[i].action.timeInterval;
+				if (cur)
+				{
+					cur.begin = new Date(cur.begin);
+					cur.end = new Date(cur.end);
+					if (!cur.begin || !cur.end)
+					{
+						console.log('~Data has incorrect datetime format in element ' + actions[i].guid + '.');
+					}
+				}
+				convertDatetimesInActionArray(actions[i].action.children);
 			}
 		}
 	};
