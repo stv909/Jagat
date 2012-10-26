@@ -55,7 +55,7 @@ sharejs.server.attach(server, options);
 var port = options.port || 8000;
 
 server.listen(port);
-util.puts('Server running at' + process.env.IP + ':' + port + '/');
+util.puts('Server running at ' + process.env.IP + ':' + port + '/');
 
 process.title = 'jagat';
 process.on(

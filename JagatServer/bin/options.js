@@ -1,6 +1,6 @@
 // ShareJS options
 module.exports = {
-	// Port to listen on
+    // Port to listen on
 	port: process.env.PORT,
 
 	// Database options
@@ -19,9 +19,9 @@ module.exports = {
 
 		// The hostname, port and options to pass to redis.
 		// null lets the database decide - redis by default connects to localhost port 6379.
-		hostname: "cod.redistogo.com",
-		port: 10277,
-		auth: "1bd0d1880f8cd418166e04ed9dc3e38b"
+        hostname: process.argv[2],
+		port: process.argv[3],
+		auth: process.argv[4]
 		//redisOptions: null
 
 		// To use CouchDB uncomment this section then run bin/setup_couch.
