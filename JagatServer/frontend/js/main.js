@@ -401,7 +401,7 @@ function main()
 				{
 					throw new Error('Only text documents can be attached to ace');
 				}
-			    eventsController.setData(doc.getText());
+				eventsController.setData(doc.getText());
 				check();
 				var suppress = false;
 				eventsController.onChange = eventsControllerListener;
@@ -445,7 +445,7 @@ function main()
 						},
 						0
 					);
-			    }
+				}
 
 				function eventsControllerListener(change)
 				{
@@ -453,7 +453,7 @@ function main()
 						return;
 					applyToShareJS(eventsController, change, doc);
 					return check();
-				};
+				}
 
 				doc.detach_ace = function()
 				{
