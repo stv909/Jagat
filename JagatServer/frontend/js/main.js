@@ -1114,7 +1114,7 @@ function main()
 					{
 						setSelectedObject(restoreSelected);
 					}
-					var restoreMoving = safeMovingGuid ? getHelperByGuid(safeMovingGuid) : null;
+					var restoreMoving = safeMovingGuid ? getHelperByGuid(safeMovingGuid) || getObjectByGuid(safeMovingGuid) : null;
 					if (restoreMoving)
 					{
 						MOVING = restoreMoving;
