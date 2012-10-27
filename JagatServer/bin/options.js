@@ -12,22 +12,22 @@ module.exports = {
 	// all documents are deleted when the server restarts.
 
 	// By default, sharejs tries to use the redis DB backend.
-		type: 'redis',
+		//type: 'redis',
 
 		// The prefix for database entries
-		prefix: 'ShareJS:',
+		//prefix: 'ShareJS:',
 
 		// The hostname, port and options to pass to redis.
 		// null lets the database decide - redis by default connects to localhost port 6379.
-        hostname: process.argv[2],
-		port: process.argv[3],
-		auth: process.argv[4]
+        //hostname: process.argv[2],
+		//port: process.argv[3],
+		//auth: process.argv[4]
 		//redisOptions: null
 
 		// To use CouchDB uncomment this section then run bin/setup_couch.
 	// Database URI Defaults to http://localhost:5984/sharejs .
-		//type: 'couchdb',
-		//uri: "http://admin:admin@localhost:5984/ot",
+		type: 'couchdb',
+		uri: process.argv[2] // 'http://admin:admin@localhost:5984/ot',
 
 	// To use postgresql uncomment this section then run bin/setup_pg
 	//type: 'pg',
