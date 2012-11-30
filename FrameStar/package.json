@@ -5,7 +5,7 @@
 	},
 	"name": "frame-star",
 	"description": "Representation of data set using tags.",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"keywords": [
 		"frame",
 		"tag",
@@ -13,6 +13,7 @@
 	],
 	"main": "index.js",
 	"dependencies": {
+		"connect": "~1"
 	},
 	"devDependencies": {},
 	"optionalDependencies": {},

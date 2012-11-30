@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Frame-Star Demo01</title>
+		<script src="core/FrameStar.js"></script>
+	</head>
+	<body>
+		<div id="starControl" style="width:100%; text-align:center;">
+			<input id="newStarContent" type="text" name="starContent">
+			<button onClick = "var elem = document.getElementById('newStarContent'); elem.focus(); elem.value = '';">
+				X
+			</button>
+			<button onClick = "var elem = document.getElementById('newStarContent'); elem.focus(); createStar(elem.value);">
+				Create Star
+			</button>
+		</div>
+		<div id="globalOperations" style="width:100%; text-align:right;">
+			<button onClick = "clearFrame();">
+				Clear Frame
+			</button>
+			<br>
+			<button onClick = "refreshFrame();">
+				Refresh Frame
+			</button>
+		</div>
+		<div id="selectionOperations" style="width:100%; text-align:left;">
+			<button id="abstractMode" onClick="clickOnAbstractsMode();" disabled="true">
+				assign abstracts
+			</button>
+			<br>
+			<button id="concreteMode" onClick="clickOnConcretesMode();" disabled="true">
+				assign concretes
+			</button>
+		</div>
+		<div id="starField" style="width:100%; text-align:center; white-space:nowrap">
+		</div>
+
+		<script>
+			var frame = new Frame();
+
+			function createStar(content)
+			{
+				var newStar = frame.Star.create();
+				newStar.content = content;
+			}
+
+			function destroyStar(starId)
+			{
+				frame.Star.destroy(starId);
+			}
+
+			var highlightButton = function(button)
+			{
+				button.style.backgroundColor='#00ff00';
+			}
+
+			var normalizeButton = function(button)
+			{
+				button.style.backgroundColor='#e0e0e0';
+			}
+
+			var switchMode = function(modeName)
+			{
+				var selectionControl = document.getElementById('selectionOperations');
+				var abstractButton = document.getElementById('abstractMode');
+				var concreteButton = document.getElementById('concreteMode');
+
+				if (modeName === 'abstract')
+				{
+					selectionControl.currentMode = modeName;
+					highlightButton(abstractButton);
+					normalizeButton(concreteButton);
+				}
+				else if (modeName === 'concrete')
+				{
+					selectionControl.currentMode = modeName;
+					highlightButton(concreteButton);
+					normalizeButton(abstractButton);
+				}
+				else
+				{
+					selectionControl.currentMode = null;
+					normalizeButton(abstractButton);
+					normalizeButton(concreteButton);
+				}
+			}
+
+			var activateControl = function(control)
+			{
+				for (var i = 0; i < control.children.length; ++i)
+				{
+					control.children[i].disabled = false;
+				}
+				switchMode(control.currentMode);
+			}
+
+			var deactivateControl = function(control)
+			{
+				for (var i = 0; i < control.children.length; ++i)
+				{
+					normalizeButton(control.children[i]);
+					control.children[i].disabled = true;
+				}
+			}
+
+			function refreshFrame()
+			{
+				var stars = frame.Star.getArray();
+
+				// clear div content
+				var starFieldView = document.getElementById('starField');
+				while (starFieldView.firstChild)
+				{
+					starFieldView.removeChild(starFieldView.firstChild);
+				}
+
+				// sort stars by vertical lines
+				var starLines = [];
+				// first line - stars with no tags
+				// second line - stars have tags only from first line
+				// third line - stars have tags only from first or second line
+				// etc.
+				var starsToTest = stars;
+				while (starsToTest.length > 0)
+				{
+					var currentLine = [];
+					var concreteStars = [];
+					for (var i = 0; i < starsToTest.length; ++i)
+					{
+						var star = starsToTest[i];
+						var isConcrete = false;
+						for (var t = 0; t < star.tags.length; ++t)
+						{
+							var tag = star.tags[t];
+							var tagFound = false;
+							for (var j = 0; j < starsToTest.length; ++j)
+							{
+								if (tag === starsToTest[j].id)
+								{
+									tagFound = true;
+									break;
+								}
+							}
+							if (tagFound)
+							{
+								isConcrete = true;
+								break;
+							}
+						}
+						if (isConcrete)
+						{
+							concreteStars.push(star);
+						}
+						else
+						{
+							currentLine.push(star);
+						}
+					}
+					starLines.push(currentLine);
+					starsToTest = concreteStars;
+				}
+
+				// sort each lines by horizontal order
+
+				// fill div with sorted content
+
+				var toggleStarSelection = function()
+				{
+					var selectionControl = document.getElementById('selectionOperations');
+					var newSelectionId = this.value;
+					if (selectionControl.currentSelectionId)
+					{
+						if (selectionControl.currentSelectionId === newSelectionId)
+						{
+							selectionControl.currentSelectionId = null;
+							deactivateControl(selectionControl);
+							normalizeButton(this);
+						}
+						else if (selectionControl.currentMode)
+						{
+							if (selectionControl.currentMode === 'abstract')
+							{
+								frame.Star.Tags.add(selectionControl.currentSelectionId, newSelectionId);
+							}
+							else if (selectionControl.currentMode === 'concrete')
+							{
+								frame.Star.Tags.add(newSelectionId, selectionControl.currentSelectionId);
+							}
+						}
+					}
+					else
+					{
+						selectionControl.currentSelectionId = newSelectionId;
+						activateControl(selectionControl);
+						highlightButton(this);
+					}
+				}
+
+				var getReadableTagsArray = function(tagsArray)
+				{
+					var result = '';
+					for (var i = 0; i < tagsArray.length; ++i)
+					{
+						result += frame.Star.getById(tagsArray[i]).content + '\r\n';
+					}
+					return result;
+				}
+
+				for (var i = 0; i < starLines.length; ++i)
+				{
+					var lineLength = starLines[i].length;
+					for (var j = 0; j < lineLength; ++j)
+					{
+						var starView = document.createElement('button');
+						var star = starLines[i][j];
+						starView.value = star.id;
+						starView.tags = star.tags;
+						starView.title = getReadableTagsArray(star.tags);
+						starView.textContent = star.content;
+						starView.onclick = toggleStarSelection;
+						starFieldView.appendChild(starView);
+					}
+					starFieldView.appendChild(document.createElement('br'));
+					starFieldView.appendChild(document.createElement('br'));
+				}
+			}
+
+			function clearFrame()
+			{
+				var selectionControl = document.getElementById('selectionOperations');
+				selectionControl.currentSelectionId = null;
+				deactivateControl(selectionControl);
+
+				frame.clear();
+				refreshFrame();
+			}
+
+			function clickOnAbstractsMode()
+			{
+				switchMode('abstract');
+			}
+
+			function clickOnConcretesMode()
+			{
+				switchMode('concrete');
+			}
+		</script>
+	</body>
+</html>
