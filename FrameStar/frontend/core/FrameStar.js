@@ -176,12 +176,23 @@ function Frame()
 			this.errors.push(new Date() + ' > Frame has no star with id: ' + starId);
 			return;
 		}
-		if (!star.contains(tagId))
+		if (!star.tags.contains(tagId))
 		{
 			this.errors.push(new Date() + ' > Star ' + starId + ' has no tag: ' + tagId);
 			return;
 		}
 		star.tags.remove(tagId);
+	};
+
+	var tagsContains = function(starId, tagId)
+	{
+		var star = starGetById(starId);
+		if (!star)
+		{
+			this.errors.push(new Date() + ' > Frame has no star with id: ' + starId);
+			return;
+		}
+		return star.tags.contains(tagId);
 	};
 
 	var tagsGetArray = function(starId)
@@ -223,6 +234,7 @@ function Frame()
 	this.Star.Tags.isValid = tagsIsValid;
 	this.Star.Tags.add = tagsAdd;
 	this.Star.Tags.remove = tagsRemove;
+	this.Star.Tags.contains = tagsContains;
 	this.Star.Tags.getArray = tagsGetArray;
 	this.Star.Tags.clear = tagsClear;
 }
