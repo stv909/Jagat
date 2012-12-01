@@ -6,7 +6,10 @@
 	</head>
 	<body>
 		<div id="starControl" style="width:100%; text-align:center">
-			<input id="newStarContent" type="text" name="starContent" onKeyUp="handleInputEnter(event);" />
+			<input id="newStarContent" type="text" name="starContent" onKeyUp="handleInputEnter(event);"
+				onInput="handleContentFilter(this.value);"
+				onChange="handleContentFilter(this.value);"
+			/>
 			<button onClick = "var elem = document.getElementById('newStarContent'); elem.focus(); elem.value = '';">
 				X
 			</button>
@@ -29,7 +32,10 @@
 			<div style="float:left; width:15%;">
 				<div id="selectionPanel">
 					Selection:<br>
-					<input id="selectedStar" type="text" onInput="if (this.starDesc) setStarContent(this.starDesc.id, this.value);" disabled>
+					<input id="selectedStar" type="text" disabled
+						onInput="if (this.starDesc) setStarContent(this.starDesc.id, this.value);"
+						onChange="if (this.starDesc) setStarContent(this.starDesc.id, this.value);"
+					/>
 					<button id="selectedStar_ClearTags" onClick="var elem = document.getElementById('selectedStar'); if (elem.starDesc) clearStarTags(elem.starDesc.id);">
 						0
 					</button>
@@ -50,6 +56,7 @@
 		<script>
 			var frame = new Frame();
 			var shadowStarIds = {};
+			var contentFilterSubstring = '';
 
 			function handleInputEnter(event)
 			{
@@ -57,6 +64,13 @@
 				{
 					createStar(document.getElementById('newStarContent').value);
 				}
+			}
+
+			function handleContentFilter(newFilterSubstring)
+			{
+				contentFilterSubstring = newFilterSubstring;
+				refreshStarList();
+				refreshStarField();
 			}
 
 			function createStar(content)
@@ -198,8 +212,16 @@
 
 				for (var i = 0; i < stars.length; ++i)
 				{
+					var star = stars[i];
+					if (
+						contentFilterSubstring &&
+						contentFilterSubstring != '' &&
+						star.content.indexOf(contentFilterSubstring) === -1
+					)
+						continue;
+
 					var starView = document.createElement('button');
-					starView.starDesc = stars[i];
+					starView.starDesc = star;
 					starView.textContent = starView.starDesc.content;
 					starView.onclick = toggleStarTag;
 					starListView.appendChild(starView);
@@ -355,6 +377,16 @@
 						starSelectView.textContent = 'S';
 						starSelectView.onclick = toggleStarSelection;
 
+						if (
+							contentFilterSubstring &&
+							contentFilterSubstring != '' &&
+							starView.starDesc.content.indexOf(contentFilterSubstring) === -1
+						)
+						{
+							starContentView.style.color = '#ffffff';
+							starSelectView.style.color = '#ffffff';
+						}
+
 						starView.contentSubButton = starContentView;
 						starView.selectSubButton = starSelectView;
 						starView.appendChild(starContentView);
@@ -362,7 +394,6 @@
 						starFieldView.appendChild(starView);
 					}
 					starFieldView.appendChild(document.createElement('br'));
-					//starFieldView.appendChild(document.createElement('br'));
 				}
 				refreshSelectionHighlight();
 			}
