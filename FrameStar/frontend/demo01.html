@@ -6,7 +6,7 @@
 	</head>
 	<body>
 		<div id="starControl" style="width:100%; text-align:center">
-			<input id="newStarContent" type="text" name="starContent" />
+			<input id="newStarContent" type="text" name="starContent" onkeyup="handleInputEnter(event);" />
 			<button onClick = "var elem = document.getElementById('newStarContent'); elem.focus(); elem.value = '';">
 				X
 			</button>
@@ -53,6 +53,14 @@
 		<script>
 			var frame = new Frame();
 			var shadowStarIds = {};
+
+			function handleInputEnter(event)
+			{
+				if (event.keyCode === 13)
+				{
+					createStar(document.getElementById('newStarContent').value);
+				}
+			}
 
 			function createStar(content)
 			{
