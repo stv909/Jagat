@@ -33,10 +33,10 @@
 					<button id="selectedStar_Edit" onClick="editStarContent();">
 						E
 					</button>
-					<button id="selectedStar_ClearTags" onClick="clearStarTags(document.getElementById('selectedStar').value);">
+					<button id="selectedStar_ClearTags" onClick="clearStarTags(document.getElementById('selectedStar').starDesc.id);">
 						0
 					</button>
-					<button id="selectedStar_Delete" onClick="destroyStar(document.getElementById('selectedStar').value);">
+					<button id="selectedStar_Delete" onClick="destroyStar(document.getElementById('selectedStar').starDesc.id);">
 						X
 					</button>
 				</div>
@@ -63,6 +63,7 @@
 			{
 				if (!starId)
 					return;
+				clearSelection();
 				frame.Star.destroy(starId);
 			}
 
@@ -70,7 +71,7 @@
 			{
 				var button = document.getElementById('selectedStar');
 				var newContent = prompt("Enter new content:", button.textContent);
-				frame.Star.getById(button.value).content = newContent;
+				frame.Star.getById(button.starDesc.id).content = newContent;
 				button.textContent = newContent;
 			}
 
@@ -81,12 +82,14 @@
 				var starListView = document.getElementById('starList');
 				for (var i = 0; i < starListView.children.length; ++i)
 				{
+					if (!starListView.children[i].starDesc)
+						continue;
 					var color = '#e0e0e0';
-					if (selectionView.tags)
+					if (selectionView.starDesc)
 					{
-						for (var j = 0; j < selectionView.tags.length; ++j)
+						for (var j = 0; j < selectionView.starDesc.tags.length; ++j)
 						{
-							if (selectionView.tags[j] === starListView.children[i].value)
+							if (selectionView.starDesc.tags[j] === starListView.children[i].starDesc.id)
 							{
 								color = '#0fbd0f';
 								break;
@@ -97,28 +100,53 @@
 				}
 			}
 
+			function refreshSelectionHighlight()
+			{
+				var selectionView = document.getElementById('selectedStar');
+
+				var starFieldView = document.getElementById('starField');
+				for (var i = 0; i < starFieldView.children.length; ++i)
+				{
+					if (!starFieldView.children[i].starDesc)
+						continue;
+					var color = '#e0e0e0';
+					if (selectionView.starDesc && selectionView.starDesc.id === starFieldView.children[i].starDesc.id)
+					{
+						color = '#4cbdbd';
+					}
+					starFieldView.children[i].selectSubButton.style.backgroundColor = color;
+				}
+			}
+
 			function clearStarTags(starId)
 			{
 				frame.Star.Tags.clear(starId);
-				document.getElementById('selectedStar').tags = [];
+				document.getElementById('selectedStar').starDesc.tags = [];
 				refreshTagsColors();
 			}
 
 			function clearSelection()
 			{
 				var selectionView = document.getElementById('selectedStar');
-				selectionView.value = null;
+				selectionView.starDesc = null;
 				selectionView.textContent = '';
-				selectionView.tags = null;
 				refreshTagsColors();
 			}
 
 			// TODO: divide refreshFrame on refreshStarList and refreshStarField functions, make autocalls
+/*
+			function refreshStarField()
+			{
+				;
+			}
 
+			function refreshStarList()
+			{
+				;
+			}
+*/
 			function refreshFrame()
 			{
-				clearSelection();
-
 				var stars = frame.Star.getArray();
 
 				// >> // fill star field
@@ -189,11 +217,15 @@
 				var toggleStarSelection = function()
 				{
 					var selectionView = document.getElementById('selectedStar');
-					var newSelectionId = this.value;
-					selectionView.value = newSelectionId;
-					selectionView.textContent = this.textContent;
-					selectionView.tags = this.tags;
+					selectionView.starDesc = this.parentNode.starDesc;
+					selectionView.textContent = this.parentNode.starDesc.content;
 					refreshTagsColors();
+					refreshSelectionHighlight();
+				}
+
+				var toggleStarFilterring = function()
+				{
+					// TODO: implement
 				}
 
 				var getReadableTagsArray = function(tagsArray)
@@ -212,16 +244,26 @@
 					for (var j = 0; j < lineLength; ++j)
 					{
 						var starView = document.createElement('button');
-						var star = starLines[i][j];
-						starView.value = star.id;
-						starView.tags = star.tags;
-						starView.title = getReadableTagsArray(star.tags);
-						starView.textContent = star.content;
-						starView.onclick = toggleStarSelection;
+						starView.starDesc = starLines[i][j];
+						starView.disabled = true;
+
+						var starContentView = document.createElement('button');
+						starContentView.title = getReadableTagsArray(starView.starDesc.tags);
+						starContentView.textContent = starView.starDesc.content;
+						starContentView.onclick = toggleStarFilterring;
+
+						var starSelectView = document.createElement('button');
+						starSelectView.textContent = 'S';
+						starSelectView.onclick = toggleStarSelection;
+
+						starView.contentSubButton = starContentView;
+						starView.selectSubButton = starSelectView;
+						starView.appendChild(starContentView);
+						starView.appendChild(starSelectView);
 						starFieldView.appendChild(starView);
 					}
 					starFieldView.appendChild(document.createElement('br'));
-					starFieldView.appendChild(document.createElement('br'));
+					//starFieldView.appendChild(document.createElement('br'));
 				}
 
 				// >> // fill star list
@@ -238,17 +280,17 @@
 				var toggleStarTag = function()
 				{
 					var selectionView = document.getElementById('selectedStar');
-					if (selectionView.value)
+					if (selectionView.starDesc)
 					{
-						if (frame.Star.Tags.contains(selectionView.value, this.value))
+						if (frame.Star.Tags.contains(selectionView.starDesc.id, this.starDesc.id))
 						{
-							frame.Star.Tags.remove(selectionView.value, this.value);
+							frame.Star.Tags.remove(selectionView.starDesc.id, this.starDesc.id);
 						}
 						else
 						{
-							frame.Star.Tags.add(selectionView.value, this.value);
+							frame.Star.Tags.add(selectionView.starDesc.id, this.starDesc.id);
 						}
-						selectionView.tags = frame.Star.Tags.getArray(selectionView.value);
+						selectionView.starDesc.tags = frame.Star.Tags.getArray(selectionView.starDesc.id);
 						refreshTagsColors();
 					}
 				}
@@ -256,15 +298,15 @@
 				for (var i = 0; i < stars.length; ++i)
 				{
 					var starView = document.createElement('button');
-					var star = stars[i];
-					starView.value = star.id;
-					starView.tags = star.tags;
-					starView.title = getReadableTagsArray(star.tags);
-					starView.textContent = star.content;
+					starView.starDesc = stars[i];
+					starView.title = getReadableTagsArray(starView.starDesc.tags);
+					starView.textContent = starView.starDesc.content;
 					starView.onclick = toggleStarTag;
 					starListView.appendChild(starView);
 					starListView.appendChild(document.createElement('br'));
 				}
+				refreshTagsColors();
+				refreshSelectionHighlight();
 			}
 
 			function clearFrame()

@@ -227,7 +227,7 @@ function Frame()
 	this.Star.create = starCreate;
 	this.Star.load = starLoad;
 	this.Star.destroy = starDestroy;
-	this.Star.getById = starGetById;
+	this.Star.getById = starGetById; // HACK method. // TODO: replace by setContent/getContent
 	this.Star.getArray = starGetArray;
 
 	this.Star.Tags = {};
