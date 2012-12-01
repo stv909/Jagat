@@ -6,7 +6,7 @@
 	</head>
 	<body>
 		<div id="starControl" style="width:100%; text-align:center">
-			<input id="newStarContent" type="text" name="starContent" onkeyup="handleInputEnter(event);" />
+			<input id="newStarContent" type="text" name="starContent" onKeyUp="handleInputEnter(event);" />
 			<button onClick = "var elem = document.getElementById('newStarContent'); elem.focus(); elem.value = '';">
 				X
 			</button>
@@ -29,14 +29,11 @@
 			<div style="float:left; width:15%;">
 				<div id="selectionPanel">
 					Selection:<br>
-					<button id="selectedStar" onClick="clearSelection();">
-					<button id="selectedStar_Edit" onClick="editStarContent();">
-						E
-					</button>
-					<button id="selectedStar_ClearTags" onClick="clearStarTags(document.getElementById('selectedStar').starDesc.id);">
+					<input id="selectedStar" type="text" onInput="if (this.starDesc) setStarContent(this.starDesc.id, this.value);" disabled>
+					<button id="selectedStar_ClearTags" onClick="var elem = document.getElementById('selectedStar'); if (elem.starDesc) clearStarTags(elem.starDesc.id);">
 						0
 					</button>
-					<button id="selectedStar_Delete" onClick="destroyStar(document.getElementById('selectedStar').starDesc.id);">
+					<button id="selectedStar_Delete" onClick="var elem = document.getElementById('selectedStar'); if (elem.starDesc) destroyStar(elem.starDesc.id);">
 						X
 					</button>
 				</div>
@@ -84,12 +81,9 @@
 				refreshStarField();
 			}
 
-			function editStarContent()
+			function setStarContent(starId, newContent)
 			{
-				var button = document.getElementById('selectedStar');
-				var newContent = prompt("Enter new content:", button.textContent);
-				frame.Star.getById(button.starDesc.id).content = newContent;
-				button.textContent = newContent;
+				frame.Star.getById(starId).content = newContent;
 				refreshStarList();
 				refreshStarField();
 			}
@@ -145,13 +139,15 @@
 				document.getElementById('selectedStar').starDesc.tags = [];
 				refreshTagsColors();
 				refreshStarField();
+				refreshSelectionHighlight();
 			}
 
 			function clearSelection()
 			{
 				var selectionView = document.getElementById('selectedStar');
 				selectionView.starDesc = null;
-				selectionView.textContent = '';
+				selectionView.value = '';
+				selectionView.disabled = true;
 				refreshTagsColors();
 				refreshSelectionHighlight();
 			}
@@ -290,8 +286,10 @@
 					else
 					{
 						var selectionView = document.getElementById('selectedStar');
+						selectionView.value = this.parentNode.starDesc.content;
 						selectionView.starDesc = this.parentNode.starDesc;
-						selectionView.textContent = this.parentNode.starDesc.content;
+						selectionView.disabled = false;
+						selectionView.focus();
 					}
 					refreshTagsColors();
 					refreshSelectionHighlight();
