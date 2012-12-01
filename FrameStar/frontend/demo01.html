@@ -52,19 +52,28 @@
 
 		<script>
 			var frame = new Frame();
+			var shadowStarIds = {};
 
 			function createStar(content)
 			{
 				var newStar = frame.Star.create();
 				newStar.content = content;
+				refreshStarList();
+				refreshStarField();
 			}
 
 			function destroyStar(starId)
 			{
 				if (!starId)
 					return;
-				clearSelection();
+				var button = document.getElementById('selectedStar');
+				if (button.starDesc.id == starId)
+				{
+					clearSelection();
+				}
 				frame.Star.destroy(starId);
+				refreshStarList();
+				refreshStarField();
 			}
 
 			function editStarContent()
@@ -73,6 +82,8 @@
 				var newContent = prompt("Enter new content:", button.textContent);
 				frame.Star.getById(button.starDesc.id).content = newContent;
 				button.textContent = newContent;
+				refreshStarList();
+				refreshStarField();
 			}
 
 			function refreshTagsColors()
@@ -100,6 +111,8 @@
 				}
 			}
 
+			var colorStarSelected = '#4cbdbd';
+
 			function refreshSelectionHighlight()
 			{
 				var selectionView = document.getElementById('selectedStar');
@@ -112,7 +125,7 @@
 					var color = '#e0e0e0';
 					if (selectionView.starDesc && selectionView.starDesc.id === starFieldView.children[i].starDesc.id)
 					{
-						color = '#4cbdbd';
+						color = colorStarSelected;
 					}
 					starFieldView.children[i].selectSubButton.style.backgroundColor = color;
 				}
@@ -123,6 +136,7 @@
 				frame.Star.Tags.clear(starId);
 				document.getElementById('selectedStar').starDesc.tags = [];
 				refreshTagsColors();
+				refreshStarField();
 			}
 
 			function clearSelection()
@@ -131,6 +145,7 @@
 				selectionView.starDesc = null;
 				selectionView.textContent = '';
 				refreshTagsColors();
+				refreshSelectionHighlight();
 			}
 
 			var getReadableTagsArray = function(tagsArray)
@@ -173,6 +188,7 @@
 						}
 						selectionView.starDesc.tags = frame.Star.Tags.getArray(selectionView.starDesc.id);
 						refreshTagsColors();
+						refreshStarField();
 					}
 				}
 
@@ -259,16 +275,32 @@
 
 				var toggleStarSelection = function()
 				{
-					var selectionView = document.getElementById('selectedStar');
-					selectionView.starDesc = this.parentNode.starDesc;
-					selectionView.textContent = this.parentNode.starDesc.content;
+					if (this.style.backgroundColor == 'rgb(76, 189, 189)')
+					{
+						clearSelection();
+					}
+					else
+					{
+						var selectionView = document.getElementById('selectedStar');
+						selectionView.starDesc = this.parentNode.starDesc;
+						selectionView.textContent = this.parentNode.starDesc.content;
+					}
 					refreshTagsColors();
 					refreshSelectionHighlight();
 				}
 
 				var toggleStarFilterring = function()
 				{
-					// TODO: implement
+					if (this.parentNode.hide)
+					{
+						delete shadowStarIds[this.parentNode.starDesc.id];
+					}
+					else
+					{
+						shadowStarIds[this.parentNode.starDesc.id] = true;
+					}
+					refreshStarList();
+					refreshStarField();
 				}
 
 				for (var i = 0; i < starLines.length; ++i)
@@ -284,6 +316,11 @@
 						starContentView.title = getReadableTagsArray(starView.starDesc.tags);
 						starContentView.textContent = starView.starDesc.content;
 						starContentView.onclick = toggleStarFilterring;
+						if (starView.starDesc.id in shadowStarIds)
+						{
+							starView.hide = true;
+							starContentView.style.backgroundColor = '#999999';
+						}
 
 						var starSelectView = document.createElement('button');
 						starSelectView.textContent = 'S';
