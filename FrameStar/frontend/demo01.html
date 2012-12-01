@@ -6,7 +6,7 @@
 	</head>
 	<body>
 		<div id="starControl" style="width:100%; text-align:center">
-			<input id="newStarContent" type="text" name="starContent">
+			<input id="newStarContent" type="text" name="starContent" />
 			<button onClick = "var elem = document.getElementById('newStarContent'); elem.focus(); elem.value = '';">
 				X
 			</button>
@@ -29,7 +29,13 @@
 			<div style="float:left; width:15%;">
 				<div id="selectionPanel">
 					Selection:<br>
-					<button id="selectedStar" onClick="clearSelection();" />
+					<button id="selectedStar" onClick="clearSelection();">
+					<button id="selectedStar_Edit" onClick="editStarContent();">
+						E
+					</button>
+					<button id="selectedStar_Delete" onClick="destroyStar(document.getElementById('selectedStar').value);">
+						X
+					</button>
 				</div>
 				<div>
 					Star List:
@@ -52,7 +58,17 @@
 
 			function destroyStar(starId)
 			{
+				if (!starId)
+					return;
 				frame.Star.destroy(starId);
+			}
+
+			function editStarContent()
+			{
+				var button = document.getElementById('selectedStar');
+				var newContent = prompt("Enter new content:", button.textContent);
+				frame.Star.getById(button.value).content = newContent;
+				button.textContent = newContent;
 			}
 
 			function refreshTagsColors()
@@ -81,7 +97,7 @@
 			function clearSelection()
 			{
 				var selectionView = document.getElementById('selectedStar');
-				selectionView.value = '';
+				selectionView.value = null;
 				selectionView.textContent = '';
 				selectionView.tags = null;
 				refreshTagsColors();
@@ -212,7 +228,7 @@
 				var toggleStarTag = function()
 				{
 					var selectionView = document.getElementById('selectedStar');
-					if (selectionView.value && selectionView.value != '')
+					if (selectionView.value)
 					{
 						if (frame.Star.Tags.contains(selectionView.value, this.value))
 						{
