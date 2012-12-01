@@ -303,13 +303,36 @@
 					refreshStarField();
 				}
 
+				var hiddenStarIds = {};
+
 				for (var i = 0; i < starLines.length; ++i)
 				{
 					var lineLength = starLines[i].length;
 					for (var j = 0; j < lineLength; ++j)
 					{
+						var currentStar = starLines[i][j];
+						var skipStar = false;
+						if (currentStar.tags.length > 0)
+						{
+							skipStar = true;
+							for (var k = 0; k < currentStar.tags.length; ++k)
+							{
+								var currentTagId = currentStar.tags[k];
+								if (!(currentTagId in shadowStarIds || currentTagId in hiddenStarIds))
+								{
+									skipStar = false;
+									break;
+								}
+							}
+						}
+						if (skipStar)
+						{
+							hiddenStarIds[currentStar.id] = true;
+							continue;
+						}
+
 						var starView = document.createElement('button');
-						starView.starDesc = starLines[i][j];
+						starView.starDesc = currentStar;
 						starView.disabled = true;
 
 						var starContentView = document.createElement('button');
