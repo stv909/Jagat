@@ -33,6 +33,9 @@
 					<button id="selectedStar_Edit" onClick="editStarContent();">
 						E
 					</button>
+					<button id="selectedStar_ClearTags" onClick="clearStarTags(document.getElementById('selectedStar').value);">
+						0
+					</button>
 					<button id="selectedStar_Delete" onClick="destroyStar(document.getElementById('selectedStar').value);">
 						X
 					</button>
@@ -92,6 +95,13 @@
 					}
 					starListView.children[i].style.backgroundColor = color;
 				}
+			}
+
+			function clearStarTags(starId)
+			{
+				frame.Star.Tags.clear(starId);
+				document.getElementById('selectedStar').tags = [];
+				refreshTagsColors();
 			}
 
 			function clearSelection()
