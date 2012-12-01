@@ -144,7 +144,7 @@ function Frame()
 
 	// Tags Functions
 
-	var tagsIsValid = function(starId, tagId)
+	var tagsIsValid = function(starId, tagId, maxIterations)
 	{
 		var star = starGetById(starId);
 		if (!star)
@@ -152,7 +152,7 @@ function Frame()
 			this.errors.push(new Date() + ' > Frame has no star with id: ' + starId);
 			return false;
 		}
-		// TODO: test for loop
+		// TODO: test for loop, limit deepness by maxIterations if given
 		return true;
 	};
 
