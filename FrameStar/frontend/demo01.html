@@ -364,7 +364,6 @@
 						var dictatorLine = starOrderedLines[i-1];
 						var currentLine = [];
 						var sourceLine = starLines[i];
-						// TODO: implement sorting
 
 						// make abstract pattern from dictatorLine
 						var pattern = [];
@@ -378,12 +377,6 @@
 							var patternElem = {id: dictatorLine[j].id, weight: baseWeight};
 							pattern.push(patternElem);
 						}
-/*
-console.log('----');
-console.log(pattern);
-console.log('----');
-*/
-						//pattern.sort(function(a, b) { return -a.weight.localeCompare(b.weight); });
 
 						for (var e = 0 ; e < sourceLine.length; ++e)
 						{
@@ -405,58 +398,6 @@ console.log('----');
 						}
 						currentLine.sort(function(a, b) { return -a.weight.localeCompare(b.weight); });
 
-/*
-						// iterate all pattern combinations that contain yet 1 element with exclude == false
-						var patternInvertStart = 0;
-						var patternInvertIndex = 0;
-						do
-						{
-							if (patternInvertIndex < pattern.length)
-							{
-								var patternElem = pattern[patternInvertIndex];
-								patternElem.exclude = !patternElem.exclude;
-								++patternInvertIndex;
-
-								// get stars from sourceLine by pattern and put them to currentLine
-								for (var e = 0 ; e < sourceLine.length; ++e)
-								{
-									var starFits = true;
-									for (var k = 0 ; k < pattern.length; ++k)
-									{
-										var starContainsTag = false;
-										for (var t = 0; t < sourceLine[e].tags.length; ++t)
-										{
-											if (sourceLine[e].tags[t] === pattern[k].id)
-											{
-												starContainsTag = true;
-												break;
-											}
-										}
-										if (pattern[k].exclude && starContainsTag || !pattern[k].exclude && !starContainsTag)
-										{
-											starFits = false;
-											break;
-										}
-									}
-									if (starFits)
-									{
-										currentLine.push(sourceLine[e]);
-									}
-								}
-							}
-							else
-							{
-								patternInvertIndex = ++patternInvertStart;
-								for (var k = 0 ; k < pattern.length; ++k)
-								{
-									pattern[k].exclude = true;
-								}
-							}
-						}
-						while (patternInvertStart < pattern.length);
-*/
-						//currentLine = sourceLine;
-						//
 						starOrderedLines[i] = currentLine;
 					}
 					starLines = starOrderedLines;
