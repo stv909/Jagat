@@ -355,6 +355,19 @@
 				}
 
 				// sort each lines by horizontal order
+				var starOrderedLines = [];
+				starOrderedLines[0] = starLines[0];
+				for (var i = 1; i < starLines.length; ++i)
+				{
+					var dictatorLine = starOrderedLines[i-1];
+					var currentLine = [];
+					var sourceLine = starLines[i];
+					// TODO: implement sorting
+					currentLine = sourceLine;
+					//
+					starOrderedLines[i] = currentLine;
+				}
+				starLines = starOrderedLines;
 
 				// remember abstract levels count
 				frameAbtractLevelsCount = starLines.length;
