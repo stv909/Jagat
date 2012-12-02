@@ -152,7 +152,50 @@ function Frame()
 			this.errors.push(new Date() + ' > Frame has no star with id: ' + starId);
 			return false;
 		}
-		// TODO: test for loop, limit deepness by maxIterations if given
+
+		var tagStar = starGetById(tagId);
+		if (!tagStar)
+		{
+			this.errors.push(new Date() + ' > Frame has no star with id: ' + tagId);
+			return false;
+		}
+
+		var starsToCheck = {};
+		starsToCheck[tagStar] = true;
+		var iterationCount = 0;
+
+console.log('----- Start Loop Detection: star ' + star.content + '; tag ' + tagStar.content);
+
+		while (starsToCheck.length > 0)
+		{
+
+console.log('\t iteration ' + iterationCount);
+
+			var nextStarsToCheck = {};
+			for (var starCheck in starsToCheck)
+			{
+
+console.log('\t\t star to check ' + starCheck.content);
+
+				for (var i = 0; i < starCheck.tags.length; ++i)
+				{
+					if (starCheck.tags[i] === starId)
+						return false;
+					var nextStar = starGetById(starCheck.tags[i]);
+					if (nextStar)
+					{
+						nextStarsToCheck[nextStar] = true;
+					}
+				}
+			}
+			starsToCheck = nextStarsToCheck;
+			++iterationCount;
+			if (maxIterations && iterationCount > maxIterations)
+			{
+				this.errors.push(new Date() + ' > Forced break. Probably frame has loops for stars: ' + starId + '; ' + tagId);
+				break;
+			}
+		}
 		return true;
 	};
 
