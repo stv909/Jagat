@@ -142,6 +142,20 @@
 					}
 					starFieldView.children[i].selectSubButton.style.backgroundColor = color;
 				}
+
+				var starListView = document.getElementById('starList');
+				for (var i = 0; i < starListView.children.length; ++i)
+				{
+					if (!starListView.children[i].mainButton)
+						continue;
+
+					var color = '#e0e0e0';
+					if (selectionView.starDesc && selectionView.starDesc.id === starListView.children[i].mainButton.starDesc.id)
+					{
+						color = colorStarSelected;
+					}
+					starListView.children[i].style.backgroundColor = color;
+				}
 			}
 
 			function clearStarTags(starId)
@@ -187,7 +201,7 @@
 					starListView.removeChild(starListView.firstChild);
 				}
 
-				// define click event handler for button
+				// define click event handlers for buttons
 				var toggleStarTag = function()
 				{
 					var selectionView = document.getElementById('selectedStar');
@@ -205,6 +219,24 @@
 						refreshTagsColors();
 						refreshStarField();
 					}
+				}
+
+				var toggleStarSelection = function()
+				{
+					if (this.style.backgroundColor == 'rgb(76, 189, 189)')
+					{
+						clearSelection();
+					}
+					else
+					{
+						var selectionView = document.getElementById('selectedStar');
+						selectionView.value = this.mainButton.starDesc.content;
+						selectionView.starDesc = this.mainButton.starDesc;
+						selectionView.disabled = false;
+						selectionView.focus();
+					}
+					refreshTagsColors();
+					refreshSelectionHighlight();
 				}
 
 				// sort and filter list
@@ -237,7 +269,14 @@
 					starView.starDesc = star;
 					starView.textContent = starView.starDesc.content;
 					starView.onclick = toggleStarTag;
+
+					var starSelectView = document.createElement('button');
+					starSelectView.textContent = 'S';
+					starSelectView.mainButton = starView;
+					starSelectView.onclick = toggleStarSelection;
+
 					starListView.appendChild(starView);
+					starListView.appendChild(starSelectView);
 					starListView.appendChild(document.createElement('br'));
 				}
 				refreshTagsColors();
