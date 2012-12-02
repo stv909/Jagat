@@ -51,6 +51,7 @@
 			var frame = new Frame();
 			var shadowStarIds = {};
 			var contentFilterSubstring = '';
+			var frameAbtractLevelsCount = 0;
 
 			function handleInputEnter(event)
 			{
@@ -109,6 +110,7 @@
 					if (!starListView.children[i].starDesc)
 						continue;
 					var color = '#e0e0e0';
+					var validTag = true;
 					if (selectionView.starDesc)
 					{
 						for (var j = 0; j < selectionView.starDesc.tags.length; ++j)
@@ -119,7 +121,13 @@
 								break;
 							}
 						}
+						validTag = frame.Star.Tags.isValid(
+							selectionView.starDesc.id,
+							starListView.children[i].starDesc.id,
+							2 * frameAbtractLevelsCount
+						);
 					}
+					starListView.children[i].disabled = !validTag;
 					starListView.children[i].style.backgroundColor = color;
 				}
 			}
@@ -162,9 +170,8 @@
 			{
 				frame.Star.Tags.clear(starId);
 				document.getElementById('selectedStar').starDesc.tags = [];
-				refreshTagsColors();
+				refreshStarList();
 				refreshStarField();
-				refreshSelectionHighlight();
 			}
 
 			function clearSelection()
@@ -216,7 +223,7 @@
 							frame.Star.Tags.add(selectionView.starDesc.id, this.starDesc.id);
 						}
 						selectionView.starDesc.tags = frame.Star.Tags.getArray(selectionView.starDesc.id);
-						refreshTagsColors();
+						refreshStarList();
 						refreshStarField();
 					}
 				}
@@ -234,9 +241,9 @@
 						selectionView.starDesc = this.mainButton.starDesc;
 						selectionView.disabled = false;
 						selectionView.focus();
+						refreshTagsColors();
+						refreshSelectionHighlight();
 					}
-					refreshTagsColors();
-					refreshSelectionHighlight();
 				}
 
 				// sort and filter list
@@ -349,6 +356,9 @@
 
 				// sort each lines by horizontal order
 
+				// remember abstract levels count
+				frameAbtractLevelsCount = starLines.length;
+
 				// fill div with sorted content
 
 				var toggleStarSelection = function()
@@ -364,9 +374,9 @@
 						selectionView.starDesc = this.parentNode.starDesc;
 						selectionView.disabled = false;
 						selectionView.focus();
+						refreshTagsColors();
+						refreshSelectionHighlight();
 					}
-					refreshTagsColors();
-					refreshSelectionHighlight();
 				}
 
 				var toggleStarFilterring = function()

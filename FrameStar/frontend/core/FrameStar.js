@@ -161,30 +161,26 @@ function Frame()
 		}
 
 		var starsToCheck = {};
-		starsToCheck[tagStar] = true;
+		starsToCheck[tagStar.getId()] = tagStar;
 		var iterationCount = 0;
 
-console.log('----- Start Loop Detection: star ' + star.content + '; tag ' + tagStar.content);
-
-		while (starsToCheck.length > 0)
+		while (Object.keys(starsToCheck).length > 0)
 		{
-
-console.log('\t iteration ' + iterationCount);
-
 			var nextStarsToCheck = {};
-			for (var starCheck in starsToCheck)
+			for (var starCheckId in starsToCheck)
 			{
-
-console.log('\t\t star to check ' + starCheck.content);
-
-				for (var i = 0; i < starCheck.tags.length; ++i)
+				if (starCheckId === starId)
+					return false;
+				var starCheck = starsToCheck[starCheckId];
+				var tagsCheck = starCheck.tags.getArray();
+				for (var i = 0; i < tagsCheck.length; ++i)
 				{
-					if (starCheck.tags[i] === starId)
+					if (tagsCheck[i] === starId)
 						return false;
-					var nextStar = starGetById(starCheck.tags[i]);
+					var nextStar = starGetById(tagsCheck[i]);
 					if (nextStar)
 					{
-						nextStarsToCheck[nextStar] = true;
+						nextStarsToCheck[nextStar.getId()] = nextStar;
 					}
 				}
 			}
