@@ -370,10 +370,42 @@
 						var pattern = [];
 						for (var j = 0; j < dictatorLine.length; ++j)
 						{
-							var patternElem = {id: dictatorLine[j].id, exclude: true};
+							var baseWeight = '';
+							for (var w = 0; w < dictatorLine.length; ++w)
+							{
+								baseWeight += (j == w ? '1' : '0');
+							}
+							var patternElem = {id: dictatorLine[j].id, weight: baseWeight};
 							pattern.push(patternElem);
 						}
+/*
+console.log('----');
+console.log(pattern);
+console.log('----');
+*/
+						//pattern.sort(function(a, b) { return -a.weight.localeCompare(b.weight); });
 
+						for (var e = 0 ; e < sourceLine.length; ++e)
+						{
+							var star = sourceLine[e];
+
+							star.weight = 0;
+							for (var k = 0 ; k < pattern.length; ++k)
+							{
+								for (var t = 0; t < star.tags.length; ++t)
+								{
+									if (star.tags[t] === pattern[k].id)
+									{
+										star.weight += pattern[k].weight;
+										break;
+									}
+								}
+							}
+							currentLine.push(star);
+						}
+						currentLine.sort(function(a, b) { return -a.weight.localeCompare(b.weight); });
+
+/*
 						// iterate all pattern combinations that contain yet 1 element with exclude == false
 						var patternInvertStart = 0;
 						var patternInvertIndex = 0;
@@ -422,7 +454,7 @@
 							}
 						}
 						while (patternInvertStart < pattern.length);
-
+*/
 						//currentLine = sourceLine;
 						//
 						starOrderedLines[i] = currentLine;
