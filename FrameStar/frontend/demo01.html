@@ -6,11 +6,8 @@
 	</head>
 	<body>
 		<div id="starControl" style="width:100%; text-align:center">
-			<input id="newStarContent" type="text" name="starContent" onKeyUp="handleInputEnter(event);"
-				onInput="handleContentFilter(this.value);"
-				onChange="handleContentFilter(this.value);"
-			/>
-			<button onClick = "var elem = document.getElementById('newStarContent'); elem.focus(); elem.value = '';">
+			<input id="newStarContent" type="text" name="starContent" onKeyUp="handleInputEnter(event);" onInput="handleContentFilter(this.value);" />
+			<button onClick = "var elem = document.getElementById('newStarContent'); elem.focus(); if (elem.value != '') {elem.value = ''; handleContentFilter('');}">
 				X
 			</button>
 			<button onClick = "var elem = document.getElementById('newStarContent'); elem.focus(); createStar(elem.value);">
@@ -32,10 +29,7 @@
 			<div style="float:left; width:15%;">
 				<div id="selectionPanel">
 					Selection:<br>
-					<input id="selectedStar" type="text" disabled
-						onInput="if (this.starDesc) setStarContent(this.starDesc.id, this.value);"
-						onChange="if (this.starDesc) setStarContent(this.starDesc.id, this.value);"
-					/>
+					<input id="selectedStar" type="text" disabled onInput="if (this.starDesc) setStarContent(this.starDesc.id, this.value);" />
 					<button id="selectedStar_ClearTags" onClick="var elem = document.getElementById('selectedStar'); if (elem.starDesc) clearStarTags(elem.starDesc.id);">
 						0
 					</button>
@@ -63,6 +57,9 @@
 				if (event.keyCode === 13)
 				{
 					createStar(document.getElementById('newStarContent').value);
+					// TODO: push value in history combo box
+					event.srcElement.value = '';
+					handleContentFilter('');
 				}
 			}
 
@@ -190,7 +187,7 @@
 					starListView.removeChild(starListView.firstChild);
 				}
 
-				// fill one by one
+				// define click event handler for button
 				var toggleStarTag = function()
 				{
 					var selectionView = document.getElementById('selectedStar');
@@ -210,9 +207,25 @@
 					}
 				}
 
+				// sort and filter list
+				var starsSortFilter = [];
 				for (var i = 0; i < stars.length; ++i)
 				{
 					var star = stars[i];
+					if (
+						contentFilterSubstring &&
+						contentFilterSubstring != '' &&
+						star.content.indexOf(contentFilterSubstring) === -1
+					)
+						continue;
+					starsSortFilter.push(star);
+				}
+				starsSortFilter.sort(function(a,b) { return a.content.localeCompare(b.content); } );
+
+				// fill one by one
+				for (var i = 0; i < starsSortFilter.length; ++i)
+				{
+					var star = starsSortFilter[i];
 					if (
 						contentFilterSubstring &&
 						contentFilterSubstring != '' &&
