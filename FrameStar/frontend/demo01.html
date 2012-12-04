@@ -19,10 +19,18 @@
 			<button onClick = "clearFrame();">
 				Clear Frame
 			</button>
-			<br>
 			<button onClick = "refreshStarList(); refreshStarField();">
 				Refresh Frame
 			</button>
+			<br>
+			<button onClick = "saveFrame();">
+				Save Frame
+			</button>
+			<button onClick = "loadFrame(); refreshStarList(); refreshStarField();">
+				Load Frame
+			</button>
+			<br>
+			<textarea  id="serializationExchange" cols="32" rows="4" wrap="off" -webkit-tab-size="4" tab-size"4"></textarea>
 		</div>
 
 		<div style="width:100%;">
@@ -52,6 +60,18 @@
 			var shadowStarIds = {};
 			var contentFilterSubstring = '';
 			var frameAbtractLevelsCount = 0;
+
+			function saveFrame()
+			{
+				var target = document.getElementById('serializationExchange');
+				target.value = frame.save();
+			}
+
+			function loadFrame()
+			{
+				var target = document.getElementById('serializationExchange');
+				frame.load(target.value);
+			}
 
 			function handleInputEnter(event)
 			{

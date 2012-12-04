@@ -2,7 +2,7 @@
 // Uuid Set //
 //////////////
 
-function UuidSet()
+function UuidSet(initElement)
 {
 	var elements = {};
 
@@ -10,6 +10,14 @@ function UuidSet()
 	{
 		elements[uuid] = true;
 	};
+
+	if (initElement && initElement.length)
+	{
+		for (var i = 0; i < initElement.length; ++i)
+		{
+			this.add(initElement[i]);
+		}
+	}
 
 	this.contains = function(uuid)
 	{
@@ -53,7 +61,7 @@ function GetNewId()
 function StarElement(forceId, forceTags, forceContent)
 {
 	var id = forceId || GetNewId();
-	this.tags = forceTags || new UuidSet();
+	this.tags = forceTags ? new UuidSet(forceTags) : new UuidSet();
 	this.content = forceContent || null;
 
 	this.getId = function()
@@ -73,14 +81,24 @@ function Frame()
 
 	// Frame Functions
 
-	var frameSave = function(url)
+	var frameSave = function()
 	{
-		// TODO: implement
+		return JSON.stringify(starGetArray(), null, '\t');
 	};
 
-	var frameLoad = function(url)
+	var frameLoad = function(jsonContent)
 	{
-		// TODO: implement
+		var frameStarArray;
+		try
+		{
+			frameStarArray = JSON.parse(jsonContent);
+		}
+		catch (e)
+		{
+			this.errors.push('Can not parse given content string as JSON. String: ' + jsonContent + '; Name: ' + e.name + '; Desc: ' + e.description);
+			frameStarArray = [];
+		}
+		starLoadFromArray(frameStarArray);
 	};
 
 	var frameClear = function()
@@ -245,6 +263,16 @@ function Frame()
 		return star.tags.getArray();
 	};
 
+	var starLoadFromArray = function(starArray)
+	{
+		frameClear();
+		for (var i = 0; i < starArray.length; ++i)
+		{
+			var starDesc = starArray[i];
+			starLoad(starDesc.id, starDesc.tags, starDesc.content);
+		}
+	};
+
 	var tagsClear = function(starId)
 	{
 		var star = starGetById(starId);
@@ -268,6 +296,7 @@ function Frame()
 	this.Star.destroy = starDestroy;
 	this.Star.getById = starGetById; // HACK method. // TODO: replace by setContent/getContent
 	this.Star.getArray = starGetArray;
+	this.Star.fromArray = starLoadFromArray;
 
 	this.Star.Tags = {};
 	this.Star.Tags.isValid = tagsIsValid;
