@@ -158,7 +158,7 @@ function Frame()
 			);
 		}
 		return result;
-	}
+	};
 
 	// Tags Functions
 
