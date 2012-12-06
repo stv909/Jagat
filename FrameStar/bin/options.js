@@ -27,7 +27,7 @@ module.exports = {
 		// To use CouchDB uncomment this section then run bin/setup_couch.
 	// Database URI Defaults to http://localhost:5984/sharejs .
 		type: 'couchdb',
-		uri: 'http://' + process.argv[2] + ':' + process.argv[3] + '@jagat.iriscouch.com/scene' // 'http://admin:admin@localhost:5984/ot',
+		uri: 'http://' + process.argv[2] + ':' + process.argv[3] + '@jagat.iriscouch.com/frame' // 'http://admin:admin@localhost:5984/ot',
 
 	// To use postgresql uncomment this section then run bin/setup_pg
 	//type: 'pg',
