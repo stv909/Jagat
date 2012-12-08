@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Frame-Star Demo01: basic functions, multi user mode, UI for collaboration testing.</title>
+		<script src="js/core/FrameStar.js"></script>
+	</head>
+	<body>
+		<div id="starControl" style="width:100%; text-align:center">
+			<input id="newStarContent" type="text" name="starContent" onKeyUp="handleInputEnter(event);" onInput="handleContentFilter(this.value);" />
+			<button onClick = "clearNewStarContent();">
+				X
+			</button>
+			<button onClick = "createNewStar();">
+				Create Star
+			</button>
+		</div>
+
+		<div id="globalOperations" style="width:100%; text-align:right;">
+			<button onClick = "clearFrame();">
+				Clear Frame
+			</button>
+			<button onClick = "refreshAllViews();">
+				Refresh Frame
+			</button>
+			<br>
+			<button onClick = "saveFrameExchange();">
+				Save Frame
+			</button>
+			<button onClick = "loadFrameExchange();">
+				Load Frame
+			</button>
+			<br>
+			<textarea  id="serializationExchange" cols="32" rows="4" wrap="off" -webkit-tab-size="4" tab-size"4"></textarea>
+		</div>
+
+		<div style="width:100%;">
+			<div style="float:left; width:15%;">
+				<div id="selectionPanel">
+					Selection:<br>
+					<input id="selectedStar" type="text" disabled onInput="onStarContentChange(this);" />
+					<button id="selectedStar_ClearTags" onClick="onStarClearTags();">
+						0
+					</button>
+					<button id="selectedStar_Delete" onClick="onDeleteStar();">
+						X
+					</button>
+				</div>
+				<div>
+					Star List:
+				</div>
+				<div id="starList">
+				</div>
+			</div>
+			<div id="starField" style="float:right; width:85%; white-space:nowrap; text-align:center;">
+			</div>
+		</div>
+
+		<script>
+			var frame = new FrameOT();
+			var shadowStarIds = {};
+			var contentFilterSubstring = '';
+			var frameAbtractLevelsCount = 0;
+
+			var colorStarNormal = '#e0e0e0';
+			var colorStarSelected = '#4cbdbd';
+			var colorStarTagAssigned = '#0fbd0f';
+			var colorStarDisabled = '#999999';
+			var colorStarContentFilterRejected = '#ffffff';
+			var colorStarContentFilterAccepted = '#000000';
+
+			function clearNewStarContent()
+			{
+				var elem = document.getElementById('newStarContent');
+				elem.focus();
+				if (elem.value != '')
+				{
+					elem.value = '';
+					handleContentFilter('');
+				}
+			}
+
+			function createNewStar()
+			{
+				var elem = document.getElementById('newStarContent');
+				elem.focus();
+				createStar(elem.value);
+			}
+
+			function refreshAllViews()
+			{
+				refreshStarList();
+				refreshStarField();
+			}
+
+			function saveFrameExchange()
+			{
+				var target = document.getElementById('serializationExchange');
+				target.value = frame.save();
+			}
+
+			function loadFrameExchange()
+			{
+				var target = document.getElementById('serializationExchange');
+				frame.load(target.value);
+				refreshAllViews();
+			}
+
+			function onStarContentChange(contentEditBox)
+			{
+				if (contentEditBox.starDesc)
+				{
+					setStarContent(contentEditBox.starDesc.id, contentEditBox.value);
+				}
+			}
+
+			function onStarClearTags()
+			{
+				var elem = document.getElementById('selectedStar');
+				if (elem.starDesc)
+				{
+					clearStarTags(elem.starDesc.id);
+				}
+			}
+
+			function onDeleteStar()
+			{
+				var elem = document.getElementById('selectedStar');
+				if (elem.starDesc)
+				{
+					destroyStar(elem.starDesc.id);
+				}
+			}
+
+			function handleInputEnter(event)
+			{
+				if (event.keyCode === 13)
+				{
+					createStar(document.getElementById('newStarContent').value);
+					// TODO: push value in history combo box
+					event.srcElement.value = '';
+					handleContentFilter('');
+				}
+			}
+
+			function handleContentFilter(newFilterSubstring)
+			{
+				contentFilterSubstring = newFilterSubstring;
+				refreshStarList();
+				refreshStarField();
+			}
+
+			function createStar(content)
+			{
+				var newStar = frame.Star.create();
+				newStar.content = content;
+				refreshStarList();
+				refreshStarField();
+			}
+
+			function destroyStar(starId)
+			{
+				if (!starId)
+					return;
+				var button = document.getElementById('selectedStar');
+				if (button.starDesc.id == starId)
+				{
+					clearSelection();
+				}
+				frame.Star.destroy(starId);
+				refreshStarList();
+				refreshStarField();
+			}
+
+			function setStarContent(starId, newContent)
+			{
+				frame.Star.getById(starId).content = newContent;
+				refreshStarList();
+				refreshStarField();
+			}
+
+			function refreshTagsColors()
+			{
+				var selectionView = document.getElementById('selectedStar');
+
+				var starListView = document.getElementById('starList');
+				for (var i = 0; i < starListView.children.length; ++i)
+				{
+					if (!starListView.children[i].starDesc)
+						continue;
+					var color = colorStarNormal;
+					var validTag = true;
+					if (selectionView.starDesc)
+					{
+						for (var j = 0; j < selectionView.starDesc.tags.length; ++j)
+						{
+							if (selectionView.starDesc.tags[j] === starListView.children[i].starDesc.id)
+							{
+								color = colorStarTagAssigned;
+								break;
+							}
+						}
+						validTag = frame.Star.Tags.isValid(
+							selectionView.starDesc.id,
+							starListView.children[i].starDesc.id,
+							2 * frameAbtractLevelsCount
+						);
+					}
+					starListView.children[i].disabled = !validTag;
+					starListView.children[i].style.backgroundColor = color;
+				}
+			}
+
+			function refreshSelectionHighlight()
+			{
+				var selectionView = document.getElementById('selectedStar');
+
+				var starFieldView = document.getElementById('starField');
+				for (var i = 0; i < starFieldView.children.length; ++i)
+				{
+					if (!starFieldView.children[i].starDesc)
+						continue;
+					var color = colorStarNormal;
+					if (selectionView.starDesc && selectionView.starDesc.id === starFieldView.children[i].starDesc.id)
+					{
+						color = colorStarSelected;
+					}
+					starFieldView.children[i].selectSubButton.style.backgroundColor = color;
+				}
+
+				var starListView = document.getElementById('starList');
+				for (var i = 0; i < starListView.children.length; ++i)
+				{
+					if (!starListView.children[i].mainButton)
+						continue;
+
+					var color = colorStarNormal;
+					if (selectionView.starDesc && selectionView.starDesc.id === starListView.children[i].mainButton.starDesc.id)
+					{
+						color = colorStarSelected;
+					}
+					starListView.children[i].style.backgroundColor = color;
+				}
+			}
+
+			function clearStarTags(starId)
+			{
+				frame.Star.Tags.clear(starId);
+				document.getElementById('selectedStar').starDesc.tags = [];
+				refreshStarList();
+				refreshStarField();
+			}
+
+			function clearSelection()
+			{
+				var selectionView = document.getElementById('selectedStar');
+				selectionView.starDesc = null;
+				selectionView.value = '';
+				selectionView.disabled = true;
+				refreshTagsColors();
+				refreshSelectionHighlight();
+			}
+
+			var getReadableTagsArray = function(tagsArray)
+			{
+				var result = '';
+				for (var i = 0; i < tagsArray.length; ++i)
+				{
+					result += frame.Star.getById(tagsArray[i]).content + '\r\n';
+				}
+				return result;
+			}
+
+			function refreshStarList()
+			{
+				var stars = frame.Star.getArray();
+
+				// >> // fill star list
+
+				var starListView = document.getElementById('starList');
+
+				// clear div content
+				while (starListView.firstChild)
+				{
+					starListView.removeChild(starListView.firstChild);
+				}
+
+				// define click event handlers for buttons
+				var toggleStarTag = function()
+				{
+					var selectionView = document.getElementById('selectedStar');
+					if (selectionView.starDesc)
+					{
+						if (frame.Star.Tags.contains(selectionView.starDesc.id, this.starDesc.id))
+						{
+							frame.Star.Tags.remove(selectionView.starDesc.id, this.starDesc.id);
+						}
+						else
+						{
+							frame.Star.Tags.add(selectionView.starDesc.id, this.starDesc.id);
+						}
+						selectionView.starDesc.tags = frame.Star.Tags.getArray(selectionView.starDesc.id);
+						refreshStarList();
+						refreshStarField();
+					}
+				}
+
+				var toggleStarSelection = function()
+				{
+					if (this.style.backgroundColor == 'rgb(76, 189, 189)')
+					{
+						clearSelection();
+					}
+					else
+					{
+						var selectionView = document.getElementById('selectedStar');
+						selectionView.value = this.mainButton.starDesc.content;
+						selectionView.starDesc = this.mainButton.starDesc;
+						selectionView.disabled = false;
+						selectionView.focus();
+						refreshTagsColors();
+						refreshSelectionHighlight();
+					}
+				}
+
+				// sort and filter list
+				var starsSortFilter = [];
+				for (var i = 0; i < stars.length; ++i)
+				{
+					var star = stars[i];
+					if (
+						contentFilterSubstring &&
+						contentFilterSubstring != '' &&
+						star.content.indexOf(contentFilterSubstring) === -1
+					)
+						continue;
+					starsSortFilter.push(star);
+				}
+				starsSortFilter.sort(function(a,b) { return a.content.localeCompare(b.content); } );
+
+				// fill one by one
+				for (var i = 0; i < starsSortFilter.length; ++i)
+				{
+					var star = starsSortFilter[i];
+					if (
+						contentFilterSubstring &&
+						contentFilterSubstring != '' &&
+						star.content.indexOf(contentFilterSubstring) === -1
+					)
+						continue;
+
+					var starView = document.createElement('button');
+					starView.starDesc = star;
+					starView.textContent = starView.starDesc.content;
+					starView.onclick = toggleStarTag;
+
+					var starSelectView = document.createElement('button');
+					starSelectView.textContent = 'S';
+					starSelectView.mainButton = starView;
+					starSelectView.onclick = toggleStarSelection;
+
+					starListView.appendChild(starView);
+					starListView.appendChild(starSelectView);
+					starListView.appendChild(document.createElement('br'));
+				}
+				refreshTagsColors();
+			}
+
+			function refreshStarField()
+			{
+				var stars = frame.Star.getArray();
+
+				// >> // fill star field
+
+				// clear div content
+				var starFieldView = document.getElementById('starField');
+				while (starFieldView.firstChild)
+				{
+					starFieldView.removeChild(starFieldView.firstChild);
+				}
+
+				// sort stars by vertical lines
+				var starLines = [];
+				// first line - stars with no tags
+				// second line - stars have tags only from first line
+				// third line - stars have tags only from first or second line
+				// etc.
+				var starsToTest = stars;
+				while (starsToTest.length > 0)
+				{
+					var priorLength = starsToTest.length;
+					var currentLine = [];
+					var concreteStars = [];
+					for (var i = 0; i < starsToTest.length; ++i)
+					{
+						var star = starsToTest[i];
+						var isConcrete = false;
+						for (var t = 0; t < star.tags.length; ++t)
+						{
+							var tag = star.tags[t];
+							var tagFound = false;
+							for (var j = 0; j < starsToTest.length; ++j)
+							{
+								if (tag === starsToTest[j].id)
+								{
+									tagFound = true;
+									break;
+								}
+							}
+							if (tagFound)
+							{
+								isConcrete = true;
+								break;
+							}
+						}
+						if (isConcrete)
+						{
+							concreteStars.push(star);
+						}
+						else
+						{
+							currentLine.push(star);
+						}
+					}
+					starLines.push(currentLine);
+					starsToTest = concreteStars;
+					if (priorLength === starsToTest.length)
+					{
+						console.log('WARNING: endless loop detected. force break.');
+						break;
+					}
+				}
+
+				// sort each lines by horizontal order
+				if (starLines.length > 1)
+				{
+					var starOrderedLines = [];
+					starOrderedLines[0] = starLines[0];
+					for (var i = 1; i < starLines.length; ++i)
+					{
+						var dictatorLine = starOrderedLines[i-1];
+						var currentLine = [];
+						var sourceLine = starLines[i];
+
+						// make abstract pattern from dictatorLine
+						var pattern = [];
+						for (var j = 0; j < dictatorLine.length; ++j)
+						{
+							var baseWeight = '';
+							for (var w = 0; w < dictatorLine.length; ++w)
+							{
+								baseWeight += (j == w ? '1' : '0');
+							}
+							var patternElem = {id: dictatorLine[j].id, weight: baseWeight};
+							pattern.push(patternElem);
+						}
+
+						for (var e = 0 ; e < sourceLine.length; ++e)
+						{
+							var star = sourceLine[e];
+
+							star.weight = 0;
+							for (var k = 0 ; k < pattern.length; ++k)
+							{
+								for (var t = 0; t < star.tags.length; ++t)
+								{
+									if (star.tags[t] === pattern[k].id)
+									{
+										star.weight += pattern[k].weight;
+										break;
+									}
+								}
+							}
+							currentLine.push(star);
+						}
+						currentLine.sort(function(a, b) { return -a.weight.localeCompare(b.weight); });
+
+						starOrderedLines[i] = currentLine;
+					}
+					starLines = starOrderedLines;
+				}
+
+				// remember abstract levels count
+				frameAbtractLevelsCount = starLines.length;
+
+				// fill div with sorted content
+
+				var toggleStarSelection = function()
+				{
+					if (this.style.backgroundColor == 'rgb(76, 189, 189)')
+					{
+						clearSelection();
+					}
+					else
+					{
+						var selectionView = document.getElementById('selectedStar');
+						selectionView.value = this.parentNode.starDesc.content;
+						selectionView.starDesc = this.parentNode.starDesc;
+						selectionView.disabled = false;
+						selectionView.focus();
+						refreshTagsColors();
+						refreshSelectionHighlight();
+					}
+				}
+
+				var toggleStarFilterring = function()
+				{
+					if (this.parentNode.hide)
+					{
+						delete shadowStarIds[this.parentNode.starDesc.id];
+					}
+					else
+					{
+						shadowStarIds[this.parentNode.starDesc.id] = true;
+					}
+					refreshStarList();
+					refreshStarField();
+				}
+
+				var hiddenStarIds = {};
+
+				for (var i = 0; i < starLines.length; ++i)
+				{
+					var lineLength = starLines[i].length;
+					for (var j = 0; j < lineLength; ++j)
+					{
+						var currentStar = starLines[i][j];
+						var skipStar = false;
+						if (currentStar.tags.length > 0)
+						{
+							skipStar = true;
+							for (var k = 0; k < currentStar.tags.length; ++k)
+							{
+								var currentTagId = currentStar.tags[k];
+								if (!(currentTagId in shadowStarIds || currentTagId in hiddenStarIds))
+								{
+									skipStar = false;
+									break;
+								}
+							}
+						}
+						if (skipStar)
+						{
+							hiddenStarIds[currentStar.id] = true;
+							continue;
+						}
+
+						var starView = document.createElement('button');
+						starView.starDesc = currentStar;
+						starView.disabled = true;
+
+						var starContentView = document.createElement('button');
+						starContentView.title = getReadableTagsArray(starView.starDesc.tags);
+						starContentView.textContent = starView.starDesc.content;
+						starContentView.onclick = toggleStarFilterring;
+						if (starView.starDesc.id in shadowStarIds)
+						{
+							starView.hide = true;
+							starContentView.style.backgroundColor = colorStarDisabled;
+						}
+
+						var starSelectView = document.createElement('button');
+						starSelectView.textContent = 'S';
+						starSelectView.onclick = toggleStarSelection;
+
+						if (
+							contentFilterSubstring &&
+							contentFilterSubstring != '' &&
+							starView.starDesc.content.indexOf(contentFilterSubstring) === -1
+						)
+						{
+							starContentView.style.color = colorStarContentFilterRejected;
+							starSelectView.style.color = colorStarContentFilterRejected;
+						}
+
+						starView.contentSubButton = starContentView;
+						starView.selectSubButton = starSelectView;
+						starView.appendChild(starContentView);
+						starView.appendChild(starSelectView);
+						starFieldView.appendChild(starView);
+					}
+					starFieldView.appendChild(document.createElement('br'));
+				}
+				refreshSelectionHighlight();
+			}
+
+			function clearFrame()
+			{
+				clearSelection();
+				frame.clear();
+				refreshStarList();
+				refreshStarField();
+			}
+		</script>
+
+	</body>
+</html>

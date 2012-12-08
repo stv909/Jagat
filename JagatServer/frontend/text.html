@@ -77,7 +77,7 @@
 				editor.setShowInvisibles(true);
 
 				var docInstance = null;
-				var docName = 'pad:' + document.location.hash.slice(1);
+				var docName = document.location.hash.slice(1);
 				sharejs.open(
 					docName, 'text',
 					function(error, doc)

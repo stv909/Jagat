@@ -268,7 +268,7 @@ function main()
 	// OT3D object
 	var OT3D = function(eventsController)
 	{
-		var docName = "pad:" + document.location.hash.slice(1);
+		var docName = "scene:" + document.location.hash.slice(1);
 		sharejs.open(
 			docName, 'text',
 			function(error, doc)

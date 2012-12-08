@@ -37,6 +37,15 @@ var server = connect(
 			res.end();
 		});
 
+		app.get('/framestar/?', function(req, res, next)
+		{
+			var frameName;
+			frameName = hat();
+			res.writeHead(303, {location: '/demo02.html#' + frameName});
+			res.write('');
+			res.end();
+		});
+
 		app.get('/?', function(req, res, next)
 		{
 			res.writeHead(302, {location: '/index.html'});

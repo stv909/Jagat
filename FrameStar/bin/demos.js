@@ -13,13 +13,6 @@ var server = connect(
 	connect.favicon(),
 	connect.static(__dirname + '/../frontend'),
 	connect.router(function (app) {
-		app.get('/demo01/?', function(req, res, next)
-		{
-			res.writeHead(303, {location: '/demo01.html'});
-			res.write('');
-			res.end();
-		});
-
 		app.get('/?', function(req, res, next)
 		{
 			res.writeHead(302, {location: '/index.html'});
