@@ -41,7 +41,7 @@ var server = connect(
 		{
 			var frameName;
 			frameName = hat();
-			res.writeHead(303, {location: '/demo02.html#' + frameName});
+			res.writeHead(303, {location: '/fs-demo02.html#' + frameName});
 			res.write('');
 			res.end();
 		});
