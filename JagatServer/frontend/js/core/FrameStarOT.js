@@ -38,6 +38,10 @@ EventsController.prototype.setData = function(text)
 		{
 			console.log('+Data changed and updated successfully.');
 		}
+		if (this.onUpdated)
+		{
+			this.onUpdated(this.jsonObject);
+		}
 	}
 	this.lastUpdateWasSuccessful = updatedResult;
 };
@@ -328,10 +332,11 @@ function FrameOT(frameHashId)
 			{
 				throw new Error('Only text documents can be attached to ace');
 			}
-			eventsController.setData(doc.getText());
-			check();
 			var suppress = false;
 			eventsController.onChange = eventsControllerListener;
+			eventsController.onUpdated = externalUpdateListener;
+			eventsController.setData(doc.getText());
+			check();
 
 			doc.on(
 				'insert',
@@ -382,9 +387,24 @@ function FrameOT(frameHashId)
 				return check();
 			}
 
+			function externalUpdateListener(updatedJsonObject)
+			{
+				//var currentJsonObject = starGetArray();
+				// TODO: compare 2 json objects and modify current to satisfy updated
+
+				// stub
+				starLoadFromArray(updatedJsonObject);
+				// callback to refresh UI on chages
+				if (eventsController.onVisualChanged)
+				{
+					eventsController.onVisualChanged();
+				}
+			}
+
 			doc.detach_ace = function()
 			{
 				eventsController.onChange = null;
+				eventsController.onUpdated = null;
 				return delete doc.detach_ace;
 			};
 
@@ -395,20 +415,28 @@ function FrameOT(frameHashId)
 					case 'frameClear':
 						// apply changes for local data representation
 						frameClear();
+						// actualize data in cache
+						var emptyData = frameSave();
+						eventsController.setData(emptyData);
 						// apply changes for OT subsystem
 						doc.del(0, doc.getText().length);
-						doc.insert(0, frameSave());
+						doc.insert(0, emptyData);
 						break;
 					case 'frameLoad':
 						// apply changes for local data representation
 						frameLoad(change.content);
+						// actualize data in cache
+						var loadedData = frameSave();
+						eventsController.setData(loadedData);
 						// apply changes for OT subsystem
 						doc.del(0, doc.getText().length);
-						doc.insert(0, frameSave());
+						doc.insert(0, loadedData);
 						break;
 					case 'starDestroy':
 						// apply changes for local data representation
 						starDestroy(change.uuid);
+						// actualize data in cache
+						// TODO: implement
 						// apply changes for OT subsystem
 						// TODO: implement code below
 						/*
@@ -421,17 +449,20 @@ function FrameOT(frameHashId)
 					case 'starTagsChange':
 						// TODO: implement case
 						// apply changes for local data representation
+						// actualize data in cache
 						// apply changes for OT subsystem
 						break;
 					case 'starContentChange':
 						// TODO: implement case
 						// apply changes for local data representation
+						// actualize data in cache
 						// apply changes for OT subsystem
 						break;
 					case 'starCreate':
-						// TODO: implement case
 						// apply changes for local data representation
 						var newStar = starCreate();
+						// actualize data in cache
+						// TODO: implement
 						// apply changes for OT subsystem
 						// TODO: implement code below
 						/*
@@ -455,6 +486,11 @@ function FrameOT(frameHashId)
 	var frameClearOT = function()
 	{
 		eventsController.elementChanged();
+	}
+
+	this.SetVisualChengesHandler = function(handler)
+	{
+		eventsController.onVisualChanged = handler;
 	}
 
 	// TODO: implement modifications with OT via ShareJS.Text, use new function in interface
