@@ -105,6 +105,14 @@
 				refreshAllViews();
 			}
 
+			function onStarContentChange(contentEditBox)
+			{
+				if (contentEditBox.starDesc)
+				{
+					setStarContent(contentEditBox.starDesc.id, contentEditBox.value);
+				}
+			}
+
 			function onStarClearTags()
 			{
 				var elem = document.getElementById('selectedStar');
