@@ -1,81 +1,11 @@
-//////////////
-// Uuid Set //
-//////////////
+////////////////////////////////////////////////////
+// Frame Conception + Operational Transformations //
+////////////////////////////////////////////////////
 
-function UuidSet(initElement)
+function FrameOT()
 {
-	var elements = {};
+	// TODO: implement modifications with OT via ShareJS.Text
 
-	this.add = function(uuid)
-	{
-		elements[uuid] = true;
-	};
-
-	if (initElement && initElement.length)
-	{
-		for (var i = 0; i < initElement.length; ++i)
-		{
-			this.add(initElement[i]);
-		}
-	}
-
-	this.contains = function(uuid)
-	{
-		return (uuid in elements);
-	};
-
-	this.remove = function(uuid)
-	{
-		if (this.contains(uuid))
-		{
-			delete elements[uuid];
-		}
-	};
-
-	this.clear = function()
-	{
-		elements = {};
-	};
-
-	this.getArray = function()
-	{
-		var result = [];
-		for (var element in elements)
-		{
-			result.push(element);
-		}
-		return result;
-	};
-}
-
-/////////////////////
-// Star Conception //
-/////////////////////
-
-function GetNewId()
-{
-	function b(a) {return a?(a^Math.random()*16>>a/4).toString(16):([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g,b)}
-	return b();
-}
-
-function StarElement(forceId, forceTags, forceContent)
-{
-	var id = forceId || GetNewId();
-	this.tags = forceTags ? new UuidSet(forceTags) : new UuidSet();
-	this.content = forceContent || null;
-
-	this.getId = function()
-	{
-		return id;
-	};
-}
-
-//////////////////////
-// Frame Conception //
-//////////////////////
-
-function Frame()
-{
 	var starField = {};
 	this.errors = [];
 
