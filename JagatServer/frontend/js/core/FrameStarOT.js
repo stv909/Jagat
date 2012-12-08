@@ -1,11 +1,105 @@
+///////////////////////
+// Events Controller //
+///////////////////////
+
+var EventsController = function()
+{
+	this.textData = '';
+	this.jsonObject = null;
+	this.objectUpdated = false;
+	this.onChange = null;
+	this.lastUpdateWasSuccessful = false;
+};
+
+EventsController.prototype.setData = function(text)
+{
+	if (this.textData === text)
+		return;
+
+	this.textData = text;
+	var json = null;
+	try
+	{
+		json = JSON.parse(this.textData);
+	}
+	catch(e)
+	{
+		json = null;
+		console.log('-Data changed but not updated. Given text is not a correct JSON.');
+	}
+
+	var updatedResult = false;
+	if (json !== null)
+	{
+		this.jsonObject = json;
+		this.objectUpdated = true;
+		updatedResult = true;
+		if (!this.lastUpdateWasSuccessful)
+		{
+			console.log('+Data changed and updated successfully.');
+		}
+	}
+	this.lastUpdateWasSuccessful = updatedResult;
+};
+
+EventsController.prototype.getData = function()
+{
+	return this.textData;
+};
+
+EventsController.prototype.getObject = function()
+{
+	return this.jsonObject;
+};
+
+EventsController.prototype.elementChanged = function(uuid, tags, content)
+{
+	if (this.onChange)
+	{
+		if (!uuid)
+		{
+			if (!content)
+			{
+				this.onChange({'action': 'frameClear'});
+			}
+			else
+			{
+				this.onChange({'action': 'frameLoad', 'content': content});
+			}
+		}
+		else if (!tags && !content)
+		{
+			this.onChange({'action': 'starDestroy', 'uuid': uuid});
+		}
+		else if (!content)
+		{
+			this.onChange({'action': 'starTagsChange', 'uuid': uuid, 'tags': tags});
+		}
+		else if (!tags)
+		{
+			this.onChange({'action': 'starContentChange', 'uuid': uuid, 'content': content});
+		}
+		else
+		{
+			this.onChange({'action': 'starCreate', 'uuid': uuid, 'tags': tags, 'content': content});
+		}
+	}
+};
+
+
 ////////////////////////////////////////////////////
 // Frame Conception + Operational Transformations //
 ////////////////////////////////////////////////////
 
 function FrameOT(frameHashId)
 {
+	var starField = {};
+	this.errors = [];
+
 	var otInstance = null;
 	var frameName = 'frame:' + frameHashId;
+	var eventsController = new EventsController();
+
 	sharejs.open(
 		frameName, 'text',
 		function(error, frame)
@@ -15,14 +109,10 @@ function FrameOT(frameHashId)
 				console.error(error);
 				return;
 			}
+			frame.attach_events(eventsController);
 			otInstance = frame;
 		}
 	);
-
-	// TODO: implement modifications with OT via ShareJS.Text
-
-	var starField = {};
-	this.errors = [];
 
 	// Frame Functions
 
@@ -103,6 +193,16 @@ function FrameOT(frameHashId)
 			);
 		}
 		return result;
+	};
+
+	var starLoadFromArray = function(starArray)
+	{
+		frameClear();
+		for (var i = 0; i < starArray.length; ++i)
+		{
+			var starDesc = starArray[i];
+			starLoad(starDesc.id, starDesc.tags, starDesc.content);
+		}
 	};
 
 	// Tags Functions
@@ -208,16 +308,6 @@ function FrameOT(frameHashId)
 		return star.tags.getArray();
 	};
 
-	var starLoadFromArray = function(starArray)
-	{
-		frameClear();
-		for (var i = 0; i < starArray.length; ++i)
-		{
-			var starDesc = starArray[i];
-			starLoad(starDesc.id, starDesc.tags, starDesc.content);
-		}
-	};
-
 	var tagsClear = function(starId)
 	{
 		var star = starGetById(starId);
@@ -229,11 +319,151 @@ function FrameOT(frameHashId)
 		star.tags.clear();
 	};
 
+	sharejs.extendDoc(
+		"attach_events",
+		function(eventsController)
+		{
+			var doc = this;
+			if (!doc.provides['text'])
+			{
+				throw new Error('Only text documents can be attached to ace');
+			}
+			eventsController.setData(doc.getText());
+			check();
+			var suppress = false;
+			eventsController.onChange = eventsControllerListener;
+
+			doc.on(
+				'insert',
+				function(pos, text)
+				{
+					suppress = true;
+					eventsController.setData(doc.getText()); // TODO: optimize it and use pos, text
+					suppress = false;
+					return check();
+				}
+			);
+
+			doc.on(
+				'delete',
+				function(pos, text)
+				{
+					suppress = true;
+					eventsController.setData(doc.getText()); // TODO: optimize it and use pos, text
+					suppress = false;
+					return check();
+				}
+			);
+
+			function check()
+			{
+				return window.setTimeout(
+					function()
+					{
+						var editorText, otText;
+						editorText = eventsController.getData();
+						otText = doc.getText();
+						if (editorText !== otText)
+						{
+							console.error("Text does not match!");
+							console.error("editor: " + editorText);
+							return console.error("ot:     " + otText);
+						}
+					},
+					0
+				);
+			}
+
+			function eventsControllerListener(change)
+			{
+				if (suppress)
+					return;
+				applyToShareJS(eventsController, change, doc);
+				return check();
+			}
+
+			doc.detach_ace = function()
+			{
+				eventsController.onChange = null;
+				return delete doc.detach_ace;
+			};
+
+			function applyToShareJS(eventsController, change, doc)
+			{
+				switch (change.action)
+				{
+					case 'frameClear':
+						// apply changes for local data representation
+						frameClear();
+						// apply changes for OT subsystem
+						doc.del(0, doc.getText().length);
+						doc.insert(0, frameSave());
+						break;
+					case 'frameLoad':
+						// apply changes for local data representation
+						frameLoad(change.content);
+						// apply changes for OT subsystem
+						doc.del(0, doc.getText().length);
+						doc.insert(0, frameSave());
+						break;
+					case 'starDestroy':
+						// apply changes for local data representation
+						starDestroy(change.uuid);
+						// apply changes for OT subsystem
+						// TODO: implement code below
+						/*
+						if (text block with change.uuid found)
+						{
+							doc.del(text block start position, text block length);
+						}
+						*/
+						break;
+					case 'starTagsChange':
+						// TODO: implement case
+						// apply changes for local data representation
+						// apply changes for OT subsystem
+						break;
+					case 'starContentChange':
+						// TODO: implement case
+						// apply changes for local data representation
+						// apply changes for OT subsystem
+						break;
+					case 'starCreate':
+						// TODO: implement case
+						// apply changes for local data representation
+						var newStar = starCreate();
+						// apply changes for OT subsystem
+						// TODO: implement code below
+						/*
+						doc.insert(position after last object in the doc, text representation of newStar);
+						*/
+						break;
+					default:
+						throw new Error('unknown action: ' + change.action);
+				}
+			}
+		}
+	);
+
+	// OT oriented functions
+
+	var frameLoadOT = function(jsonContent)
+	{
+		eventsController.elementChanged(null, null, jsonContent);
+	}
+
+	var frameClearOT = function()
+	{
+		eventsController.elementChanged();
+	}
+
+	// TODO: implement modifications with OT via ShareJS.Text, use new function in interface
+
 	// Interface
 
-	this.load = frameLoad;
+	this.load = frameLoadOT;
 	this.save = frameSave;
-	this.clear = frameClear;
+	this.clear = frameClearOT;
 
 	this.Star = {};
 	this.Star.create = starCreate;
