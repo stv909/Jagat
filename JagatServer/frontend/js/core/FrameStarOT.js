@@ -2,8 +2,23 @@
 // Frame Conception + Operational Transformations //
 ////////////////////////////////////////////////////
 
-function FrameOT()
+function FrameOT(frameHashId)
 {
+	var otInstance = null;
+	var frameName = 'frame:' + frameHashId;
+	sharejs.open(
+		frameName, 'text',
+		function(error, frame)
+		{
+			if (error)
+			{
+				console.error(error);
+				return;
+			}
+			otInstance = frame;
+		}
+	);
+
 	// TODO: implement modifications with OT via ShareJS.Text
 
 	var starField = {};

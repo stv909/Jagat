@@ -2,6 +2,10 @@
 <html>
 	<head>
 		<title>Frame-Star Demo01: basic functions, multi user mode, UI for collaboration testing.</title>
+
+		<script src="/channel/bcsocket.js"></script>
+		<script src="/share/share.uncompressed.js"></script>
+
 		<script src="js/core/FrameStar.js"></script>
 		<script src="js/core/FrameStarOT.js"></script>
 	</head>
@@ -57,7 +61,7 @@
 		</div>
 
 		<script>
-			var frame = new FrameOT();
+			var frame = new FrameOT(document.location.hash.slice(1));
 			var shadowStarIds = {};
 			var contentFilterSubstring = '';
 			var frameAbtractLevelsCount = 0;
