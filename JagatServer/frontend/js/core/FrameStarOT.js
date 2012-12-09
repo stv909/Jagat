@@ -576,17 +576,27 @@ function FrameOT(frameHashId)
 	var frameLoadOT = function(jsonContent)
 	{
 		eventsController.elementChanged(null, null, jsonContent);
-	}
+	};
 
 	var frameClearOT = function()
 	{
 		eventsController.elementChanged();
-	}
+	};
+
+	var starCreateOT = function()
+	{
+		eventsController.elementChanged('none', 'none', 'none');
+	};
+
+	var starDestroyOT = function(starId)
+	{
+		eventsController.elementChanged(starId, null, null);
+	};
 
 	this.SetVisualChengesHandler = function(handler)
 	{
 		eventsController.onVisualChanged = handler;
-	}
+	};
 
 	// TODO: implement modifications with OT via ShareJS.Text, use new function in interface
 
@@ -597,9 +607,9 @@ function FrameOT(frameHashId)
 	this.clear = frameClearOT;
 
 	this.Star = {};
-	this.Star.create = starCreate;
+	this.Star.create = starCreateOT;
 	this.Star.load = starLoad;
-	this.Star.destroy = starDestroy;
+	this.Star.destroy = starDestroyOT;
 	this.Star.getContent = starGetContent;
 	this.Star.setContent = starSetContent;
 	this.Star.getArray = starGetArray;
