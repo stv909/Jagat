@@ -476,13 +476,16 @@ function FrameOT(frameHashId)
 							var starTextBlockEnd = -1;
 							for (i = indexStarId + 1; i < currentText.length; ++i)
 							{
-								if (currentText[i] === '{')
+								if (braceCount === 0)
 								{
-									if (braceCount === 0)
+									if (currentText[i] === '{' || currentText[i] === ']')
 									{
 										starTextBlockEnd = i;
 										break;
 									}
+								}
+								if (currentText[i] === '{')
+								{
 									++braceCount;
 								}
 								else if (currentText[i] === '}')
@@ -490,13 +493,44 @@ function FrameOT(frameHashId)
 									--braceCount;
 								}
 							}
+							var commaDeletePosition = -1;
+							if (currentText[starTextBlockEnd] === ']')
+							{
+								for (i = starTextBlockStart - 1; i >= 0; --i)
+								{
+									if (currentText[i] === ',')
+									{
+										starTextBlockStart = i + 2;
+										commaDeletePosition = i;
+										break;
+									}
+									else if (currentText[i] === '[')
+									{
+										starTextBlockStart = i + 1;
+										break;
+									}
+								}
+							}
 
 							if (starTextBlockStart > -1 && starTextBlockEnd > -1)
 							{
-								newText = currentText.substring(starTextBlockStart, starTextBlockEnd);
+								newText =
+									currentText.substring(0, starTextBlockStart) +
+									currentText.substring(starTextBlockEnd);
+								if (commaDeletePosition > -1)
+								{
+									newText =
+										newText.substring(0, commaDeletePosition) +
+										newText.substring(commaDeletePosition + 1);
+								}
 								eventsController.setData(newText);
+
 								// apply changes for OT subsystem
-								doc.del(starTextBlockStart, starTextBlockEnd - starTextBlockStart + 1);
+								doc.del(starTextBlockStart, starTextBlockEnd - starTextBlockStart);
+								if (commaDeletePosition > -1)
+								{
+									doc.del(commaDeletePosition, 1);
+								}
 
 								deleteOk = true;
 							}
