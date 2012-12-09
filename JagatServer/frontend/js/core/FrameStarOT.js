@@ -170,6 +170,22 @@ function FrameOT(frameHashId)
 			return null;
 	};
 
+	var starGetContent = function(starId)
+	{
+		var star = starGetById(starId);
+		if (star)
+			return star.content;
+		return null;
+	};
+
+	var starSetContent = function(starId, newContent)
+	{
+		var star = starGetById(starId);
+		if (!star)
+			return;
+		star.content = newContent;
+	};
+
 	var starDestroy = function(starId)
 	{
 		if (starGetById(starId))
@@ -453,7 +469,7 @@ function FrameOT(frameHashId)
 						// apply changes for OT subsystem
 						break;
 					case 'starContentChange':
-						// TODO: implement case
+						// TODO: implement case !!!!
 						// apply changes for local data representation
 						// actualize data in cache
 						// apply changes for OT subsystem
@@ -505,7 +521,8 @@ function FrameOT(frameHashId)
 	this.Star.create = starCreate;
 	this.Star.load = starLoad;
 	this.Star.destroy = starDestroy;
-	this.Star.getById = starGetById; // HACK method. // TODO: replace by setContent/getContent
+	this.Star.getContent = starGetContent;
+	this.Star.setContent = starSetContent;
 	this.Star.getArray = starGetArray;
 	this.Star.fromArray = starLoadFromArray;
 

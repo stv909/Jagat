@@ -115,7 +115,7 @@
 
 			function setStarContent(starId, newContent)
 			{
-				frame.Star.getById(starId).content = newContent;
+				frame.Star.setContent(starId, newContent);
 				refreshStarList();
 				refreshStarField();
 			}
@@ -209,7 +209,11 @@
 				var result = '';
 				for (var i = 0; i < tagsArray.length; ++i)
 				{
-					result += frame.Star.getById(tagsArray[i]).content + '\r\n';
+					if (i > 0)
+					{
+						result += '\r\n';
+					}
+					result += frame.Star.getContent(tagsArray[i]);
 				}
 				return result;
 			}
