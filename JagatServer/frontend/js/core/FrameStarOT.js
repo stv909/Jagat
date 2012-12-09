@@ -452,15 +452,54 @@ function FrameOT(frameHashId)
 						// apply changes for local data representation
 						starDestroy(change.uuid);
 						// actualize data in cache
-						// TODO: implement
-						// apply changes for OT subsystem
-						// TODO: implement code below
-						/*
-						if (text block with change.uuid found)
+						var currentText = eventsController.getData();
+						var searchStarId = '"id": "' + change.uuid + '"';
+						var indexStarId = currentText.indexOf(searchStarId);
+						var deleteOk = false;
+						if (indexStarId > -1)
 						{
-							doc.del(text block start position, text block length);
+							var starTextBlockStart = -1;
+							for (var i = indexStarId - 1; i >= 0; --i)
+							{
+								if (currentText[i] === '{')
+								{
+									starTextBlockStart = i;
+									break;
+								}
+							}
+							var braceCount = 1;
+							var starTextBlockEnd = -1;
+							for (var j = indexStarId + 1; j < currentText.length; ++j)
+							{
+								if (currentText[j] === '{')
+								{
+									if (braceCount === 0)
+									{
+										starTextBlockEnd = j;
+										break;
+									}
+									++braceCount;
+								}
+								else if (currentText[j] === '}')
+								{
+									--braceCount;
+								}
+							}
+
+							if (starTextBlockStart > -1 && starTextBlockEnd > -1)
+							{
+								var newText = currentText.substring(starTextBlockStart, starTextBlockEnd);
+								eventsController.setData(newText);
+								// apply changes for OT subsystem
+								doc.del(starTextBlockStart, starTextBlockEnd - starTextBlockStart + 1);
+
+								deleteOk = true;
+							}
 						}
-						*/
+						if (!deleteOk)
+						{
+							console.log('Error while sync delete star for id: ' + change.uuid);
+						}
 						break;
 					case 'starTagsChange':
 						// TODO: implement case
