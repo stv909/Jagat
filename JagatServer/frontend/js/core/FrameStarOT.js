@@ -544,10 +544,69 @@ function FrameOT(frameHashId)
 						}
 						break;
 					case 'starTagsChange':
-						// TODO: implement case
+						// TODO: implement also clear, add tag, del teg actions. tip: now only refresh action implemented.
+
 						// apply changes for local data representation
+						tagsClear(change.uuid);
+						for (i = 0; i < change.tags.length; ++i)
+						{
+							tagsAdd(change.uuid, change.tags[i]);
+						}
 						// actualize data in cache
-						// apply changes for OT subsystem
+						var assignedTags = tagsGetArray(change.uuid);
+						currentText = eventsController.getData();
+						searchStarId = '"id": "' + change.uuid + '"';
+						indexStarId = currentText.indexOf(searchStarId);
+						var tagsOk = false;
+						if (indexStarId > -1)
+						{
+							var searchTags = '\t\t"tags": ';
+							var indexTags = currentText.indexOf(searchTags, indexStarId);
+							if (indexTags > -1)
+							{
+								var tagsStartIndex = indexTags + searchTags.length;
+								var tagsEndIndex = currentText.indexOf('],', tagsStartIndex);
+								if (tagsStartIndex > -1 && tagsEndIndex++ > -1)
+								{
+									var newTagsNF = JSON.stringify(assignedTags, null, '\t');
+									var newTags = '';
+									var isNewLine = false;
+									for (var ti = 0; ti < newTagsNF.length; ++ti)
+									{
+										if (newTagsNF[ti] === '\r' || newTagsNF[ti] === '\n')
+										{
+											isNewLine = true;
+										}
+										else
+										{
+											if (isNewLine)
+											{
+												newTags += '\t\t';
+											}
+											isNewLine = false;
+										}
+										newTags += newTagsNF[ti];
+									}
+
+									// replace old tags by new ones
+									newText =
+										currentText.substring(0, tagsStartIndex) +
+										newTags +
+										currentText.substring(tagsEndIndex);
+									eventsController.setData(newText);
+
+									// apply changes for OT subsystem
+									doc.del(tagsStartIndex, tagsEndIndex - tagsStartIndex);
+									doc.insert(tagsStartIndex, newTags);
+
+									tagsOk = true;
+								}
+							}
+						}
+						if (!tagsOk)
+						{
+							console.log('Error while sync star change tags for id: ' + change.uuid);
+						}
 						break;
 					case 'starContentChange':
 						// apply changes for local data representation
@@ -561,31 +620,34 @@ function FrameOT(frameHashId)
 						{
 							var searchContent = '\t\t"content": ';
 							var indexContent = currentText.indexOf(searchContent, indexStarId);
-							var contentStartIndex = -1;
-							var contentEndIndex = -1;
-							for (var eolnIndex = indexContent + searchContent.length; eolnIndex < currentText.length; ++eolnIndex)
+							if (indexContent > -1)
 							{
-								if (currentText[eolnIndex] === '\r' || currentText[eolnIndex] === '\n')
+								var contentStartIndex = -1;
+								var contentEndIndex = -1;
+								for (var eolnIndex = indexContent + searchContent.length; eolnIndex < currentText.length; ++eolnIndex)
 								{
-									contentStartIndex = indexContent + searchContent.length;
-									contentEndIndex = eolnIndex;
-									break;
+									if (currentText[eolnIndex] === '\r' || currentText[eolnIndex] === '\n')
+									{
+										contentStartIndex = indexContent + searchContent.length;
+										contentEndIndex = eolnIndex;
+										break;
+									}
 								}
-							}
-							if (contentStartIndex > -1 && contentEndIndex > -1)
-							{
-								var newContent = change.content ? '"' + change.content + '"' : 'null';
-								newText =
-									currentText.substring(0, contentStartIndex) +
-									newContent +
-									currentText.substring(contentEndIndex);
-								eventsController.setData(newText);
+								if (contentStartIndex > -1 && contentEndIndex > -1)
+								{
+									var newContent = change.content ? '"' + change.content + '"' : 'null';
+									newText =
+										currentText.substring(0, contentStartIndex) +
+										newContent +
+										currentText.substring(contentEndIndex);
+									eventsController.setData(newText);
 
-								// apply changes for OT subsystem
-								doc.del(contentStartIndex, contentEndIndex - contentStartIndex);
-								doc.insert(contentStartIndex, newContent);
+									// apply changes for OT subsystem
+									doc.del(contentStartIndex, contentEndIndex - contentStartIndex);
+									doc.insert(contentStartIndex, newContent);
 
-								editOk = true;
+									editOk = true;
+								}
 							}
 						}
 						if (!editOk)
@@ -697,12 +759,36 @@ function FrameOT(frameHashId)
 		eventsController.elementChanged(starId, null, content);
 	};
 
+	var tagsAddOT = function(starId, tagId)
+	{
+		var newTags = tagsGetArray(starId);
+		newTags.push(tagId);
+		eventsController.elementChanged(starId, newTags, null);
+	};
+
+	var tagsRemoveOT = function(starId, tagId)
+	{
+		var newTags = [];
+		var currentTags = tagsGetArray(starId);
+		for (var i = 0; i < currentTags.length; ++i)
+		{
+			if (currentTags[i] !== tagId)
+			{
+				newTags.push(currentTags[i]);
+			}
+		}
+		eventsController.elementChanged(starId, newTags, null);
+	};
+
+	var tagsClearOT = function(starId)
+	{
+		eventsController.elementChanged(starId, [], null);
+	};
+
 	this.SetVisualChengesHandler = function(handler)
 	{
 		eventsController.onVisualChanged = handler;
 	};
-
-	// TODO: implement modifications with OT via ShareJS.Text, use new function in interface
 
 	// Interface
 
@@ -717,13 +803,13 @@ function FrameOT(frameHashId)
 	this.Star.getContent = starGetContent;
 	this.Star.setContent = starSetContentOT;
 	this.Star.getArray = starGetArray;
-	this.Star.fromArray = starLoadFromArray;
+	this.Star.fromArray = starLoadFromArray; // TODO: make OT
 
 	this.Star.Tags = {};
 	this.Star.Tags.isValid = tagsIsValid;
-	this.Star.Tags.add = tagsAdd;
-	this.Star.Tags.remove = tagsRemove;
+	this.Star.Tags.add = tagsAddOT;
+	this.Star.Tags.remove = tagsRemoveOT;
 	this.Star.Tags.contains = tagsContains;
 	this.Star.Tags.getArray = tagsGetArray;
-	this.Star.Tags.clear = tagsClear;
+	this.Star.Tags.clear = tagsClearOT;
 }
