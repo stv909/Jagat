@@ -205,7 +205,7 @@ function FrameOT(frameHashId)
 			tags: star.tags.getArray(),
 			content: star.content
 		};
-	}
+	};
 
 	var starGetArray = function()
 	{
@@ -431,6 +431,9 @@ function FrameOT(frameHashId)
 				var i = 0;
 				var currentText = '';
 				var newText = '';
+				var searchStarId = '';
+				var indexStarId = 0;
+
 				switch (change.action)
 				{
 					case 'frameClear':
@@ -458,8 +461,8 @@ function FrameOT(frameHashId)
 						starDestroy(change.uuid);
 						// actualize data in cache
 						currentText = eventsController.getData();
-						var searchStarId = '"id": "' + change.uuid + '"';
-						var indexStarId = currentText.indexOf(searchStarId);
+						searchStarId = '"id": "' + change.uuid + '"';
+						indexStarId = currentText.indexOf(searchStarId);
 						var deleteOk = false;
 						if (indexStarId > -1)
 						{
@@ -547,31 +550,69 @@ function FrameOT(frameHashId)
 						// apply changes for OT subsystem
 						break;
 					case 'starContentChange':
-						// TODO: implement case !!!!
 						// apply changes for local data representation
+						starSetContent(change.uuid, change.content);
 						// actualize data in cache
-						// apply changes for OT subsystem
+						currentText = eventsController.getData();
+						searchStarId = '"id": "' + change.uuid + '"';
+						indexStarId = currentText.indexOf(searchStarId);
+						var editOk = false;
+						if (indexStarId > -1)
+						{
+							var searchContent = '\t\t"content": ';
+							var indexContent = currentText.indexOf(searchContent, indexStarId);
+							var contentStartIndex = -1;
+							var contentEndIndex = -1;
+							for (var eolnIndex = indexContent + searchContent.length; eolnIndex < currentText.length; ++eolnIndex)
+							{
+								if (currentText[eolnIndex] === '\r' || currentText[eolnIndex] === '\n')
+								{
+									contentStartIndex = indexContent + searchContent.length;
+									contentEndIndex = eolnIndex;
+									break;
+								}
+							}
+							if (contentStartIndex > -1 && contentEndIndex > -1)
+							{
+								var newContent = change.content ? '"' + change.content + '"' : 'null';
+								newText =
+									currentText.substring(0, contentStartIndex) +
+									newContent +
+									currentText.substring(contentEndIndex);
+								eventsController.setData(newText);
+
+								// apply changes for OT subsystem
+								doc.del(contentStartIndex, contentEndIndex - contentStartIndex);
+								doc.insert(contentStartIndex, newContent);
+
+								editOk = true;
+							}
+						}
+						if (!editOk)
+						{
+							console.log('Error while sync star change content for id: ' + change.uuid);
+						}
 						break;
 					case 'starCreate':
 						// apply changes for local data representation
-						var newStar = starCreate();
+						var newStar = starLoad(change.uuid, null, null);
 						// actualize data in cache
 						var starDesc = [];
 						starDesc.push(starGetDesc(newStar));
-						var starTextBlock = JSON.stringify(newStar, null, '\t');
+						var starTextBlock = JSON.stringify(starDesc, null, '\t');
 						var tbStart = -1;
 						for (i = 0; i < starTextBlock.length; ++i)
 						{
-							if (starTextBlock[i] === '\t')
+							if (starTextBlock[i] === '[')
 							{
-								tbStart = i;
+								tbStart = i + 1;
 								break;
 							}
 						}
 						var tbEnd = -1;
 						for (i = starTextBlock.length - 1; i >= 0; --i)
 						{
-							if (starTextBlock[i] === '}')
+							if (starTextBlock[i] === ']')
 							{
 								tbEnd = i;
 								break;
@@ -580,23 +621,29 @@ function FrameOT(frameHashId)
 						starTextBlock = starTextBlock.substring(tbStart, tbEnd);
 
 						currentText = eventsController.getData();
-						var currentEnd = -1;
+						var currentStarEnd = -1;
+						var currentFrameEnd = -1;
 						for (i = currentText.length - 1; i >= 0; --i)
 						{
 							if (currentText[i] === ']')
 							{
-								currentEnd = i;
+								currentFrameEnd = i;
+							}
+							else if (currentText[i] === '}')
+							{
+								currentStarEnd = i + 1;
 								break;
 							}
 						}
 						newText =
-							currentText.substring(0, currentEnd - 1) +
+							currentText.substring(0, currentStarEnd) +
 							',' + starTextBlock +
-							currentText.substring(currentEnd);
+							currentText.substring(currentFrameEnd);
 						eventsController.setData(newText);
 
 						// apply changes for OT subsystem
-						doc.insert(currentEnd, ',' + starTextBlock);
+						// TODO: fix last <BR>
+						doc.insert(currentStarEnd, ',' + starTextBlock);
 						break;
 					default:
 						throw new Error('unknown action: ' + change.action);
@@ -619,12 +666,19 @@ function FrameOT(frameHashId)
 
 	var starCreateOT = function()
 	{
-		eventsController.elementChanged('none', 'none', 'none');
+		var newId = GetNewId();
+		eventsController.elementChanged(newId, 'none', 'none');
+		return starGetById(newId);
 	};
 
 	var starDestroyOT = function(starId)
 	{
 		eventsController.elementChanged(starId, null, null);
+	};
+
+	var starSetContentOT = function(starId, content)
+	{
+		eventsController.elementChanged(starId, null, content);
 	};
 
 	this.SetVisualChengesHandler = function(handler)
@@ -645,7 +699,7 @@ function FrameOT(frameHashId)
 	this.Star.load = starLoad;
 	this.Star.destroy = starDestroyOT;
 	this.Star.getContent = starGetContent;
-	this.Star.setContent = starSetContent;
+	this.Star.setContent = starSetContentOT;
 	this.Star.getArray = starGetArray;
 	this.Star.fromArray = starLoadFromArray;
 

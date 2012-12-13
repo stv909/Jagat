@@ -158,7 +158,7 @@
 			function createStar(content)
 			{
 				var newStar = frame.Star.create();
-				newStar.content = content;
+				frame.Star.setContent(newStar.getId(), content);
 				refreshStarList();
 				refreshStarField();
 			}
@@ -340,12 +340,26 @@
 					if (
 						contentFilterSubstring &&
 						contentFilterSubstring != '' &&
-						star.content.indexOf(contentFilterSubstring) === -1
+						(
+							!star.content ||
+							star.content.indexOf(contentFilterSubstring) === -1
+						)
 					)
 						continue;
 					starsSortFilter.push(star);
 				}
-				starsSortFilter.sort(function(a,b) { return a.content.localeCompare(b.content); } );
+				starsSortFilter.sort(
+					function(a, b)
+					{
+						if (a.content && b.content)
+							return a.content.localeCompare(b.content);
+						if (a.content)
+							return 1;
+						if (b.content)
+							return -1;
+						return 0;
+					}
+				);
 
 				// fill one by one
 				for (var i = 0; i < starsSortFilter.length; ++i)
@@ -354,7 +368,10 @@
 					if (
 						contentFilterSubstring &&
 						contentFilterSubstring != '' &&
-						star.content.indexOf(contentFilterSubstring) === -1
+						(
+							!star.content ||
+							star.content.indexOf(contentFilterSubstring) === -1
+						)
 					)
 						continue;
 
@@ -575,7 +592,10 @@
 						if (
 							contentFilterSubstring &&
 							contentFilterSubstring != '' &&
-							starView.starDesc.content.indexOf(contentFilterSubstring) === -1
+							(
+								!star.content ||
+								starView.starDesc.content.indexOf(contentFilterSubstring) === -1
+							)
 						)
 						{
 							starContentView.style.color = colorStarContentFilterRejected;
