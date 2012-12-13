@@ -610,40 +610,56 @@ function FrameOT(frameHashId)
 							}
 						}
 						var tbEnd = -1;
+						var tbAltEnd = -1;
 						for (i = starTextBlock.length - 1; i >= 0; --i)
 						{
 							if (starTextBlock[i] === ']')
 							{
-								tbEnd = i;
+								tbAltEnd = i;
+							}
+							else if (starTextBlock[i] === '}')
+							{
+								tbEnd = i + 1;
 								break;
 							}
 						}
-						starTextBlock = starTextBlock.substring(tbStart, tbEnd);
 
 						currentText = eventsController.getData();
-						var currentStarEnd = -1;
-						var currentFrameEnd = -1;
+						var currentEnd = -1;
 						for (i = currentText.length - 1; i >= 0; --i)
 						{
-							if (currentText[i] === ']')
+							if (currentText[i] === '}')
 							{
-								currentFrameEnd = i;
-							}
-							else if (currentText[i] === '}')
-							{
-								currentStarEnd = i + 1;
+								currentEnd = i + 1;
 								break;
 							}
 						}
+						if (currentEnd === -1)
+						{
+							// case of empty frame
+							for (i = currentText.length - 1; i >= 0; --i)
+							{
+								if (currentText[i] === ']')
+								{
+									currentEnd = i;
+									break;
+								}
+							}
+							starTextBlock = starTextBlock.substring(tbStart, tbAltEnd);
+						}
+						else
+						{
+							// case of frame with 1+ stars
+							starTextBlock = ',' + starTextBlock.substring(tbStart, tbEnd);
+						}
 						newText =
-							currentText.substring(0, currentStarEnd) +
-							',' + starTextBlock +
-							currentText.substring(currentFrameEnd);
+							currentText.substring(0, currentEnd) +
+							starTextBlock+
+							currentText.substring(currentEnd);
 						eventsController.setData(newText);
 
 						// apply changes for OT subsystem
-						// TODO: fix last <BR>
-						doc.insert(currentStarEnd, ',' + starTextBlock);
+						doc.insert(currentEnd, starTextBlock);
 						break;
 					default:
 						throw new Error('unknown action: ' + change.action);
