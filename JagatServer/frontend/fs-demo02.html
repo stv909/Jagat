@@ -11,12 +11,13 @@
 	</head>
 	<body>
 		<div id="starControl" style="width:100%; text-align:center">
+			Star:
 			<input id="newStarContent" type="text" name="starContent" onKeyUp="handleInputEnter(event);" onInput="handleContentFilter(this.value);" />
 			<button onClick = "clearNewStarContent();">
 				X
 			</button>
 			<button onClick = "createNewStar();">
-				Create Star
+				Create
 			</button>
 		</div>
 
@@ -28,26 +29,29 @@
 				Refresh Frame
 			</button>
 			<br>
-			<button onClick = "saveFrameExchange();">
-				Save Frame
+			Click:
+			<button onClick = "function() {};">
+				Hide/Show
 			</button>
-			<button onClick = "loadFrameExchange();">
-				Load Frame
+			Priority:
+			<button onClick = "function() {};">
+				Hide/Show
 			</button>
-			<br>
-			<textarea  id="serializationExchange" cols="32" rows="4" wrap="off" -webkit-tab-size="4" tab-size"4"></textarea>
 		</div>
 
 		<div style="width:100%;">
-			<div style="float:left; width:15%;">
+			<div style="float:left; width:25%;">
 				<div id="selectionPanel">
 					Selection:<br>
-					<input id="selectedStar" type="text" disabled onInput="onStarContentChange(this);" />
+					<input id="selectedStar" type="text" onInput="onStarContentChange(this);" />
+					<button id="selectedStar_ClearStarContent" onClick="onStarClearContent();">
+						X
+					</button>
 					<button id="selectedStar_ClearTags" onClick="onStarClearTags();">
-						0
+						^
 					</button>
 					<button id="selectedStar_Delete" onClick="onDeleteStar();">
-						X
+						Delete
 					</button>
 				</div>
 				<div>
@@ -56,7 +60,7 @@
 				<div id="starList">
 				</div>
 			</div>
-			<div id="starField" style="float:right; width:85%; white-space:nowrap; text-align:center;">
+			<div id="starField" style="float:right; width:75%; white-space:nowrap; text-align:center;">
 			</div>
 		</div>
 
@@ -89,7 +93,7 @@
 			{
 				var elem = document.getElementById('newStarContent');
 				elem.focus();
-				createStar(elem.value);
+				createStar(elem.value && elem.value !== '' ? elem.value : null);
 			}
 
 			function refreshAllViews()
@@ -98,17 +102,12 @@
 				refreshStarField();
 			}
 
-			function saveFrameExchange()
+			function onStarClearContent()
 			{
-				var target = document.getElementById('serializationExchange');
-				target.value = frame.save();
-			}
-
-			function loadFrameExchange()
-			{
-				var target = document.getElementById('serializationExchange');
-				frame.load(target.value);
-				refreshAllViews();
+				if (contentEditBox.starDesc)
+				{
+					frame.Star.setContent(contentEditBox.starDesc.id, null);
+				}
 			}
 
 			function onStarContentChange(contentEditBox)
@@ -141,7 +140,8 @@
 			{
 				if (event.keyCode === 13)
 				{
-					createStar(document.getElementById('newStarContent').value);
+					var elem = document.getElementById('newStarContent');
+					createStar(elem.value && elem.value !== '' ? elem.value : null);
 					// TODO: push value in history combo box
 					event.srcElement.value = '';
 					handleContentFilter('');
@@ -261,7 +261,6 @@
 				var selectionView = document.getElementById('selectedStar');
 				selectionView.starDesc = null;
 				selectionView.value = '';
-				selectionView.disabled = true;
 				refreshTagsColors();
 				refreshSelectionHighlight();
 			}
@@ -325,7 +324,6 @@
 						var selectionView = document.getElementById('selectedStar');
 						selectionView.value = this.mainButton.starDesc.content;
 						selectionView.starDesc = this.mainButton.starDesc;
-						selectionView.disabled = false;
 						selectionView.focus();
 						refreshTagsColors();
 						refreshSelectionHighlight();
@@ -522,7 +520,6 @@
 						var selectionView = document.getElementById('selectedStar');
 						selectionView.value = this.parentNode.starDesc.content;
 						selectionView.starDesc = this.parentNode.starDesc;
-						selectionView.disabled = false;
 						selectionView.focus();
 						refreshTagsColors();
 						refreshSelectionHighlight();
