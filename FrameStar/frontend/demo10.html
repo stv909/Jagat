@@ -5,5 +5,17 @@
 		<script src="coreStreams/Frame.js"></script>
 	</head>
 	<body>
+		<button onClick = "console.log(new Uuid().generate());">
+			New
+		</button>
+		<button onClick = "console.log(new Uuid().empty);">
+			Empty
+		</button>
+		<button onClick = "var node = new Node(); console.log(node);">
+			New Node
+		</button>
+		<button onClick = "var node = new Node('0000', {'0001':'0002', '0003':'0004'}, 'c@n+e#t'); console.log(node);">
+			Init Node
+		</button>
 	</body>
 </html>
