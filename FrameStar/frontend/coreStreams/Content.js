@@ -1,0 +1,5 @@
+////////////////////////
+// Content Conception //
+////////////////////////
+
+// TODO: write content conception and implementations
