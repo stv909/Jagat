@@ -162,7 +162,7 @@ function TagsControl(initAtoms)
 		{
 			if (linkNodeId in nodeAtoms[i].tags)
 				continue;
-			nodeAtoms[i].tags[linkNodeId] = [];
+			nodeAtoms[i].tags[linkNodeId] = {};
 		}
 	};
 
@@ -238,7 +238,7 @@ function TagTypesControl(initAtoms, initLinkNodeId)
 		{
 			if (linkNodeId in nodeAtoms[i].tags)
 			{
-				nodeAtoms[i].tags[linkNodeId] = [];
+				nodeAtoms[i].tags[linkNodeId] = {};
 			}
 		}
 	};
@@ -344,10 +344,63 @@ function FrameLister(initFrame)
 	// It allows to analize whole structure of the frame nodes and make decision.
 	// * getNodes - get dictionary of all frame's node ids.
 	// * stringify - returns JSON representation of the frame structure.
-	////////////////////////////////////////////////////////////////////////*/
+	/////////////////////////////////////////////////////////////////////////////////////*/
 }
 
-function FrameContextControl(initFrame)
+function FrameFilter(initFrame)
+{
+	var frame = initFrame;
+
+	var getFrameNodesFilteredList = function(needsTagLinkNodeId, needsTagTypeNodeId)
+	{
+		var result = {};
+		for (var i = 0; i < frame.atoms.length; ++i)
+		{
+			var atomFits = false;
+			if (needsTagLinkNodeId)
+			{
+				if (needsTagLinkNodeId in frame.atoms[i].tags)
+				{
+					atomFits = !needsTagTypeNodeId ? true:
+						(
+							needsTagTypeNodeId in frame.atoms[i].tags[needsTagLinkNodeId] &&
+							frame.atoms[i].tags[needsTagLinkNodeId][needsTagTypeNodeId]
+						);
+				}
+			}
+			else if (needsTagTypeNodeId)
+			{
+				for (var linkNodeId in frame.atoms[i].tags)
+				{
+					if (
+						needsTagTypeNodeId in frame.atoms[i].tags[linkNodeId] &&
+						frame.atoms[i].tags[linkNodeId][needsTagTypeNodeId]
+					)
+					{
+						atomFits = true;
+						break;
+					}
+				}
+			}
+			if (atomFits)
+			{
+				result[frame.atoms[i].id] = true;
+			}
+		}
+		return result;
+	};
+
+	this.filterNodes = getFrameNodesFilteredList;
+
+	/* Description:
+	//
+	// Filter provides read-only access to features of entire frame limited by
+	// condition for presence or absence of nodes' links and types.
+	// * filterNodes - get list of nodes with given tag defined by link and/or type nodes.
+	/////////////////////////////////////////////////////////////////////////////////////*/
+}
+
+function FrameControl(initFrame)
 {
 	var frame = initFrame;
 
