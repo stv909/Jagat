@@ -81,8 +81,6 @@ function Atom(initId, initTags, initContent)
 	// TODO: think about better conception of Node.content.
 	///////////////////////////////////////////////////////////////////////////////*/
 
-// TODO: update all comments below
-
 /////////////////////////
 // Node Implementation //
 /////////////////////////
@@ -135,13 +133,14 @@ function NodeControl(initAtoms)
 	this.getContent = getNodeContent;
 	this.setContent = setNodeContent;
 
-	/* Description: // TODO: write it.
+	/* Description:
 	//
-	// * getTags - ...
-	// * getTagsControl - ...
-	// * getContent - ...
-	// * setContent - ...
-	*/
+	// * getTags - get list of node ids that assigned as tags (link nodes)
+	//             for current node.
+	// * getTagsControl - get controller for tags of current node.
+	// * getContent - get content array for current node.
+	// * setContent - set content array for current node.
+	/////////////////////////////////////////////////////////////////////*/
 }
 
 function TagsControl(initAtoms)
@@ -217,14 +216,14 @@ function TagsControl(initAtoms)
 	this.getTagTypesList = getNodeTagTypesList;
 	this.getTagTypesControl = getNodeTagTypesControl;
 
-	/* Description: // TODO: write it.
+	/* Description:
 	//
-	// * clear - ...
-	// * add - ...
-	// * remove - ...
-	// * getTagTypesList - ...
-	// * getTagTypesControl - ...
-	*/
+	// * clear - delete all assigned tags.
+	// * add - add new tag - with default type.
+	// * remove - remove specified tag.
+	// * getTagTypesList - get list of types for specified tag.
+	// * getTagTypesControl - get controller for specified tag.
+	//////////////////////////////////////////////////////////*/
 }
 
 function TagTypesControl(initAtoms, initLinkNodeId)
@@ -289,15 +288,13 @@ function TagTypesControl(initAtoms, initLinkNodeId)
 	this.remove = removeTagType;
 	this.setActive = setActiveTagType;
 
-	/* Description: // TODO: write it.
-	// * clear - ...
-	// * add - ...
-	// * remove - ...
-	// * setActive - ...
-	/////////////////////////////////*/
+	/* Description:
+	// * clear - delete all link types assigned to tag.
+	// * add - add new link type to tag.
+	// * remove - remove specified link type to tag.
+	// * setActive - activate/deactivate link type of tag.
+	/////////////////////////////////////////////////////*/
 }
-
-// TODO: update all comments above
 
 //////////////////////
 // Frame Conception //
@@ -344,7 +341,7 @@ function FrameLister(initFrame)
 	// It allows to analize whole structure of the frame nodes and make decision.
 	// * getNodes - get dictionary of all frame's node ids.
 	// * stringify - returns JSON representation of the frame structure.
-	/////////////////////////////////////////////////////////////////////////////////////*/
+	////////////////////////////////////////////////////////////////////////////*/
 }
 
 function FrameFilter(initFrame)
