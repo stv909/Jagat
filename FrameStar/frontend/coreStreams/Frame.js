@@ -42,8 +42,10 @@ function Atom(initId, initTags, initContent)
 	/* Description:
 	//
 	// * id - unique identifier of the Node in UUID v4 format
-	// * tags - set of pairs <link nodeId>: [<type_of_link nodeId 01>, <type_of_link nodeId 01>, ...]
+	// * tags - set of pairs <link nodeId>: {<type_of_link nodeId 01>: true, <type_of_link nodeId 02>: true, ...}
 	// * content - link to arbitary information that this node atom contanes
+	// If (<type_of_link nodeId 0i>: false) then 0i link type is inactive.
+	// TODO: think about implementation of tags by hash list.
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 	// Example:
 	//
@@ -52,30 +54,33 @@ function Atom(initId, initTags, initContent)
 	//   id: '876baa28-1cb2-44c3-add8-17baa7cd2652',
 	//   tags:
 	//   {
-	//     af35c5e6-0e43-41f8-aedf-f67deff8ff39: [],
-	//     29cb7b44-0e43-41f8-aedf-f67deff8ff39: ['e6898f75-a09d-4e66-952e-12ef0c0c9a4b'],
-	//     6fbc1e1d-e401-49d1-8021-af35c5e6be33: ['e6898f75-a09d-4e66-952e-12ef0c0c9a4b', '585d5bad-8e79-45f6-8429-ebd765dec61e'],
-	//     c67ef986-e57f-4b7d-ac98-4845543483e9: ['585d5bad-8e79-45f6-8429-ebd765dec61e']
+	//     af35c5e6-0e43-41f8-aedf-f67deff8ff39: {},
+	//     29cb7b44-0e43-41f8-aedf-f67deff8ff39: {e6898f75-a09d-4e66-952e-12ef0c0c9a4b: true},
+	//     6fbc1e1d-e401-49d1-8021-af35c5e6be33: {e6898f75-a09d-4e66-952e-12ef0c0c9a4b: true,
+	//                                            585d5bad-8e79-45f6-8429-ebd765dec61e: true},
+	//     c67ef986-e57f-4b7d-ac98-4845543483e9: {585d5bad-8e79-45f6-8429-ebd765dec61e: true}
 	//   },
 	//   content: 'main node'
 	// }
 	//
 	// where 'af35c5e6', '29cb7b44...', '6fbc1e1d...', 'c67ef986...',
 	//       'e6898f75...', '585d5bad...' are valid nodes;
-	// [] - common type for basic tag links.
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+	// {} - common type for basic tag links.
+	/////////////////////////////////////////////////////////////////////////////////////////*/
 }
 
 /////////////////////
 // Node Conception //
 /////////////////////
 
-/* Description:
-//
-// Node = Atom01 + Atom02 + ... + Atom0N,
-// where Node.id === Atom0i.id, Node.tags === union of Atom0i.tags,
-//       Node.content === [Atom01.content, Atom02.content, ..., Atom0N.content] // TODO: think about better conception.
-*/
+	/* Description:
+	//
+	// Node = Atom01 + Atom02 + ... + Atom0N,
+	// where Node.id === Atom0i.id,
+	//       Node.tags === union of Atom0i.tags,
+	//       Node.content === [Atom01.content, Atom02.content, ..., Atom0N.content];
+	// TODO: think about better conception of Node.content.
+	///////////////////////////////////////////////////////////////////////////////*/
 
 /////////////////////////
 // Node Implementation //
@@ -105,9 +110,18 @@ function NodeControl(initAtoms)
 		}
 	};
 
-	var getNodeTagsAnalizer = function()
+	var getNodeTagsList = function()
 	{
-		return new TagsAnalizer(nodeAtoms);
+		var result = {};
+		for (var i = 0; i < nodeAtoms.length; ++i)
+		{
+			var nodeTags = nodeAtoms[i].tags;
+			for (var tag in nodeTags)
+			{
+				result[tag] = true;
+			}
+		}
+		return result;
 	};
 
 	var getNodeTagsControl = function()
@@ -115,36 +129,18 @@ function NodeControl(initAtoms)
 		return new TagsControl(nodeAtoms);
 	};
 
-	this.getTagsAnalizer = getNodeTagsAnalizer;
+	this.getTags = getNodeTagsList;
 	this.getTagsControl = getNodeTagsControl;
 	this.getContent = getNodeContent;
 	this.setContent = setNodeContent;
 
 	/* Description: // TODO: write it.
 	//
-	// * getTagsAnalizer - ...
+	// * getTags - ...
 	// * getTagsControl - ...
 	// * getContent - ...
 	// * setContent - ...
 	*/
-}
-
-function TagsAnalizer(initAtoms)
-{
-	var nodeAtoms = initAtoms;
-
-	var iterateTags = function(processTag)
-	{
-		for (var i = 0; i < nodeAtoms.length; ++i)
-		{
-			for (var tagClone in nodeAtoms[i].tags)
-			{
-				processTag(tagClone);
-			}
-		}
-	};
-
-	this.iterate = iterateTags;
 }
 
 function TagsControl(initAtoms)
@@ -164,11 +160,9 @@ function TagsControl(initAtoms)
 		for (var i = 0; i < nodeAtoms.length; ++i)
 		{
 			if (linkNodeId in nodeAtoms[i].tags)
-				return;
+				continue;
+			nodeAtoms[i].tags[linkNodeId] = [];
 		}
-		// TODO: decide somehow in what atom should be tag link added
-		// STUB: add tag to 0-th atom only
-		nodeAtoms[0].tags[linkNodeId] = [];
 	};
 
 	var removeTag = function(linkNodeId)
@@ -182,14 +176,28 @@ function TagsControl(initAtoms)
 		}
 	};
 
-	var getNodeTagTypesAnalizer = function(linkNodeId)
+	var getNodeTagTypesList = function(linkNodeId)
 	{
+		var result = {};
 		for (var i = 0; i < nodeAtoms.length; ++i)
 		{
 			if (linkNodeId in nodeAtoms[i].tags)
-				return new TagTypesAnalizer(nodeAtoms, linkNodeId);
+			{
+				var tagTypes = nodeAtoms[i].tags[linkNodeId];
+				for (var tagType in tagTypes)
+				{
+					if (tagType in result)
+					{
+						result[tagType] = result[tagType] || tagTypes[tagType];
+					}
+					else
+					{
+						result[tagType] = tagTypes[tagType];
+					}
+				}
+			}
 		}
-		return null;
+		return result;
 	};
 
 	var getNodeTagTypesControl = function(linkNodeId)
@@ -205,42 +213,31 @@ function TagsControl(initAtoms)
 	this.clear = clearTags;
 	this.add = addTag;
 	this.remove = removeTag;
-	this.getTagTypesAnalizer = getNodeTagTypesAnalizer;
+	this.getTagTypesList = getNodeTagTypesList;
 	this.getTagTypesControl = getNodeTagTypesControl;
-}
 
-function TagTypesAnalizer(initAtoms, initLinkNodeId)
-{
-	var nodeAtoms = initAtoms;
-	var linkId = initLinkNodeId;
-
-	var iterateTagTypes = function(processTagType)
-	{
-		for (var i = 0; i < nodeAtoms.length; ++i)
-		{
-			if (linkId in nodeAtoms[i].tags)
-			{
-				var tagTypesClone = nodeAtoms[i].tags[linkId].slice(0);
-				processTagType(tagTypesClone);
-			}
-		}
-	};
-
-	this.iterate = iterateTagTypes;
+	/* Description: // TODO: write it.
+	//
+	// * clear - ...
+	// * add - ...
+	// * remove - ...
+	// * getTagTypesList - ...
+	// * getTagTypesControl - ...
+	*/
 }
 
 function TagTypesControl(initAtoms, initLinkNodeId)
 {
 	var nodeAtoms = initAtoms;
-	var linkId = initLinkNodeId;
+	var linkNodeId = initLinkNodeId;
 
 	var clearTagTypes = function()
 	{
 		for (var i = 0; i < nodeAtoms.length; ++i)
 		{
-			if (linkId in nodeAtoms[i].tags)
+			if (linkNodeId in nodeAtoms[i].tags)
 			{
-				nodeAtoms[i].tags[linkId] = [];
+				nodeAtoms[i].tags[linkNodeId] = [];
 			}
 		}
 	};
@@ -249,13 +246,9 @@ function TagTypesControl(initAtoms, initLinkNodeId)
 	{
 		for (var i = 0; i < nodeAtoms.length; ++i)
 		{
-			// TODO: decide somehow in what atom should be tag link added
-			// TODO: check if newTagType already exists
-			// STUB: add tag type in the first atom with needed tag
-			if (linkId in nodeAtoms[i].tags)
+			if (linkNodeId in nodeAtoms[i].tags)
 			{
-				nodeAtoms[i].tags[linkId].push(typeNodeId);
-				break;
+				nodeAtoms[i].tags[linkNodeId][typeNodeId] = true;
 			}
 		}
 	};
@@ -264,16 +257,28 @@ function TagTypesControl(initAtoms, initLinkNodeId)
 	{
 		for (var i = 0; i < nodeAtoms.length; ++i)
 		{
-			if (linkId in nodeAtoms[i].tags)
+			var atomTags = nodeAtoms[i].tags;
+			if (
+				linkNodeId in atomTags &&
+				typeNodeId in atomTags[linkNodeId]
+			)
 			{
-				var tagTypes = nodeAtoms[i].tags[linkId];
-				for (var j = tagTypes.length; j >= 0; --j)
-				{
-					if (tagTypes[j] === typeNodeId)
-					{
-						tagTypes.splice(j, 1);
-					}
-				}
+				delete atomTags[linkNodeId][typeNodeId];
+			}
+		}
+	};
+
+	var setActiveTagType = function(typeNodeId, isActive)
+	{
+		for (var i = 0; i < nodeAtoms.length; ++i)
+		{
+			var atomTags = nodeAtoms[i].tags;
+			if (
+				linkNodeId in atomTags &&
+				typeNodeId in atomTags[linkNodeId]
+			)
+			{
+				atomTags[linkNodeId][typeNodeId] = isActive;
 			}
 		}
 	};
@@ -281,6 +286,14 @@ function TagTypesControl(initAtoms, initLinkNodeId)
 	this.clear = clearTagTypes;
 	this.add = addTagType;
 	this.remove = removeTagType;
+	this.setActive = setActiveTagType;
+
+	/* Description: // TODO: write it.
+	// * clear - ...
+	// * add - ...
+	// * remove - ...
+	// * setActive - ...
+	/////////////////////////////////*/
 }
 
 //////////////////////
@@ -300,17 +313,18 @@ function Frame(initAtoms)
 // Frame Implementation //
 //////////////////////////
 
-function FrameAnalizer(initFrame)
+function FrameLister(initFrame)
 {
 	var frame = initFrame;
 
-	var iterateAtoms = function(processNode)
+	var getFrameNodesList = function()
 	{
-		var atomsClone = frame.atoms.slice(0);
-		for (var i = 0; i < atomsClone.length; ++i)
+		var result = {};
+		for (var i = 0; i < frame.atoms.length; ++i)
 		{
-			processNode(atomsClone[i]);
+			result[frame.atoms[i].id] = true;
 		}
+		return result;
 	};
 
 	var stringifyFrame = function(compact)
@@ -318,15 +332,14 @@ function FrameAnalizer(initFrame)
 		return JSON.stringify(frame, null, compact ? null : '\t');
 	};
 
-	this.iterate = iterateAtoms;
+	this.getNodes = getFrameNodesList;
 	this.stringify = stringifyFrame;
 
 	/* Description:
 	//
 	// Analizer provides read-only access to entire frame.
 	// It allows to analize whole structure of the frame and make decision.
-	// * iterate - makes copy of current atoms and iterates thru them with
-	// given function - to analize structure from outside.
+	// * getNodes - ...
 	// * stringify - returns JSON representation of the frame structure.
 	////////////////////////////////////////////////////////////////////////*/
 }
@@ -383,9 +396,11 @@ function FrameContextControl(initFrame)
 					var bufferNode = frame.atoms[atom02FrameIndex];
 					frame.atoms[atom02FrameIndex] = frame.atoms[atom01FrameIndex];
 					frame.atoms[atom01FrameIndex] = bufferNode;
+					return true;
 				}
 			}
 		}
+		return false;
 	};
 
 	var getNodeById = function(nodeId)
@@ -403,11 +418,11 @@ function FrameContextControl(initFrame)
 
 	var removeNodeById = function (nodeId)
 	{
-		for (var i = frame.nodes.length; i >= 0; --i)
+		for (var i = frame.atoms.length; i >= 0; --i)
 		{
-			if (frame.nodes[i].id === nodeId)
+			if (frame.atoms[i].id === nodeId)
 			{
-				frame.nodes.splice(i, 1);
+				frame.atoms.splice(i, 1);
 			}
 		}
 	};
