@@ -27,8 +27,6 @@ function Uuid()
 	/////////////////////////////////////////////////////////////////////////////////////*/
 }
 
-// TODO: update all coments below
-
 /////////////////////
 // Atom Conception //
 /////////////////////
@@ -58,7 +56,8 @@ function Atom(initId, initTags, initContent)
 	//     29cb7b44-0e43-41f8-aedf-f67deff8ff39: {e6898f75-a09d-4e66-952e-12ef0c0c9a4b: true},
 	//     6fbc1e1d-e401-49d1-8021-af35c5e6be33: {e6898f75-a09d-4e66-952e-12ef0c0c9a4b: true,
 	//                                            585d5bad-8e79-45f6-8429-ebd765dec61e: true},
-	//     c67ef986-e57f-4b7d-ac98-4845543483e9: {585d5bad-8e79-45f6-8429-ebd765dec61e: true}
+	//     c67ef986-e57f-4b7d-ac98-4845543483e9: {585d5bad-8e79-45f6-8429-ebd765dec61e: true,
+	//                                            e6898f75-a09d-4e66-952e-12ef0c0c9a4b: false}
 	//   },
 	//   content: 'main node'
 	// }
@@ -81,6 +80,8 @@ function Atom(initId, initTags, initContent)
 	//       Node.content === [Atom01.content, Atom02.content, ..., Atom0N.content];
 	// TODO: think about better conception of Node.content.
 	///////////////////////////////////////////////////////////////////////////////*/
+
+// TODO: update all comments below
 
 /////////////////////////
 // Node Implementation //
@@ -296,6 +297,8 @@ function TagTypesControl(initAtoms, initLinkNodeId)
 	/////////////////////////////////*/
 }
 
+// TODO: update all comments above
+
 //////////////////////
 // Frame Conception //
 //////////////////////
@@ -305,8 +308,8 @@ function Frame(initAtoms)
 	this.atoms = initAtoms || [];
 
 	/* Description:
-	// * atoms - 1d array of node atoms described in 'function Atom'.
-	////////////////////////////////////////////////////////////////*/
+	// * atoms - 1d array of node atoms described in Atom.
+	/////////////////////////////////////////////////////*/
 }
 
 //////////////////////////
@@ -337,9 +340,9 @@ function FrameLister(initFrame)
 
 	/* Description:
 	//
-	// Analizer provides read-only access to entire frame.
-	// It allows to analize whole structure of the frame and make decision.
-	// * getNodes - ...
+	// Lister provides read-only access to features of entire frame.
+	// It allows to analize whole structure of the frame nodes and make decision.
+	// * getNodes - get dictionary of all frame's node ids.
 	// * stringify - returns JSON representation of the frame structure.
 	////////////////////////////////////////////////////////////////////////*/
 }
@@ -438,27 +441,24 @@ function FrameContextControl(initFrame)
 	// Context controller provides modification of the frame based on information
 	// about some part of the structure. It is not necessary to know entire frame
 	// to modify its structure. It is a context based approach.
-	// * getNodeControl - get array of node controllers by id. It usually
-	// contains 1 controller, but if there are >1 records with given id in the
-	// frame, it will contain several controllers.
-	// * addNode - add new node record to the frame.
-	// * removeNode - remove all node records with given id from the frame.
-	// * swapNodePair - swap 2 given elements of array to control order of
-	// content merging. Variants of implementetion (have no decision yet):
-	// (nodes with indices 5, 7 and 101 have the same id).
-	// 1. content = content_5 + content_7 + content_101.
-	// 2. content = [content_5, content_7, content_101].
-	// 3. content = content_5.
-	// 4. content = content_101.
+	// * addAtom - add constructed atom that could be a new node or a part of
+	//             existing node - depending of assigned id.
+	// * removeAtom - removes atom by node id and node atom index.
+	// * swapAtomPair - swap 2 atoms of the same node defined by node indices.
+	//             Useful for operating with content which is order dependent.
+	//             Example: node consists of atoms with frame indices 5, 7, 101.
+	//                      node.content = [content_5, content_7, content_101]
+	// * getNodeControl - getnode controller for array of atoms found by node id.
+	// * removeNode - remove all atoms of given node from the frame.
 	//
 	// Explanation:
 	//
-	// Why one node id can corresponds to several nodes (node records)?
+	// Why one node id can corresponds to several node atoms?
 	// 1. We can implement Frame <-> Text synchronization without anoying checks
 	// for uniqueness for every add/modify operation.
 	// 2. We can prepare union of 2 different nodes by setting them the same id.
 	// 3. We can prepare separation of node 01 to several other nodes by dividing
-	// node 01 to several records with old id.
+	// node 01 to several atoms with old id.
 	// In points 2 and 3 we can easily (with minimal changes in text or object
 	// structure) make union and separation for any nodes.
 	////////////////////////////////////////////////////////////////////////////*/
