@@ -56,10 +56,12 @@ function FrameControl(initFrame)
 
 	var addNode = function(initId)
 	{
-		var nodeId = initId || new Uuid().generate();
-		if (nodeId in frame.nodes)
-			return;
-		frame.nodes[nodeId] = new Node();
+		var nodeId = initId || (new Uuid()).generate();
+		if (!(nodeId in frame.nodes))
+		{
+			frame.nodes[nodeId] = new Node();
+		}
+		return nodeId;
 	};
 
 	var removeNode = function(nodeId)
@@ -75,7 +77,7 @@ function FrameControl(initFrame)
 	var getFrameNodeControl = function(nodeId)
 	{
 		if (nodeId in frame.nodes)
-			return new NodeControl(frame.nodes[nodeId]);
+			return new NodeControl(nodeId, frame.nodes[nodeId]);
 		return null;
 	};
 
@@ -107,13 +109,20 @@ function FrameControl(initFrame)
 // Node Implementation //
 /////////////////////////
 
-function NodeControl(initNode)
+function NodeControl(nodeId, initNode)
 {
+	var id = nodeId;
 	var node = initNode;
+
+	var getNodeId = function()
+	{
+		return id;
+	};
 
 	var addNodeAtom = function(initAtom)
 	{
 		node.atoms.push(initAtom || new Atom());
+		return node.atoms.length - 1;
 	};
 
 	var removeNodeAtom = function(atomIndex)
@@ -147,7 +156,7 @@ function NodeControl(initNode)
 		var atomresults = [];
 		for (var i = 0; i < node.atoms.length; ++i)
 		{
-			var control = new TagsControl(node.atoms[i]);
+			var control = new TagsControl(node.atoms[i].tags);
 			atomresults.push(control.getMatrix(includeTypes));
 		}
 		for (var j = 0; j < atomresults.length; j++)
@@ -174,6 +183,7 @@ function NodeControl(initNode)
 		return result;
 	};
 
+	this.getId = getNodeId;
 	this.add = addNodeAtom;
 	this.remove = removeNodeAtom;
 	this.clear = clearNodeAtoms;
@@ -231,7 +241,9 @@ function TagsControl(initTags)
 		if (tagId in tags)
 		{
 			delete tags[tagId];
+			return true;
 		}
+		return false;
 	};
 
 	var clearTags = function()
@@ -290,7 +302,9 @@ function TagControl(initTag)
 		if (typeId in tag)
 		{
 			delete tag[typeId];
+			return true;
 		}
+		return false;
 	};
 
 	var clearTypes = function()
