@@ -14,6 +14,8 @@ function runAllTests(output)
 	pushResult(p03CreateSimpleFrame());
 	pushResult(p04CreateLinkedFrame());
 	pushResult(p05CreateTypeLinkedFrame());
+	pushResult(p06RemoveLinkTypesInFrame());
+	pushResult(p07ClearLinkTypesInFrame());
 	pushResult('Test run complete!');
 }
 
@@ -116,6 +118,22 @@ function p04CreateLinkedFrame()
 	return result;
 }
 
+	var typeLinkedFrame = null;
+
+	function GetLinkageMatrix(frameControl, includeTypes)
+	{
+		var result = '';
+		var matrix = frameControl.getMatrix();
+		for (var element in matrix)
+		{
+			var nodeControl = frameControl.getNodeControl(element);
+			var linkageMatrix = nodeControl.getMatrix(includeTypes);
+			result += nodeControl.getId() + ':   ' +
+				JSON.stringify(linkageMatrix) + '\r\n';
+		}
+		return result;
+	}
+
 function p05CreateTypeLinkedFrame()
 {
 	var frame = new Frame();
@@ -188,18 +206,72 @@ function p05CreateTypeLinkedFrame()
 	tagControl.add(nodeControlLT01.getId());
 	tagControl.add(nodeControlLT02.getId());
 
-	function GetLinkageMatrix(frameControl, includeTypes)
+	typeLinkedFrame = frame;
+
+	var result =
+		JSON.stringify(frame) + '\r\n' + '\r\n' +
+		JSON.stringify(frameControl.getMatrix()) + '\r\n' + '\r\n' +
+		GetLinkageMatrix(frameControl, false) + '\r\n' +
+		GetLinkageMatrix(frameControl, true) + '\r\n' +
+		frameControl.stringify();
+	return result;
+}
+
+function p06RemoveLinkTypesInFrame() // TODO: make working
+{
+	var frame = typeLinkedFrame;
+	var frameControl = new FrameControl(frame);
+
+	var nodeMatrix = frameControl.getMatrix();
+	for (var nodeId in nodeMatrix)
 	{
-		var result = '';
-		var matrix = frameControl.getMatrix();
-		for (var element in matrix)
+		var nodeControl = frameControl.getNodeControl(nodeId);
+		var atomsCount = nodeControl.getAtomsCount();
+		for (var i = 0; i <atomsCount; ++i)
 		{
-			var nodeControl = frameControl.getNodeControl(element);
-			var linkageMatrix = nodeControl.getMatrix(includeTypes);
-			result += nodeControl.getId() + ':   ' +
-				JSON.stringify(linkageMatrix) + '\r\n';
+			var atomControl = nodeControl.getAtomControl(i);
+			var tagsControl = atomControl.getTagsControl();
+			var tagsMatrix = tagsControl.getMatrix();
+			for (var tagId in tagsMatrix)
+			{
+				var tagControl = tagsControl.getControl(tagId);
+				tagControl.remove(nodeMatrix[2]);
+				tagControl.remove(nodeMatrix[1]);
+				tagControl.remove(nodeMatrix[0]);
+			}
 		}
-		return result;
+	}
+
+	var result =
+		JSON.stringify(frame) + '\r\n' + '\r\n' +
+		JSON.stringify(frameControl.getMatrix()) + '\r\n' + '\r\n' +
+		GetLinkageMatrix(frameControl, false) + '\r\n' +
+		GetLinkageMatrix(frameControl, true) + '\r\n' +
+		frameControl.stringify();
+	return result;
+}
+
+function p07ClearLinkTypesInFrame() // TODO: make working
+{
+	var frame = typeLinkedFrame;
+	var frameControl = new FrameControl(frame);
+
+	var nodeMatrix = frameControl.getMatrix();
+	for (var nodeId in nodeMatrix)
+	{
+		var nodeControl = frameControl.getNodeControl(nodeId);
+		var atomsCount = nodeControl.getAtomsCount();
+		for (var i = 0; i <atomsCount; ++i)
+		{
+			var atomControl = nodeControl.getAtomControl(i);
+			var tagsControl = atomControl.getTagsControl();
+			var tagsMatrix = tagsControl.getMatrix();
+			for (var tagId in tagsMatrix)
+			{
+				var tagControl = tagsControl.getControl(tagId);
+				tagControl.clear();
+			}
+		}
 	}
 
 	var result =
