@@ -416,16 +416,20 @@ function p11ClearNodeAtomsFrame()
 	return result;
 }
 
-function p12RemoveNodesInFrame() // TODO: make working
+function p12RemoveNodesInFrame()
 {
 	var frame = typeLinkedFrame;
 	var frameControl = new FrameControl(frame);
 
 	var nodeMatrix = frameControl.getMatrix();
 
-	frameControl.remove(nodeMatrix[0]);
-	frameControl.remove(nodeMatrix[2]);
-	frameControl.remove(nodeMatrix[4]);
+	var counter = 0;
+	for (var nodeId in nodeMatrix)
+	{
+		if (++counter % 2 === 0)
+			continue;
+		frameControl.remove(nodeId);
+	}
 
 	var result =
 		JSON.stringify(frame) + '\r\n' + '\r\n' +
