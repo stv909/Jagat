@@ -44,10 +44,11 @@ function runAllTests(output)
 	pushResult('p07ClearLinkTypesInFrame');
 	pushResult('p08RemoveTagsInFrame');
 	pushResult('p09ClearTagsInFrame');
-	pushResult('p10RemoveNodeAtomsInFrame');
-	pushResult('p11ClearNodeAtomsFrame');
-	pushResult('p12RemoveNodesInFrame');
-	pushResult('p13ClearNodesInFrame');
+	pushResult('p10ChangeAtomsContentInFrame');
+	pushResult('p11RemoveNodeAtomsInFrame');
+	pushResult('p12ClearNodeAtomsFrame');
+	pushResult('p13RemoveNodesInFrame');
+	pushResult('p14ClearNodesInFrame');
 
 	pushMessage('Test run complete!');
 }
@@ -382,9 +383,34 @@ function p09ClearTagsInFrame()
 	return result;
 }
 
-// TODO: insert test for get/set content for node atoms.
+function p10ChangeAtomsContentInFrame()
+{
+	var frame = typeLinkedFrame;
+	var frameControl = new FrameControl(frame);
 
-function p10RemoveNodeAtomsInFrame()
+	var nodeMatrix = frameControl.getMatrix();
+	for (var nodeId in nodeMatrix)
+	{
+		var nodeControl = frameControl.getNodeControl(nodeId);
+		var atomsCount = nodeControl.getAtomsCount();
+		for (var i = 0; i <atomsCount; ++i)
+		{
+			var atomControl = nodeControl.getAtomControl(i);
+			var newContent = atomControl.getContent() + ' <- modified!';
+			atomControl.setContent(newContent);
+		}
+	}
+
+	var result =
+		JSON.stringify(frame) + '\r\n' + '\r\n' +
+		JSON.stringify(frameControl.getMatrix()) + '\r\n' + '\r\n' +
+		GetLinkageMatrix(frameControl, false) + '\r\n' +
+		GetLinkageMatrix(frameControl, true) + '\r\n' +
+		frameControl.stringify();
+	return result;
+}
+
+function p11RemoveNodeAtomsInFrame()
 {
 	var frame = typeLinkedFrame;
 	var frameControl = new FrameControl(frame);
@@ -405,7 +431,7 @@ function p10RemoveNodeAtomsInFrame()
 	return result;
 }
 
-function p11ClearNodeAtomsFrame()
+function p12ClearNodeAtomsFrame()
 {
 	var frame = typeLinkedFrame;
 	var frameControl = new FrameControl(frame);
@@ -430,7 +456,7 @@ function p11ClearNodeAtomsFrame()
 	return result;
 }
 
-function p12RemoveNodesInFrame()
+function p13RemoveNodesInFrame()
 {
 	var frame = typeLinkedFrame;
 	var frameControl = new FrameControl(frame);
@@ -454,7 +480,7 @@ function p12RemoveNodesInFrame()
 	return result;
 }
 
-function p13ClearNodesInFrame()
+function p14ClearNodesInFrame()
 {
 	var frame = typeLinkedFrame;
 	var frameControl = new FrameControl(frame);
