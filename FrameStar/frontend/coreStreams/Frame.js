@@ -260,7 +260,7 @@ function TagsControl(initAtom)
 	var getTagControl = function(tagId)
 	{
 		if (tagId in atom.tags)
-			return new TagControl(atom.tags[tagId]);
+			return new TagControl(atom.tags, tagId);
 		return null;
 	};
 
@@ -272,7 +272,7 @@ function TagsControl(initAtom)
 			var tagElement = true;
 			if (includeTypes)
 			{
-				var control = new TagControl(atom.tags[tagLink]);
+				var control = new TagControl(atom.tags, tagLink);
 				tagElement = control.getMatrix();
 			}
 			result[tagLink] = tagElement;
@@ -292,22 +292,23 @@ function TagsControl(initAtom)
 // Tag Implementation //
 ////////////////////////
 
-function TagControl(initTag)
+function TagControl(initTags, initTagId)
 {
-	var tag = initTag;
+	var tags = initTags;
+	var tagId = initTagId;
 
 	var addType = function(typeId)
 	{
-		if (typeId in tag)
+		if (typeId in tags[tagId])
 			return;
-		tag[typeId] = true;
+		tags[tagId][typeId] = true;
 	};
 
 	var removeType = function(typeId)
 	{
-		if (typeId in tag)
+		if (typeId in tags[tagId])
 		{
-			delete tag[typeId];
+			delete tags[tagId][typeId];
 			return true;
 		}
 		return false;
@@ -315,13 +316,13 @@ function TagControl(initTag)
 
 	var clearTypes = function()
 	{
-		tag = {};
+		tags[tagId] = {};
 	};
 
 	var getTagTypesMatrix = function()
 	{
 		var result = {};
-		for (var tagType in tag)
+		for (var tagType in tags[tagId])
 		{
 			result[tagType] = true;
 		}

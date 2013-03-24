@@ -250,7 +250,7 @@ function p05CreateTypeLinkedFrame()
 	return result;
 }
 
-function p06RemoveLinkTypesInFrame() // TODO: make working
+function p06RemoveLinkTypesInFrame()
 {
 	var frame = typeLinkedFrame;
 	var frameControl = new FrameControl(frame);
@@ -268,9 +268,14 @@ function p06RemoveLinkTypesInFrame() // TODO: make working
 			for (var tagId in tagsMatrix)
 			{
 				var tagControl = tagsControl.getControl(tagId);
-				tagControl.remove(nodeMatrix[2]);
-				tagControl.remove(nodeMatrix[1]);
-				tagControl.remove(nodeMatrix[0]);
+
+				var counter = 0;
+				for (var nodeId in nodeMatrix)
+				{
+					if (counter++ > 1)
+						break;
+					tagControl.remove(nodeId);
+				}
 			}
 		}
 	}
@@ -284,7 +289,7 @@ function p06RemoveLinkTypesInFrame() // TODO: make working
 	return result;
 }
 
-function p07ClearLinkTypesInFrame() // TODO: make working
+function p07ClearLinkTypesInFrame()
 {
 	var frame = typeLinkedFrame;
 	var frameControl = new FrameControl(frame);
@@ -294,7 +299,7 @@ function p07ClearLinkTypesInFrame() // TODO: make working
 	{
 		var nodeControl = frameControl.getNodeControl(nodeId);
 		var atomsCount = nodeControl.getAtomsCount();
-		for (var i = 0; i <atomsCount; ++i)
+		for (var i = 0; i < atomsCount; ++i)
 		{
 			var atomControl = nodeControl.getAtomControl(i);
 			var tagsControl = atomControl.getTagsControl();
