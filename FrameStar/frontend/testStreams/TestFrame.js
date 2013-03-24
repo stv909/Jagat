@@ -316,7 +316,7 @@ function p07ClearLinkTypesInFrame() // TODO: make working
 	return result;
 }
 
-function p08RemoveTagsInFrame() // TODO: make working
+function p08RemoveTagsInFrame()
 {
 	var frame = typeLinkedFrame;
 	var frameControl = new FrameControl(frame);
@@ -330,7 +330,14 @@ function p08RemoveTagsInFrame() // TODO: make working
 		{
 			var atomControl = nodeControl.getAtomControl(i);
 			var tagsControl = atomControl.getTagsControl();
-			tagsControl.remove(nodeMatrix[3]);
+
+			var counter = 0;
+			for (var nodeId in nodeMatrix)
+			{
+				if (++counter % 2 === 0)
+					continue;
+				tagsControl.remove(nodeId);
+			}
 		}
 	}
 
@@ -343,7 +350,7 @@ function p08RemoveTagsInFrame() // TODO: make working
 	return result;
 }
 
-function p09ClearTagsInFrame() // TODO: make working
+function p09ClearTagsInFrame()
 {
 	var frame = typeLinkedFrame;
 	var frameControl = new FrameControl(frame);

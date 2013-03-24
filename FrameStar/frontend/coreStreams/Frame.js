@@ -162,7 +162,7 @@ function NodeControl(nodeId, initNode)
 		var atomresults = [];
 		for (var i = 0; i < node.atoms.length; ++i)
 		{
-			var control = new TagsControl(node.atoms[i].tags);
+			var control = new TagsControl(node.atoms[i]);
 			atomresults.push(control.getMatrix(includeTypes));
 		}
 		for (var j = 0; j < atomresults.length; j++)
@@ -219,7 +219,7 @@ function AtomControl(initAtom)
 
 	var getAtomTagsControl = function()
 	{
-		return new TagsControl(atom.tags);
+		return new TagsControl(atom);
 	};
 
 	this.getContent = getAtomContent;
@@ -231,22 +231,22 @@ function AtomControl(initAtom)
 // Tags Implementation //
 /////////////////////////
 
-function TagsControl(initTags)
+function TagsControl(initAtom)
 {
-	var tags = initTags;
+	var atom = initAtom;
 
 	var addTag = function(tagId)
 	{
-		if (tagId in tags)
+		if (tagId in atom.tags)
 			return;
-		tags[tagId] = {};
+		atom.tags[tagId] = {};
 	};
 
 	var removeTag = function(tagId)
 	{
-		if (tagId in tags)
+		if (tagId in atom.tags)
 		{
-			delete tags[tagId];
+			delete atom.tags[tagId];
 			return true;
 		}
 		return false;
@@ -254,25 +254,25 @@ function TagsControl(initTags)
 
 	var clearTags = function()
 	{
-		tags = {};
+		atom.tags = {};
 	};
 
 	var getTagControl = function(tagId)
 	{
-		if (tagId in tags)
-			return new TagControl(tags[tagId]);
+		if (tagId in atom.tags)
+			return new TagControl(atom.tags[tagId]);
 		return null;
 	};
 
 	var getTagsMatrix = function(includeTypes)
 	{
 		var result = {};
-		for (var tagLink in tags)
+		for (var tagLink in atom.tags)
 		{
 			var tagElement = true;
 			if (includeTypes)
 			{
-				var control = new TagControl(tags[tagLink]);
+				var control = new TagControl(atom.tags[tagLink]);
 				tagElement = control.getMatrix();
 			}
 			result[tagLink] = tagElement;
