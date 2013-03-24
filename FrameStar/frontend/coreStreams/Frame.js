@@ -74,6 +74,11 @@ function FrameControl(initFrame)
 		return false;
 	};
 
+	var clearNodes = function()
+	{
+		frame.nodes = {};
+	};
+
 	var getFrameNodeControl = function(nodeId)
 	{
 		if (nodeId in frame.nodes)
@@ -98,6 +103,7 @@ function FrameControl(initFrame)
 
 	this.add = addNode;
 	this.remove = removeNode;
+	this.clear = clearNodes;
 	this.getNodeControl = getFrameNodeControl;
 
 	this.getMatrix = getFrameNodesMatrix;

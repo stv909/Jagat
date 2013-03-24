@@ -1,22 +1,55 @@
 function runAllTests(output)
 {
-	function pushResult(resultText)
+	function resetView()
 	{
-		var view = document.createElement('textarea');
-		view.textContent = resultText;
-		output.appendChild(view);
-		output.appendChild(document.createElement('br'));
+		output.innerHTML = '';
 	}
 
-	output.innerHTML = '';
-	pushResult(p01GenerateUuids());
-	pushResult(p02CreateVoidFrame());
-	pushResult(p03CreateSimpleFrame());
-	pushResult(p04CreateLinkedFrame());
-	pushResult(p05CreateTypeLinkedFrame());
-	pushResult(p06RemoveLinkTypesInFrame());
-	pushResult(p07ClearLinkTypesInFrame());
-	pushResult('Test run complete!');
+	function pushResult(testFunctionName)
+	{
+		var testFunction = window[testFunctionName];
+		var resultText = '[invalid test function object]';
+		if (typeof testFunction === 'function')
+		{
+			resultText = testFunction();
+		}
+
+		var testParagraph = document.createElement('p');
+		var testTitle = document.createTextNode(testFunctionName);
+		var view = document.createElement('textarea');
+		view.textContent = resultText;
+
+		testParagraph.appendChild(testTitle);
+		testParagraph.appendChild(document.createElement('br'));
+		testParagraph.appendChild(view);
+		output.appendChild(testParagraph);
+	}
+
+	function pushMessage(messageText)
+	{
+		var messageParagraph = output.appendChild(document.createElement('p'));
+		messageParagraph.innerHTML = messageText;
+		output.appendChild(messageParagraph);
+	}
+
+	resetView();
+
+	// TODO: make function that search and runs all test functions in alphabetical order
+	pushResult('p01GenerateUuids');
+	pushResult('p02CreateVoidFrame');
+	pushResult('p03CreateSimpleFrame');
+	pushResult('p04CreateLinkedFrame');
+	pushResult('p05CreateTypeLinkedFrame');
+	pushResult('p06RemoveLinkTypesInFrame');
+	pushResult('p07ClearLinkTypesInFrame');
+	pushResult('p08RemoveTagsInFrame');
+	pushResult('p09ClearTagsInFrame');
+	pushResult('p10RemoveNodeAtomsInFrame');
+	pushResult('p11ClearNodeAtomsFrame');
+	pushResult('p12RemoveNodesInFrame');
+	pushResult('p13ClearNodesInFrame');
+
+	pushMessage('Test run complete!');
 }
 
 function p01GenerateUuids()
@@ -273,6 +306,141 @@ function p07ClearLinkTypesInFrame() // TODO: make working
 			}
 		}
 	}
+
+	var result =
+		JSON.stringify(frame) + '\r\n' + '\r\n' +
+		JSON.stringify(frameControl.getMatrix()) + '\r\n' + '\r\n' +
+		GetLinkageMatrix(frameControl, false) + '\r\n' +
+		GetLinkageMatrix(frameControl, true) + '\r\n' +
+		frameControl.stringify();
+	return result;
+}
+
+function p08RemoveTagsInFrame() // TODO: make working
+{
+	var frame = typeLinkedFrame;
+	var frameControl = new FrameControl(frame);
+
+	var nodeMatrix = frameControl.getMatrix();
+	for (var nodeId in nodeMatrix)
+	{
+		var nodeControl = frameControl.getNodeControl(nodeId);
+		var atomsCount = nodeControl.getAtomsCount();
+		for (var i = 0; i <atomsCount; ++i)
+		{
+			var atomControl = nodeControl.getAtomControl(i);
+			var tagsControl = atomControl.getTagsControl();
+			tagsControl.remove(nodeMatrix[3]);
+		}
+	}
+
+	var result =
+		JSON.stringify(frame) + '\r\n' + '\r\n' +
+		JSON.stringify(frameControl.getMatrix()) + '\r\n' + '\r\n' +
+		GetLinkageMatrix(frameControl, false) + '\r\n' +
+		GetLinkageMatrix(frameControl, true) + '\r\n' +
+		frameControl.stringify();
+	return result;
+}
+
+function p09ClearTagsInFrame() // TODO: make working
+{
+	var frame = typeLinkedFrame;
+	var frameControl = new FrameControl(frame);
+
+	var nodeMatrix = frameControl.getMatrix();
+	for (var nodeId in nodeMatrix)
+	{
+		var nodeControl = frameControl.getNodeControl(nodeId);
+		var atomsCount = nodeControl.getAtomsCount();
+		for (var i = 0; i <atomsCount; ++i)
+		{
+			var atomControl = nodeControl.getAtomControl(i);
+			var tagsControl = atomControl.getTagsControl();
+			tagsControl.clear();
+		}
+	}
+
+	var result =
+		JSON.stringify(frame) + '\r\n' + '\r\n' +
+		JSON.stringify(frameControl.getMatrix()) + '\r\n' + '\r\n' +
+		GetLinkageMatrix(frameControl, false) + '\r\n' +
+		GetLinkageMatrix(frameControl, true) + '\r\n' +
+		frameControl.stringify();
+	return result;
+}
+
+function p10RemoveNodeAtomsInFrame()
+{
+	var frame = typeLinkedFrame;
+	var frameControl = new FrameControl(frame);
+
+	var nodeMatrix = frameControl.getMatrix();
+	for (var nodeId in nodeMatrix)
+	{
+		var nodeControl = frameControl.getNodeControl(nodeId);
+		nodeControl.remove(1);
+	}
+
+	var result =
+		JSON.stringify(frame) + '\r\n' + '\r\n' +
+		JSON.stringify(frameControl.getMatrix()) + '\r\n' + '\r\n' +
+		GetLinkageMatrix(frameControl, false) + '\r\n' +
+		GetLinkageMatrix(frameControl, true) + '\r\n' +
+		frameControl.stringify();
+	return result;
+}
+
+function p11ClearNodeAtomsFrame()
+{
+	var frame = typeLinkedFrame;
+	var frameControl = new FrameControl(frame);
+
+	var nodeMatrix = frameControl.getMatrix();
+
+	var counter = 0;
+	for (var nodeId in nodeMatrix)
+	{
+		if (++counter % 2 === 0)
+			continue;
+		var nodeControl = frameControl.getNodeControl(nodeId);
+		nodeControl.clear();
+	}
+
+	var result =
+		JSON.stringify(frame) + '\r\n' + '\r\n' +
+		JSON.stringify(frameControl.getMatrix()) + '\r\n' + '\r\n' +
+		GetLinkageMatrix(frameControl, false) + '\r\n' +
+		GetLinkageMatrix(frameControl, true) + '\r\n' +
+		frameControl.stringify();
+	return result;
+}
+
+function p12RemoveNodesInFrame() // TODO: make working
+{
+	var frame = typeLinkedFrame;
+	var frameControl = new FrameControl(frame);
+
+	var nodeMatrix = frameControl.getMatrix();
+
+	frameControl.remove(nodeMatrix[0]);
+	frameControl.remove(nodeMatrix[2]);
+	frameControl.remove(nodeMatrix[4]);
+
+	var result =
+		JSON.stringify(frame) + '\r\n' + '\r\n' +
+		JSON.stringify(frameControl.getMatrix()) + '\r\n' + '\r\n' +
+		GetLinkageMatrix(frameControl, false) + '\r\n' +
+		GetLinkageMatrix(frameControl, true) + '\r\n' +
+		frameControl.stringify();
+	return result;
+}
+
+function p13ClearNodesInFrame()
+{
+	var frame = typeLinkedFrame;
+	var frameControl = new FrameControl(frame);
+	frameControl.clear();
 
 	var result =
 		JSON.stringify(frame) + '\r\n' + '\r\n' +
