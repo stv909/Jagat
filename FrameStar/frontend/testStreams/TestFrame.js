@@ -370,6 +370,8 @@ function p09ClearTagsInFrame() // TODO: make working
 	return result;
 }
 
+// TODO: insert test for get/set content for node atoms.
+
 function p10RemoveNodeAtomsInFrame()
 {
 	var frame = typeLinkedFrame;
