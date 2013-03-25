@@ -48,18 +48,53 @@
 				var frameControl = new FrameControl(frame);
 				destination.value = frameControl.stringify();
 			}
+
+			function onClickNewNode(nodeList)
+			{
+				alert(nodeList);
+			}
+
+			function onClickNewAtom(nodeList)
+			{
+				alert(nodeList);
+			}
+
+			function onClickDelNode(nodeList)
+			{
+				alert(nodeList);
+			}
+
+			function onClickDelAtom(nodeList)
+			{
+				alert(nodeList);
+			}
+
+			function onClickRenameAtom(nodeList)
+			{
+				alert(nodeList);
+			}
+
+			function onClickAtomAbstract(nodeList)
+			{
+				alert(nodeList);
+			}
+
+			function onClickAtomConcrete(nodeList)
+			{
+				alert(nodeList);
+			}
 		</script>
 	</head>
 	<body>
 		<div id="frameView">
 			<div id="commands">
-				<button>new node</button>
-				<button>new atom</button>
-				<button>del node</button>
-				<button>del atom</button>
-				<button>rename atom</button>
-				<button>atom set abstracts</button>
-				<button>atom set concretes</button>
+				<button onclick="onClickNewNode(document.getElementById('nodeList'));">new node</button>
+				<button onclick="onClickNewAtom(document.getElementById('nodeList'));">new atom</button>
+				<button onclick="onClickDelNode(document.getElementById('nodeList'));">del node</button>
+				<button onclick="onClickDelAtom(document.getElementById('nodeList'));">del atom</button>
+				<button onclick="onClickRenameAtom(document.getElementById('nodeList'));">rename atom</button>
+				<button onclick="onClickAtomAbstract(document.getElementById('nodeList'));">atom set abstracts</button>
+				<button onclick="onClickAtomConcrete(document.getElementById('nodeList'));">atom set concretes</button>
 				;
 				<textarea id="loadInput"></textarea>
 				<button onclick="onClickLoadJSON(document.getElementById('loadInput'));">load from JSON</button>
