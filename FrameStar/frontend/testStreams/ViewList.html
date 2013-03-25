@@ -5,6 +5,8 @@
 		<script src="../coreStreams/Content.js"></script>
 		<script src="../coreStreams/Frame.js"></script>
 		<script>
+			var frame = new Frame();
+
 			function onClickLoadJSON(source)
 			{
 				var nodeViewContainer = document.getElementById('nodeList');
@@ -21,7 +23,7 @@
 					initNodes = {};
 				}
 
-				var frame = new Frame(initNodes);
+				frame = new Frame(initNodes);
 				var frameControl = new FrameControl(frame);
 
 				var matrix = frameControl.getMatrix();
@@ -43,16 +45,25 @@
 
 			function onClickSaveJSON(destination)
 			{
-				destination.value = 'some code\rsecond line';
+				var frameControl = new FrameControl(frame);
+				destination.value = frameControl.stringify();
 			}
 		</script>
 	</head>
 	<body>
 		<div id="frameView">
 			<div id="commands">
+				<button>new node</button>
+				<button>new atom</button>
+				<button>del node</button>
+				<button>del atom</button>
+				<button>rename atom</button>
+				<button>atom set abstracts</button>
+				<button>atom set concretes</button>
+				;
 				<textarea id="loadInput"></textarea>
 				<button onclick="onClickLoadJSON(document.getElementById('loadInput'));">load from JSON</button>
-				<div></div>
+				;
 				<textarea id="saveOutput"></textarea>
 				<button onclick="onClickSaveJSON(document.getElementById('saveOutput'));">save to JSON</button>
 			</div>
