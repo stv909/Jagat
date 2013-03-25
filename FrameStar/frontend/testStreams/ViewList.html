@@ -19,7 +19,7 @@
 				}
 				catch (e)
 				{
-					this.errors.push('Can not parse given content string as JSON. String: ' + source + '; Name: ' + e.name + '; Desc: ' + e.description);
+					console.log('Can not parse given content string as JSON. String: ' + source + '; Name: ' + e.name + '; Desc: ' + e.message);
 					initNodes = {};
 				}
 
