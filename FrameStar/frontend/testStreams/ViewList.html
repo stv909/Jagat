@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Frame View. List.</title>
+		<script src="../coreStreams/Content.js"></script>
+		<script src="../coreStreams/Frame.js"></script>
+		<script>
+			function onClickLoadJSON(source)
+			{
+				var nodeViewContainer = document.getElementById('nodeList');
+				nodeViewContainer.innerHTML = '';
+
+				var initNodes;
+				try
+				{
+					initNodes = JSON.parse(source.value).nodes;
+				}
+				catch (e)
+				{
+					this.errors.push('Can not parse given content string as JSON. String: ' + source + '; Name: ' + e.name + '; Desc: ' + e.description);
+					initNodes = {};
+				}
+
+				var frame = new Frame(initNodes);
+				var frameControl = new FrameControl(frame);
+
+				var matrix = frameControl.getMatrix();
+				for (var nodeId in matrix)
+				{
+					var nodeControl = frameControl.getNodeControl(nodeId);
+					var nodeButton = document.createElement('button');
+					var caption = '';
+					var imax = nodeControl.getAtomsCount();
+					for (var i = 0; i < imax; ++i)
+					{
+						caption += nodeControl.getAtomControl(i).getContent() + '<br>';
+					}
+					nodeButton.innerHTML = caption;
+					nodeViewContainer.appendChild(nodeButton);
+					nodeViewContainer.appendChild(document.createElement('br'));
+				}
+			}
+
+			function onClickSaveJSON(destination)
+			{
+				destination.value = 'some code\rsecond line';
+			}
+		</script>
+	</head>
+	<body>
+		<div id="frameView">
+			<div id="commands">
+				<textarea id="loadInput"></textarea>
+				<button onclick="onClickLoadJSON(document.getElementById('loadInput'));">load from JSON</button>
+				<div></div>
+				<textarea id="saveOutput"></textarea>
+				<button onclick="onClickSaveJSON(document.getElementById('saveOutput'));">save to JSON</button>
+			</div>
+			<div id="nodeList">
+				<button>fkhkvlkvytyb</button><br>
+				<button>hgfgfgkvlkvub</button><br>
+				<button>xvcbvbvlutykvb</button><br>
+				<button>zcxxcxvcvlkiuvb</button><br>
+			</div>
+		</div>
+	</body>
+</html>
