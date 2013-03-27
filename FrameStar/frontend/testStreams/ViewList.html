@@ -5,26 +5,45 @@
 		<script src="../coreStreams/Content.js"></script>
 		<script src="../coreStreams/Frame.js"></script>
 		<script>
+			var colorInactive = '#eeeeee';
+			var colorSelected = '#8888ff';
 			var frame = new Frame();
 
-			function onClickLoadJSON(source)
+			var selectedNode = new function()
 			{
+				var uuid = null;
+				var control = null;
+
+				this.get = function()
+				{
+					return uuid;
+				}
+
+				this.set = function(newUuid, newControl)
+				{
+					if (control)
+					{
+						control.style.background = colorInactive;
+					}
+					uuid = newUuid;
+					control = newControl;
+					if (control)
+					{
+						control.style.background = colorSelected;
+					}
+				};
+
+				this.reset = function()
+				{
+					this.set(null, null);
+				};
+			};
+
+			function refreshList()
+			{
+				var frameControl = new FrameControl(frame);
 				var nodeViewContainer = document.getElementById('nodeList');
 				nodeViewContainer.innerHTML = '';
-
-				var initNodes;
-				try
-				{
-					initNodes = JSON.parse(source.value).nodes;
-				}
-				catch (e)
-				{
-					console.log('Can not parse given content string as JSON. String: ' + source + '; Name: ' + e.name + '; Desc: ' + e.message);
-					initNodes = {};
-				}
-
-				frame = new Frame(initNodes);
-				var frameControl = new FrameControl(frame);
 
 				var matrix = frameControl.getMatrix();
 				for (var nodeId in matrix)
@@ -37,10 +56,39 @@
 					{
 						caption += nodeControl.getAtomControl(i).getContent() + '<br>';
 					}
+					nodeButton.style.background = colorInactive;
+					nodeButton.onclick = function()
+					{
+						// TODO: fix bug with improper nodeControl and nodeButton.
+						if (selectedNode.get() != nodeControl.getId())
+						{
+							selectedNode.set(nodeControl.getId(), nodeButton);
+						}
+						else
+						{
+							selectedNode.set(null, null);
+						}
+					}
 					nodeButton.innerHTML = caption;
 					nodeViewContainer.appendChild(nodeButton);
 					nodeViewContainer.appendChild(document.createElement('br'));
 				}
+			}
+
+			function onClickLoadJSON(source)
+			{
+				var initNodes;
+				try
+				{
+					initNodes = JSON.parse(source.value).nodes;
+				}
+				catch (e)
+				{
+					console.log('Can not parse given content string as JSON. String: ' + source + '; Name: ' + e.name + '; Desc: ' + e.message);
+					initNodes = {};
+				}
+				frame = new Frame(initNodes);
+				refreshList();
 			}
 
 			function onClickSaveJSON(destination)
@@ -51,7 +99,9 @@
 
 			function onClickNewNode(nodeList)
 			{
-				alert(nodeList);
+				var frameControl = new FrameControl(frame);
+				frameControl.add();
+				refreshList();
 			}
 
 			function onClickNewAtom(nodeList)
@@ -102,11 +152,8 @@
 				<textarea id="saveOutput"></textarea>
 				<button onclick="onClickSaveJSON(document.getElementById('saveOutput'));">save to JSON</button>
 			</div>
+			<div><br></div>
 			<div id="nodeList">
-				<button>fkhkvlkvytyb</button><br>
-				<button>hgfgfgkvlkvub</button><br>
-				<button>xvcbvbvlutykvb</button><br>
-				<button>zcxxcxvcvlkiuvb</button><br>
 			</div>
 		</div>
 	</body>
