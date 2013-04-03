@@ -39,10 +39,9 @@
 				};
 			};
 
-			function refreshList()
+			function refreshList(nodeViewContainer)
 			{
 				var frameControl = new FrameControl(frame);
-				var nodeViewContainer = document.getElementById('nodeList');
 				nodeViewContainer.innerHTML = '';
 
 				var matrix = frameControl.getMatrix();
@@ -77,7 +76,7 @@
 				}
 			}
 
-			function onClickLoadJSON(source)
+			function onClickLoadJSON(nodeList, source)
 			{
 				var initNodes;
 				try
@@ -90,7 +89,7 @@
 					initNodes = {};
 				}
 				frame = new Frame(initNodes);
-				refreshList();
+				refreshList(nodeList);
 			}
 
 			function onClickSaveJSON(destination)
@@ -103,15 +102,19 @@
 			{
 				var frameControl = new FrameControl(frame);
 				frameControl.add();
-				refreshList();
-			}
-
-			function onClickNewAtom(nodeList)
-			{
-				alert(nodeList);
+				refreshList(nodeList);
 			}
 
 			function onClickDelNode(nodeList)
+			{
+				if (selectedNode.get() === null)
+					return;
+				var frameControl = new FrameControl(frame);
+				frameControl.remove(selectedNode.get());
+				refreshList(nodeList);
+			}
+
+			function onClickNewAtom(nodeList)
 			{
 				alert(nodeList);
 			}
@@ -141,15 +144,16 @@
 		<div id="frameView">
 			<div id="commands">
 				<button onclick="onClickNewNode(document.getElementById('nodeList'));">new node</button>
-				<button onclick="onClickNewAtom(document.getElementById('nodeList'));">new atom</button>
 				<button onclick="onClickDelNode(document.getElementById('nodeList'));">del node</button>
-				<button onclick="onClickDelAtom(document.getElementById('nodeList'));">del atom</button>
+				;
+				<button onclick="onClickNewAtom(document.getElementById('nodeList'));">new atom</button>
 				<button onclick="onClickRenameAtom(document.getElementById('nodeList'));">rename atom</button>
 				<button onclick="onClickAtomAbstract(document.getElementById('nodeList'));">atom set abstracts</button>
 				<button onclick="onClickAtomConcrete(document.getElementById('nodeList'));">atom set concretes</button>
+				<button onclick="onClickDelAtom(document.getElementById('nodeList'));">del atom</button>
 				;
 				<textarea id="loadInput"></textarea>
-				<button onclick="onClickLoadJSON(document.getElementById('loadInput'));">load from JSON</button>
+				<button onclick="onClickLoadJSON(document.getElementById('nodeList'), document.getElementById('loadInput'));">load from JSON</button>
 				;
 				<textarea id="saveOutput"></textarea>
 				<button onclick="onClickSaveJSON(document.getElementById('saveOutput'));">save to JSON</button>
