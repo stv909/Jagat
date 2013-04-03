@@ -2,13 +2,29 @@
 <html>
 	<head>
 		<title>Frame View. List.</title>
+         <style> 
+        <!--
+            .nodeContainer,
+            .atomContainer      { font-size:10pt; background-color: #EEF5FA; padding: 10px; margin: 20px;}
+            
+            .nodeContainer      { width: 300px;}
+            .atomContainer      { background-color: #DAE8F6; margin: 20px auto;}
+            
+            .nodeContainer a,  
+            .atomContainer a    { font-size:9pt; width: 100%; text-align: right; display:block;}
+            
+           
+        -->
+       </style>
 		<script src="../coreStreams/Content.js"></script>
 		<script src="../coreStreams/Frame.js"></script>
 		<script>
-			var colorInactive = '#eeeeee';
-			var colorSelected = '#8888ff';
+
 			var frame = new Frame();
 
+            /*
+    		var colorInactive = '#eeeeee';
+			var colorSelected = '#8888ff';
 			var selectedNode = new function()
 			{
 				var uuid = null;
@@ -86,7 +102,8 @@
 					nodeViewContainer.appendChild(document.createElement('br'));
 				}
 			}
-
+            */
+            
 			function onClickLoadJSON(nodeList, source)
 			{
 				var initNodes;
@@ -112,46 +129,71 @@
 			function onClickNewNode(nodeList)
 			{
 				var frameControl = new FrameControl(frame);
-				frameControl.add();
-				refreshList(nodeList);
+                var nodeId = frameControl.add();
+                
+                var nodeControl = frameControl.getNodeControl(nodeId);
+				var nodeContainer = document.createElement('div');
+				
+                nodeContainer.innerHTML = '<p>NodeId: ' + nodeId + '</p>';
+                nodeContainer.innerHTML += '<a href="javascript:void(0);" onclick="javascript:onClickDelNode(\'' + nodeId + '\');">del node</a>';
+                nodeContainer.innerHTML += '<a href="javascript:void(0);" onclick="javascript:onClickNewAtom(\'' + nodeId + '\');">add atom</a>';
+                nodeContainer.setAttribute('class', 'nodeContainer');
+                nodeContainer.setAttribute('id', nodeId);
+                
+				nodeList.appendChild(nodeContainer);
 			}
 
-			function onClickDelNode(nodeList)
+			function onClickDelNode(nodeId)
 			{
-				if (selectedNode.get() === null)
-					return;
 				var frameControl = new FrameControl(frame);
-				frameControl.remove(selectedNode.get());
-				refreshList(nodeList);
+				var result = frameControl.remove(nodeId);
+                if(result)
+                {
+                    var nodeContainer = document.getElementById(nodeId);
+                    nodeContainer.parentNode.removeChild(nodeContainer);
+                }
+			}
+            
+
+			function onClickNewAtom(nodeId)
+			{
+				var frameControl = new FrameControl(frame);
+				var nodeControl = frameControl.getNodeControl(nodeId);
+				if (nodeControl !== null)
+				{
+				    var index = nodeControl.add();
+                    
+                    var atomContainer = document.createElement('div');
+    			
+                    atomContainer.innerHTML = '<p>Atom</p>';
+                    atomContainer.innerHTML += '<a href="javascript:void(0);" onclick="javascript:onClickDelAtom(\'' + nodeId + '\', \'' + index + '\');">del atom</a>';
+                    atomContainer.innerHTML += '<a href="javascript:void(0);" onclick="javascript:onClickRenameAtom(\'' + nodeId + '\', \'' + index + '\');">change content</a>';
+                    atomContainer.innerHTML += '<p id="content_atom_' + index + '"></p>';
+                    atomContainer.setAttribute('class', 'atomContainer');
+                    atomContainer.setAttribute('id', nodeId + '_atom_' + index);
+                    
+                    var nodeContainer = document.getElementById(nodeId);
+    				nodeContainer.appendChild(atomContainer);
+				}
 			}
 
-			function onClickNewAtom(nodeList)
+			function onClickRenameAtom(nodeId, atomIndex)
 			{
-				if (selectedNode.get() === null)
-					return;
 				var frameControl = new FrameControl(frame);
-				var nodeControl = frameControl.getNodeControl(selectedNode.get());
-				if (nodeControl === null)
-					return;
-				nodeControl.add();
-				refreshList(nodeList);
-			}
-
-			function onClickRenameAtom(nodeList)
-			{
-				if (selectedNode.get() === null)
-					return;
-				var frameControl = new FrameControl(frame);
-				var nodeControl = frameControl.getNodeControl(selectedNode.get());
-				if (nodeControl === null)
-					return;
-				var atomControl = nodeControl.getAtomControl(selectedNode.getAtom());
-				if (atomControl === null)
-					return;
+				var nodeControl = frameControl.getNodeControl(nodeId);
+				
+                if (nodeControl === null) return;
+                
+				var atomControl = nodeControl.getAtomControl(atomIndex);
+				
+                if (atomControl === null) return;
+                
 				atomControl.setContent('new atom name'); // TODO: implement real renaming!
-				refreshList(nodeList);
-			}
-
+                
+                var atomContant = document.getElementById('content_atom_' + atomIndex);
+                atomContant.innerHTML = atomControl.getContent();
+			}	
+            
 			function onClickAtomAbstract(nodeList)
 			{
 				alert(nodeList);
@@ -162,9 +204,23 @@
 				alert(nodeList);
 			}
 
-			function onClickDelAtom(nodeList)
+			function onClickDelAtom(nodeId, atomIndex)
 			{
-				alert(nodeList);
+				var frameControl = new FrameControl(frame);
+				var nodeControl = frameControl.getNodeControl(nodeId);
+				if (nodeControl !== null)
+                {
+                    var result = nodeControl.remove( atomIndex );
+                    
+                    if (result)
+                    {
+                        
+                        
+                        var nodeContainer = document.getElementById(nodeId);
+                        var atomContainer = document.getElementById(nodeId + '_atom_' + atomIndex);
+                        nodeContainer.removeChild(atomContainer);
+                    }
+                }
 			}
 		</script>
 	</head>
@@ -172,13 +228,10 @@
 		<div id="frameView">
 			<div id="commands">
 				<button onclick="onClickNewNode(document.getElementById('nodeList'));">new node</button>
-				<button onclick="onClickDelNode(document.getElementById('nodeList'));">del node</button>
 				;
-				<button onclick="onClickNewAtom(document.getElementById('nodeList'));">new atom</button>
 				<button onclick="onClickRenameAtom(document.getElementById('nodeList'));">rename atom</button>
 				<button onclick="onClickAtomAbstract(document.getElementById('nodeList'));">atom set abstracts</button>
 				<button onclick="onClickAtomConcrete(document.getElementById('nodeList'));">atom set concretes</button>
-				<button onclick="onClickDelAtom(document.getElementById('nodeList'));">del atom</button>
 				;
 				<textarea id="loadInput"></textarea>
 				<button onclick="onClickLoadJSON(document.getElementById('nodeList'), document.getElementById('loadInput'));">load from JSON</button>

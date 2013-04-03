@@ -135,7 +135,8 @@ function NodeControl(nodeId, initNode)
 	{
 		if (atomIndex < 0 || atomIndex >= node.atoms.length)
 			return false;
-		node.atoms.splice(atomIndex, 1);
+		//node.atoms.splice(atomIndex, 1);
+        node.atoms[atomIndex] = null;
 		return true;
 	};
 
