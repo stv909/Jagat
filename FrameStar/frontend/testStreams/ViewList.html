@@ -17,7 +17,13 @@
 				this.get = function()
 				{
 					return uuid;
-				}
+				};
+
+				this.getAtom = function()
+				{
+					// TODO: implement returning proper index from radio group
+					return 0;
+				};
 
 				this.set = function(newUuid, newControl)
 				{
@@ -43,17 +49,22 @@
 			{
 				var frameControl = new FrameControl(frame);
 				nodeViewContainer.innerHTML = '';
+				selectedNode.reset(); // TODO: implement saving selection after refreshing.
 
 				var matrix = frameControl.getMatrix();
 				for (var nodeId in matrix)
 				{
 					var nodeControl = frameControl.getNodeControl(nodeId);
 					var nodeButton = document.createElement('button');
-					var caption = '';
+					var captionHTML = '';
 					var imax = nodeControl.getAtomsCount();
 					for (var i = 0; i < imax; ++i)
 					{
-						caption += nodeControl.getAtomControl(i).getContent() + '<br>';
+						captionHTML +=
+						'<input type="radio" name="' + nodeId + '" value="' + i + '"' +
+						(i === 0 ? ' checked>' : '>') +
+						nodeControl.getAtomControl(i).getContent() +
+						'<br>';
 					}
 					nodeButton.style.background = colorInactive;
 					nodeButton.onclick = function(currentNodeId, currentNodeButton)
@@ -70,7 +81,7 @@
 							}
 						};
 					}(nodeId, nodeButton);
-					nodeButton.innerHTML = caption;
+					nodeButton.innerHTML = captionHTML;
 					nodeViewContainer.appendChild(nodeButton);
 					nodeViewContainer.appendChild(document.createElement('br'));
 				}
@@ -116,17 +127,29 @@
 
 			function onClickNewAtom(nodeList)
 			{
-				alert(nodeList);
-			}
-
-			function onClickDelAtom(nodeList)
-			{
-				alert(nodeList);
+				if (selectedNode.get() === null)
+					return;
+				var frameControl = new FrameControl(frame);
+				var nodeControl = frameControl.getNodeControl(selectedNode.get());
+				if (nodeControl === null)
+					return;
+				nodeControl.add();
+				refreshList(nodeList);
 			}
 
 			function onClickRenameAtom(nodeList)
 			{
-				alert(nodeList);
+				if (selectedNode.get() === null)
+					return;
+				var frameControl = new FrameControl(frame);
+				var nodeControl = frameControl.getNodeControl(selectedNode.get());
+				if (nodeControl === null)
+					return;
+				var atomControl = nodeControl.getAtomControl(selectedNode.getAtom());
+				if (atomControl === null)
+					return;
+				atomControl.setContent('new atom name'); // TODO: implement real renaming.
+				refreshList(nodeList);
 			}
 
 			function onClickAtomAbstract(nodeList)
@@ -135,6 +158,11 @@
 			}
 
 			function onClickAtomConcrete(nodeList)
+			{
+				alert(nodeList);
+			}
+
+			function onClickDelAtom(nodeList)
 			{
 				alert(nodeList);
 			}
