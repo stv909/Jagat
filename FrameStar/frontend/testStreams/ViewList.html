@@ -57,18 +57,20 @@
 						caption += nodeControl.getAtomControl(i).getContent() + '<br>';
 					}
 					nodeButton.style.background = colorInactive;
-					nodeButton.onclick = function()
+					nodeButton.onclick = function(currentNodeId, currentNodeButton)
 					{
-						// TODO: fix bug with improper nodeControl and nodeButton.
-						if (selectedNode.get() != nodeControl.getId())
+						return function()
 						{
-							selectedNode.set(nodeControl.getId(), nodeButton);
-						}
-						else
-						{
-							selectedNode.set(null, null);
-						}
-					}
+							if (selectedNode.get() != currentNodeId)
+							{
+								selectedNode.set(currentNodeId, currentNodeButton);
+							}
+							else
+							{
+								selectedNode.set(null, null);
+							}
+						};
+					}(nodeId, nodeButton);
 					nodeButton.innerHTML = caption;
 					nodeViewContainer.appendChild(nodeButton);
 					nodeViewContainer.appendChild(document.createElement('br'));
