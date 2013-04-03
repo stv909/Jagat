@@ -136,6 +136,7 @@ function NodeControl(nodeId, initNode)
 		if (atomIndex < 0 || atomIndex >= node.atoms.length)
 			return false;
 		//node.atoms.splice(atomIndex, 1);
+        //TODO find new solutions remove binding with array index
         node.atoms[atomIndex] = null;
 		return true;
 	};
