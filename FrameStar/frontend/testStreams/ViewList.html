@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Frame View. List.</title>
-         <style> 
+		<title>Frame View. Standard List.</title>
+         <style>
         <!--
             .nodeContainer,
             .atomContainer      { font-size:10pt; background-color: #EEF5FA; padding: 10px; margin: 20px;}
-            
+
             .nodeContainer      { width: 300px;}
             .atomContainer      { background-color: #DAE8F6; margin: 20px auto;}
-            
-            .nodeContainer a,  
+
+            .nodeContainer a,
             .atomContainer a    { font-size:9pt; width: 100%; text-align: right; display:block;}
-            
-           
+
+
         -->
        </style>
 		<script src="../coreStreams/Content.js"></script>
@@ -103,7 +103,7 @@
 				}
 			}
             */
-            
+
 			function onClickLoadJSON(nodeList, source)
 			{
 				var initNodes;
@@ -130,16 +130,13 @@
 			{
 				var frameControl = new FrameControl(frame);
                 var nodeId = frameControl.add();
-                
-                var nodeControl = frameControl.getNodeControl(nodeId);
+
 				var nodeContainer = document.createElement('div');
-				
                 nodeContainer.innerHTML = '<p>NodeId: ' + nodeId + '</p>';
                 nodeContainer.innerHTML += '<a href="javascript:void(0);" onclick="javascript:onClickDelNode(\'' + nodeId + '\');">del node</a>';
                 nodeContainer.innerHTML += '<a href="javascript:void(0);" onclick="javascript:onClickNewAtom(\'' + nodeId + '\');">add atom</a>';
                 nodeContainer.setAttribute('class', 'nodeContainer');
                 nodeContainer.setAttribute('id', nodeId);
-                
 				nodeList.appendChild(nodeContainer);
 			}
 
@@ -147,13 +144,12 @@
 			{
 				var frameControl = new FrameControl(frame);
 				var result = frameControl.remove(nodeId);
-                if(result)
+                if (result)
                 {
                     var nodeContainer = document.getElementById(nodeId);
                     nodeContainer.parentNode.removeChild(nodeContainer);
                 }
 			}
-            
 
 			function onClickNewAtom(nodeId)
 			{
@@ -162,18 +158,16 @@
 				if (nodeControl !== null)
 				{
 				    var index = nodeControl.add();
-                    
+
                     var atomContainer = document.createElement('div');
-    			
                     atomContainer.innerHTML = '<p>Atom</p>';
                     atomContainer.innerHTML += '<a href="javascript:void(0);" onclick="javascript:onClickDelAtom(\'' + nodeId + '\', \'' + index + '\');">del atom</a>';
                     atomContainer.innerHTML += '<a href="javascript:void(0);" onclick="javascript:onClickRenameAtom(\'' + nodeId + '\', \'' + index + '\');">change content</a>';
                     atomContainer.innerHTML += '<p id="content_atom_' + index + '"></p>';
                     atomContainer.setAttribute('class', 'atomContainer');
                     atomContainer.setAttribute('id', nodeId + '_atom_' + index);
-                    
                     var nodeContainer = document.getElementById(nodeId);
-    				nodeContainer.appendChild(atomContainer);
+					nodeContainer.appendChild(atomContainer);
 				}
 			}
 
@@ -181,25 +175,18 @@
 			{
 				var frameControl = new FrameControl(frame);
 				var nodeControl = frameControl.getNodeControl(nodeId);
-				
-                if (nodeControl === null) return;
-                
+                if (nodeControl === null)
+                	return;
 				var atomControl = nodeControl.getAtomControl(atomIndex);
-				
-                if (atomControl === null) return;
-                
+                if (atomControl === null)
+                	return;
 				atomControl.setContent('new atom name'); // TODO: implement real renaming!
-                
+
                 var atomContant = document.getElementById('content_atom_' + atomIndex);
                 atomContant.innerHTML = atomControl.getContent();
-			}	
-            
-			function onClickAtomAbstract(nodeList)
-			{
-				alert(nodeList);
 			}
 
-			function onClickAtomConcrete(nodeList)
+			function onClickAtomAbstract(nodeList)
 			{
 				alert(nodeList);
 			}
@@ -211,11 +198,8 @@
 				if (nodeControl !== null)
                 {
                     var result = nodeControl.remove( atomIndex );
-                    
                     if (result)
                     {
-                        
-                        
                         var nodeContainer = document.getElementById(nodeId);
                         var atomContainer = document.getElementById(nodeId + '_atom_' + atomIndex);
                         nodeContainer.removeChild(atomContainer);
@@ -231,7 +215,6 @@
 				;
 				<button onclick="onClickRenameAtom(document.getElementById('nodeList'));">rename atom</button>
 				<button onclick="onClickAtomAbstract(document.getElementById('nodeList'));">atom set abstracts</button>
-				<button onclick="onClickAtomConcrete(document.getElementById('nodeList'));">atom set concretes</button>
 				;
 				<textarea id="loadInput"></textarea>
 				<button onclick="onClickLoadJSON(document.getElementById('nodeList'), document.getElementById('loadInput'));">load from JSON</button>
