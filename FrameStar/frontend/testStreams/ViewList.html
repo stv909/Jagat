@@ -34,7 +34,6 @@
 					nodeContainer.innerHTML = '<p>NodeId: ' + nodeContainerId + '</p>';
 					nodeContainer.innerHTML += '<a href="javascript:void(0);" onclick="javascript:onClickDelNode(\'' + nodeContainerId + '\');">del node</a>';
 					nodeContainer.innerHTML += '<a href="javascript:void(0);" onclick="javascript:onClickNewAtom(\'' + nodeContainerId + '\');">add atom</a>';
-                    nodeContainer.innerHTML += '<a href="javascript:void(0);" onclick="javascript:onClickAddLink(\'' + nodeContainerId + '\');">add link</a>';
 					nodeContainer.setAttribute('class', 'nodeContainer');
 					nodeContainer.setAttribute('id', nodeContainerId);
 					nodeList.appendChild(nodeContainer);
@@ -52,7 +51,8 @@
                     atomContainer.innerHTML = '<p>Atom</p>';
                     atomContainer.innerHTML += '<a href="javascript:void(0);" onclick="javascript:onClickDelAtom(\'' + nodeId + '\', \'' + index + '\');">del atom</a>';
                     atomContainer.innerHTML += '<a href="javascript:void(0);" onclick="javascript:onClickChangeAtomContent(\'' + nodeId + '\', \'' + index + '\');">change content</a>';
-                    atomContainer.innerHTML += '<p id="content_atom_' + index + '"></p>';
+                    atomContainer.innerHTML += '<a href="javascript:void(0);" onclick="javascript:onClickAddLink(\'' + nodeId + '\', \'' + index + '\');">add link</a>';
+                    atomContainer.innerHTML += '<p id="'+ nodeId + '_content_atom_' + index + '"></p>';
                     atomContainer.setAttribute('class', 'atomContainer');
                     atomContainer.setAttribute('id', nodeId + '_atom_' + index);
                     var nodeContainer = document.getElementById(nodeId);
@@ -61,8 +61,8 @@
 
 				this.setAtomContent = function(nodeId, atomIndex, newContent)
 				{
-	                var atomContant = document.getElementById(nodeId + '_atom_' + atomIndex);
-	                atomContant.innerHTML = newContent; // TODO: fix this place
+	                var atomContant = document.getElementById(nodeId + '_content_atom_' + atomIndex);
+	                atomContant.innerHTML = newContent;
 				};
 
 				this.delAtom = function(atomContainerId)
@@ -72,9 +72,8 @@
 				};
 
                 this.refreshFrame = function(nodeList)
-    			{
+				{
 					this.reset(nodeList);
-					var frameControl = new FrameControl(frame);
 					var matrix = frameControl.getMatrix();
 					for (var nodeId in matrix)
 					{
@@ -85,7 +84,6 @@
 
 				this.refreshNode = function(nodeId)
 				{
-					var frameControl = new FrameControl(frame);
 					var nodeControl = frameControl.getNodeControl(nodeId);
 					var imax = nodeControl.getAtomsCount();
 					for (var i = 0; i < imax; ++i)
@@ -97,7 +95,6 @@
 
                 this.refreshAtom = function(nodeId, atomIndex)
 				{
-					var frameControl = new FrameControl(frame);
 					var nodeControl = frameControl.getNodeControl(nodeId);
 					this.setAtomContent(nodeId, atomIndex, nodeControl.getAtomControl(atomIndex).getContent());
 				};
@@ -180,22 +177,22 @@
                 }
 			}
 
-            function onClickAddLink(nodeContainerId)
+            function onClickAddLink(nodeContainerId, atomIndex)
             {
                 var select = document.createElement('select');
                 select.setAttribute('name', 'select_' + nodeId);
+                select.options[0] = new Option('Выберите ноду для связывания', null);
 
                 var matrix = frameControl.getMatrix();
 				for (var nodeId in matrix)
 				{
-    				var option = document.createElement("option");
-                    option.text = nodeId;
-                    option.value = nodeId;
-                    select.appendChild(option);
+					select.options[select.options.length] = new Option(nodeId, nodeId);
 				}
-                
-                var nodeContainer = document.getElementById(nodeContainerId);
-                nodeContainer.appendChild(select);
+
+                select.setAttribute('onChange', 'alert(1)');
+
+                var atomContainer = document.getElementById(nodeContainerId + '_atom_' + atomIndex);
+                atomContainer.appendChild(select);
             }
 		</script>
 	</head>
