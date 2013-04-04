@@ -12,8 +12,6 @@
 
             .nodeContainer a,
             .atomContainer a    { font-size:9pt; width: 100%; text-align: right; display:block;}
-
-
         -->
        </style>
 		<script src="../coreStreams/Content.js"></script>
@@ -22,88 +20,6 @@
 
 			var frame = new Frame();
             var frameControl = new FrameControl(frame);
-
-            /*
-    		var colorInactive = '#eeeeee';
-			var colorSelected = '#8888ff';
-			var selectedNode = new function()
-			{
-				var uuid = null;
-				var control = null;
-
-				this.get = function()
-				{
-					return uuid;
-				};
-
-				this.getAtom = function()
-				{
-					// TODO: implement returning proper index from radio group
-					return 0;
-				};
-
-				this.set = function(newUuid, newControl)
-				{
-					if (control)
-					{
-						control.style.background = colorInactive;
-					}
-					uuid = newUuid;
-					control = newControl;
-					if (control)
-					{
-						control.style.background = colorSelected;
-					}
-				};
-
-				this.reset = function()
-				{
-					this.set(null, null);
-				};
-			};
-
-			function refreshList(nodeViewContainer)
-			{
-				var frameControl = new FrameControl(frame);
-				nodeViewContainer.innerHTML = '';
-				selectedNode.reset(); // TODO: implement saving selection after refreshing.
-
-				var matrix = frameControl.getMatrix();
-				for (var nodeId in matrix)
-				{
-					var nodeControl = frameControl.getNodeControl(nodeId);
-					var nodeButton = document.createElement('button');
-					var captionHTML = '';
-					var imax = nodeControl.getAtomsCount();
-					for (var i = 0; i < imax; ++i)
-					{
-						captionHTML +=
-						'<input type="radio" name="' + nodeId + '" value="' + i + '"' +
-						(i === 0 ? ' checked>' : '>') +
-						nodeControl.getAtomControl(i).getContent() +
-						'<br>';
-					}
-					nodeButton.style.background = colorInactive;
-					nodeButton.onclick = function(currentNodeId, currentNodeButton)
-					{
-						return function()
-						{
-							if (selectedNode.get() != currentNodeId)
-							{
-								selectedNode.set(currentNodeId, currentNodeButton);
-							}
-							else
-							{
-								selectedNode.set(null, null);
-							}
-						};
-					}(nodeId, nodeButton);
-					nodeButton.innerHTML = captionHTML;
-					nodeViewContainer.appendChild(nodeButton);
-					nodeViewContainer.appendChild(document.createElement('br'));
-				}
-			}
-            */
 
 			function FrameContainer()
 			{
@@ -118,6 +34,7 @@
 					nodeContainer.innerHTML = '<p>NodeId: ' + nodeContainerId + '</p>';
 					nodeContainer.innerHTML += '<a href="javascript:void(0);" onclick="javascript:onClickDelNode(\'' + nodeContainerId + '\');">del node</a>';
 					nodeContainer.innerHTML += '<a href="javascript:void(0);" onclick="javascript:onClickNewAtom(\'' + nodeContainerId + '\');">add atom</a>';
+                    nodeContainer.innerHTML += '<a href="javascript:void(0);" onclick="javascript:onClickAddLink(\'' + nodeContainerId + '\');">add link</a>';
 					nodeContainer.setAttribute('class', 'nodeContainer');
 					nodeContainer.setAttribute('id', nodeContainerId);
 					nodeList.appendChild(nodeContainer);
@@ -134,7 +51,7 @@
                     var atomContainer = document.createElement('div');
                     atomContainer.innerHTML = '<p>Atom</p>';
                     atomContainer.innerHTML += '<a href="javascript:void(0);" onclick="javascript:onClickDelAtom(\'' + nodeId + '\', \'' + index + '\');">del atom</a>';
-                    atomContainer.innerHTML += '<a href="javascript:void(0);" onclick="javascript:onClickRenameAtom(\'' + nodeId + '\', \'' + index + '\');">change content</a>';
+                    atomContainer.innerHTML += '<a href="javascript:void(0);" onclick="javascript:onClickChangeAtomContent(\'' + nodeId + '\', \'' + index + '\');">change content</a>';
                     atomContainer.innerHTML += '<p id="content_atom_' + index + '"></p>';
                     atomContainer.setAttribute('class', 'atomContainer');
                     atomContainer.setAttribute('id', nodeId + '_atom_' + index);
@@ -142,44 +59,55 @@
 					nodeContainer.appendChild(atomContainer);
 				};
 
+				this.setAtomContent = function(nodeId, atomIndex, newContent)
+				{
+	                var atomContant = document.getElementById(nodeId + '_atom_' + atomIndex);
+	                atomContant.innerHTML = newContent; // TODO: fix this place
+				};
+
 				this.delAtom = function(atomContainerId)
 				{
-					;
+					var atomContainer = document.getElementById(atomContainerId);
+                    atomContainer.parentNode.removeChild(atomContainer);
 				};
 
                 this.refreshFrame = function(nodeList)
     			{
 					this.reset(nodeList);
-
 					var frameControl = new FrameControl(frame);
-
 					var matrix = frameControl.getMatrix();
 					for (var nodeId in matrix)
 					{
 						this.addNode(nodeList, nodeId);
-						var nodeControl = frameControl.getNodeControl(nodeId);
-						var imax = nodeControl.getAtomsCount();
-						for (var i = 0; i < imax; ++i)
-						{
-							this.addAtom(nodeId, i);
-						}
+						this.refreshNode(nodeId);
 					}
-
-					// TODO: decompose code - refreshNode, refreshAtom
 				};
 
-				this.refreshNode = function(nodeList)
+				this.refreshNode = function(nodeId)
 				{
-					;
+					var frameControl = new FrameControl(frame);
+					var nodeControl = frameControl.getNodeControl(nodeId);
+					var imax = nodeControl.getAtomsCount();
+					for (var i = 0; i < imax; ++i)
+					{
+						this.addAtom(nodeId, i);
+						this.refreshAtom(nodeId, i);
+					}
 				};
 
-                this.refreshAtom = function(nodeList)
-    			{
-    				;
+                this.refreshAtom = function(nodeId, atomIndex)
+				{
+					var frameControl = new FrameControl(frame);
+					var nodeControl = frameControl.getNodeControl(nodeId);
+					this.setAtomContent(nodeId, atomIndex, nodeControl.getAtomControl(atomIndex).getContent());
 				};
 			}
 
 			var frameContainer = new FrameContainer();
+
+            /////////////////////
+            //      Handlers   //
+            /////////////////////
 
 			function onClickLoadJSON(nodeList, source)
 			{
@@ -199,7 +127,6 @@
 
 			function onClickSaveJSON(destination)
 			{
-				var frameControl = new FrameControl(frame);
 				destination.value = frameControl.stringify();
 			}
 
@@ -215,28 +142,22 @@
 
 			function onClickNewAtom(nodeId)
 			{
-				var frameControl = new FrameControl(frame);
 				var nodeControl = frameControl.getNodeControl(nodeId);
-				if (nodeControl !== null)
-				{
-					var index = nodeControl.add();
-					frameContainer.addAtom(nodeId, index);
-				}
+				if (nodeControl !== null) frameContainer.addAtom(nodeId, nodeControl.add());
 			}
 
-			function onClickRenameAtom(nodeId, atomIndex) // TODO: fix function name
+			function onClickChangeAtomContent(nodeId, atomIndex)
 			{
-				var frameControl = new FrameControl(frame);
 				var nodeControl = frameControl.getNodeControl(nodeId);
                 if (nodeControl === null)
                 	return;
 				var atomControl = nodeControl.getAtomControl(atomIndex);
                 if (atomControl === null)
                 	return;
-				atomControl.setContent('new atom name'); // TODO: implement real renaming!
 
-                var atomContant = document.getElementById('content_atom_' + atomIndex);
-                atomContant.innerHTML = atomControl.getContent();
+                var newContent = prompt('new content:', atomControl.getContent());
+				atomControl.setContent(newContent);
+				frameContainer.setAtomContent(nodeId, atomIndex, atomControl.getContent());
 			}
 
 			function onClickAtomLink(nodeList)
@@ -252,17 +173,30 @@
 			function onClickDelAtom(nodeId, atomIndex)
 			{
 				var nodeControl = frameControl.getNodeControl(nodeId);
-				if (nodeControl !== null)
+
+                if (nodeControl !== null && nodeControl.remove( atomIndex ))
                 {
-                    var result = nodeControl.remove( atomIndex );
-                    if (result)
-                    {
-                        var nodeContainer = document.getElementById(nodeId);
-                        var atomContainer = document.getElementById(nodeId + '_atom_' + atomIndex);
-                        nodeContainer.removeChild(atomContainer);
-                    }
+                    frameContainer.delAtom(nodeId + '_atom_' + atomIndex);
                 }
 			}
+
+            function onClickAddLink(nodeContainerId)
+            {
+                var select = document.createElement('select');
+                select.setAttribute('name', 'select_' + nodeId);
+
+                var matrix = frameControl.getMatrix();
+				for (var nodeId in matrix)
+				{
+    				var option = document.createElement("option");
+                    option.text = nodeId;
+                    option.value = nodeId;
+                    select.appendChild(option);
+				}
+                
+                var nodeContainer = document.getElementById(nodeContainerId);
+                nodeContainer.appendChild(select);
+            }
 		</script>
 	</head>
 	<body>
