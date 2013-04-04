@@ -117,7 +117,7 @@
 					initNodes = {};
 				}
 				frame = new Frame(initNodes);
-				refreshList(nodeList);
+				// TODO: refresh list view here.
 			}
 
 			function onClickSaveJSON(destination)
@@ -171,7 +171,7 @@
 				}
 			}
 
-			function onClickRenameAtom(nodeId, atomIndex)
+			function onClickRenameAtom(nodeId, atomIndex) // TODO: fix function name
 			{
 				var frameControl = new FrameControl(frame);
 				var nodeControl = frameControl.getNodeControl(nodeId);
@@ -186,7 +186,12 @@
                 atomContant.innerHTML = atomControl.getContent();
 			}
 
-			function onClickAtomAbstract(nodeList)
+			function onClickAtomLink(nodeList)
+			{
+				alert(nodeList);
+			}
+
+			function onClickAtomLinkType(nodeList)
 			{
 				alert(nodeList);
 			}
@@ -213,8 +218,8 @@
 			<div id="commands">
 				<button onclick="onClickNewNode(document.getElementById('nodeList'));">new node</button>
 				;
-				<button onclick="onClickRenameAtom(document.getElementById('nodeList'));">rename atom</button>
-				<button onclick="onClickAtomAbstract(document.getElementById('nodeList'));">atom set abstracts</button>
+				<button onclick="onClickAtomLink(document.getElementById('nodeList'));">atom set abstract link</button>
+				<button onclick="onClickAtomLinkType(document.getElementById('nodeList'));">atom set link type</button>
 				;
 				<textarea id="loadInput"></textarea>
 				<button onclick="onClickLoadJSON(document.getElementById('nodeList'), document.getElementById('loadInput'));">load from JSON</button>

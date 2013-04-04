@@ -5,7 +5,7 @@
 	/* Description:
 	//
 	// * atoms - array of node atoms.
-	//           TODO: think about array -> dictionary {id: atom} if array construction will make pain.
+	//           TODO: implement array -> dictionary {id: atom} if array construction will make pain.
 	//
 	// Node = Atom01 + Atom02 + ... + Atom0N,
 	// where Node id === Atom0i id,

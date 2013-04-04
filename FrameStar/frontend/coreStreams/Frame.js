@@ -34,7 +34,7 @@ function Atom(initTags, initContent)
 
 function Node(initAtoms)
 {
-	this.atoms = initAtoms || [];
+	this.atoms = initAtoms || []; // TODO: make it {} with atom ids.
 }
 
 //////////////////////
@@ -133,10 +133,10 @@ function NodeControl(nodeId, initNode)
 
 	var removeNodeAtom = function(atomIndex)
 	{
-		if (atomIndex < 0 || atomIndex >= node.atoms.length)
+		if (atomIndex < 0 || atomIndex >= node.atoms.length || node.atoms[atomIndex] === null)
 			return false;
 		//node.atoms.splice(atomIndex, 1);
-        //TODO find new solutions remove binding with array index
+        //TODO: find new solution, remove binding with array index. Variant: use ids for atoms.
         node.atoms[atomIndex] = null;
 		return true;
 	};
@@ -148,7 +148,7 @@ function NodeControl(nodeId, initNode)
 
 	var getNodeAtomControl = function(atomIndex)
 	{
-		if (atomIndex < 0 || atomIndex >= node.atoms.length)
+		if (atomIndex < 0 || atomIndex >= node.atoms.length || node.atoms[atomIndex] === null)
 			return null;
 		return new AtomControl(node.atoms[atomIndex]);
 	};
@@ -164,6 +164,8 @@ function NodeControl(nodeId, initNode)
 		var atomresults = [];
 		for (var i = 0; i < node.atoms.length; ++i)
 		{
+			if (node.atoms[i] === null)
+				continue;
 			var control = new TagsControl(node.atoms[i]);
 			atomresults.push(control.getMatrix(includeTypes));
 		}
