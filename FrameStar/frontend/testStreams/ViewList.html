@@ -104,6 +104,41 @@
 			}
             */
 
+			function FrameContainer()
+			{
+				this.reset = function()
+				{
+					;
+				};
+
+				this.addNode = function()
+				{
+					;
+				};
+
+				this.delNode = function()
+				{
+					;
+				};
+
+				this.addAtom = function()
+				{
+					;
+				};
+
+				this.delAtom = function()
+				{
+					;
+				};
+
+				this.refresh = function()
+				{
+					;
+				};
+			}
+
+			var frameContainer = new FrameContainer();
+
 			function onClickLoadJSON(nodeList, source)
 			{
 				var initNodes;
@@ -117,7 +152,7 @@
 					initNodes = {};
 				}
 				frame = new Frame(initNodes);
-				// TODO: refresh list view here.
+				frameContainer.refresh(); // TODO: implement refreshing to fix JSON loading.
 			}
 
 			function onClickSaveJSON(destination)
