@@ -13,21 +13,21 @@ function Uuid()
 }
 
 ////////////////////
-// Tag Conception //
+// Link Conception //
 ////////////////////
 
-function Tag(initTagTypes)
+function Link(initAspects)
 {
-	this.types = initTagTypes|| {};
+	this.aspects = initAspects|| {};
 }
 
 /////////////////////
 // Node Conception //
 /////////////////////
 
-function Node(initTags, initContent)
+function Node(initLinks, initContent)
 {
-	this.tags = initTags|| {};
+	this.links = initLinks|| {};
 	this.content = initContent || null;
 }
 
@@ -108,37 +108,37 @@ function FrameControl(initFrame)
 // Node Implementation //
 /////////////////////////
 
-function NodeControl(nodeId, initNode)
+function NodeControl(initId, initNode)
 {
-	var id = nodeId;
+	var id = initId;
 	var node = initNode;
 
-	var addTagLink = function(tagId)
+	var addLink = function(linkId)
 	{
-		if (tagId in node.tags)
+		if (linkId in node.links)
 			return;
-		node.tags[tagId] = new Tag();
+		node.links[linkId] = new Link();
 	};
 
-	var removeTagLink = function(tagId)
+	var removeLink = function(linkId)
 	{
-		if (tagId in node.tags)
+		if (linkId in node.links)
 		{
-			delete node.tags[tagId];
+			delete node.links[linkId];
 			return true;
 		}
 		return false;
 	};
 
-	var clearTagLinks = function()
+	var clearLinks = function()
 	{
-		node.tags = {};
+		node.links = {};
 	};
 
-	var getTagLinkControl = function(tagId)
+	var getLinkControl = function(linkId)
 	{
-		if (tagId in node.tags)
-			return new TagControl(tagId, node.tags[tagId]);
+		if (linkId in node.links)
+			return new LinkControl(linkId, node.links[linkId]);
 		return null;
 	};
 
@@ -157,78 +157,78 @@ function NodeControl(nodeId, initNode)
 		return id;
 	};
 
-	var getNodeTagsMatrix = function()
+	var getNodeLinksMatrix = function()
 	{
 		var result = {};
-		for (var tagLink in node.tags)
+		for (var linkId in node.links)
 		{
-			result[tagLink] = true;
+			result[linkId] = true;
 		}
 		return result;
 	};
 
-	this.add = addTagLink;
-	this.remove = removeTagLink;
-	this.clear = clearTagLinks;
+	this.add = addLink;
+	this.remove = removeLink;
+	this.clear = clearLinks;
 
 	this.getContent = getNodeContent;
 	this.setContent = setNodeContent;
 
 	this.getId = getNodeId;
-	this.getElement = getTagLinkControl;
-	this.getMatrix = getNodeTagsMatrix;
+	this.getElement = getLinkControl;
+	this.getMatrix = getNodeLinksMatrix;
 }
 
-////////////////////////
-// Tag Implementation //
-////////////////////////
+/////////////////////////
+// Link Implementation //
+/////////////////////////
 
-function TagControl(tagId, initTag)
+function LinkControl(initId, initLink)
 {
-	var id = tagId;
-	var tag = initTag;
+	var id = initId;
+	var link = initLink;
 
-	var addTagType = function(typeId)
+	var addLinkAspect = function(aspectId)
 	{
-		if (typeId in tag.types)
+		if (aspectId in link.aspects)
 			return;
-		tag.types[typeId] = true;
+		link.aspects[aspectId] = true;
 	};
 
-	var removeTagType = function(typeId)
+	var removeLinkAspect = function(aspectId)
 	{
-		if (typeId in tag.types)
+		if (aspectId in link.aspects)
 		{
-			delete tag.types[typeId];
+			delete link.aspects[aspectId];
 			return true;
 		}
 		return false;
 	};
 
-	var clearTagTypes = function()
+	var clearLinkAspects = function()
 	{
-		tag.types = {};
+		link.aspects = {};
 	};
 
-	var getTagId = function()
+	var getLinkId = function()
 	{
 		return id;
 	}
 
-	var getTagTypesMatrix = function()
+	var getLinkAspectsMatrix = function()
 	{
 		var result = {};
-		for (var tagType in tag.types)
+		for (var aspectId in link.aspects)
 		{
-			result[tagType] = true;
+			result[aspectId] = true;
 		}
 		return result;
 	};
 
-	this.add = addTagType;
-	this.remove = removeTagType;
-	this.clear = clearTagTypes;
+	this.add = addLinkAspect;
+	this.remove = removeLinkAspect;
+	this.clear = clearLinkAspects;
 
-	this.getId = getTagId;
-	this.getMatrix = getTagTypesMatrix;
+	this.getId = getLinkId;
+	this.getMatrix = getLinkAspectsMatrix;
 }
