@@ -185,14 +185,14 @@ function TagControl(initTags, initTagId)
 	var tags = initTags;
 	var tagId = initTagId;
 
-	var addType = function(typeId)
+	var addTagType = function(typeId)
 	{
 		if (typeId in tags[tagId])
 			return;
 		tags[tagId][typeId] = true;
 	};
 
-	var removeType = function(typeId)
+	var removeTagType = function(typeId)
 	{
 		if (typeId in tags[tagId])
 		{
@@ -202,7 +202,7 @@ function TagControl(initTags, initTagId)
 		return false;
 	};
 
-	var clearTypes = function()
+	var clearTagTypes = function()
 	{
 		tags[tagId] = {};
 	};
@@ -217,9 +217,9 @@ function TagControl(initTags, initTagId)
 		return result;
 	};
 
-	this.add = addType;
-	this.remove = removeType;
-	this.clear = clearTypes;
+	this.add = addTagType;
+	this.remove = removeTagType;
+	this.clear = clearTagTypes;
 
 	this.getMatrix = getTagTypesMatrix;
 }
