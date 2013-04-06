@@ -55,44 +55,24 @@
 	                nodeContent.innerHTML = newContent;
 				};
 
-                this.setNodeTags = function(nodeId, tags)
+                this.setNodeLinks = function(nodeId, links)
     			{
 	                var nodeLinks = document.getElementById(nodeId + '_links');
                     nodeLinks.innerHTML = '';
-                    for (var i in tags) nodeLinks.innerHTML += i;
-
+                    for (var link in links)
+                    {
+                    	nodeLinks.innerHTML += link;
+                    }
                     var select = document.getElementById('select_' + nodeId);
                     select.parentNode.removeChild(select);
 				};
 
-                /*
-				this.addAtom = function(nodeId, index)
-				{
-                    var atomContainer = document.createElement('div');
-                    atomContainer.innerHTML = '<p>Atom</p>';
-                    atomContainer.innerHTML += '<a href="javascript:void(0);" onclick="javascript:onClickDelAtom(\'' + nodeId + '\', \'' + index + '\');">del atom</a>';
-                    atomContainer.innerHTML += '<a href="javascript:void(0);" onclick="javascript:onClickChangeAtomContent(\'' + nodeId + '\', \'' + index + '\');">change content</a>';
-                    atomContainer.innerHTML += '<p id="'+ nodeId + '_content_atom_' + index + '"></p>';
-                    atomContainer.setAttribute('class', 'atomContainer');
-                    atomContainer.setAttribute('id', nodeId + '_atom_' + index);
-                    var nodeContainer = document.getElementById(nodeId);
-					nodeContainer.appendChild(atomContainer);
-				};
-
-
-				this.delAtom = function(atomContainerId)
-				{
-					var atomContainer = document.getElementById(atomContainerId);
-                    atomContainer.parentNode.removeChild(atomContainer);
-				};
-                */
-
                 this.refreshFrame = function(nodeList)
 				{
 					this.reset(nodeList);
-					var matrix = frameControl.getMatrix();
+					var nodeMatrix = frameControl.getMatrix();
 
-					for (var nodeId in matrix)
+					for (var nodeId in nodeMatrix)
 					{
 						this.addNode(nodeList, nodeId);
 						this.refreshNode(nodeId);
@@ -101,14 +81,14 @@
 
 				this.refreshNode = function(nodeId)
 				{
-					var nodeControl = frameControl.getNodeControl(nodeId);
-    				this.setNodeContent(nodeId, nodeControl.getAtomControl(0).getContent());
+					var nodeControl = frameControl.getElement(nodeId);
+    				this.setNodeContent(nodeId, nodeControl.getContent());
 				};
 			}
 
-            /////////////////////
-            //  Handlers       //
-            /////////////////////
+            ////////////////////
+            // Click Handlers //
+            ////////////////////
 
 			function onClickLoadJSON(nodeList, source)
 			{
@@ -130,79 +110,45 @@
 
 			function onClickSaveJSON(destination)
 			{
-				destination.value = frameControl.stringify();
+				destination.value = frameControl.getFrameCode();
 			}
 
 			function onClickAddNode(nodeList)
 			{
                 var nodeId = frameControl.add();
                 frameContainer.addNode(nodeList, nodeId);
-
-                //auto add atom
-                var nodeControl = frameControl.getNodeControl(nodeId);
-    			nodeControl.add();
 			}
 
 			function onClickDelNode(nodeId)
 			{
-                if (frameControl.remove(nodeId)) frameContainer.delNode(nodeId);
+                if (frameControl.remove(nodeId))
+                {
+                	frameContainer.delNode(nodeId);
+                }
 			}
 
             function onClickChangeNodeContent(nodeId)
 			{
-				var nodeControl = frameControl.getNodeControl(nodeId);
+				var nodeControl = frameControl.getElement(nodeId);
                 if (nodeControl === null)
                 	return;
-				var atomControl = nodeControl.getAtomControl(0);
-                if (atomControl === null)
-                	return;
-
-                var newContent = prompt('new content:', atomControl.getContent());
-				atomControl.setContent(newContent);
-				frameContainer.setNodeContent(nodeId, atomControl.getContent());
+                var newContent = prompt('new content:', nodeControl.getContent());
+				nodeControl.setContent(newContent);
+				frameContainer.setNodeContent(nodeId, nodeControl.getContent());
 			}
 
-            /*
-			function onClickNewAtom(nodeId)
-			{
-				var nodeControl = frameControl.getNodeControl(nodeId);
-				if (nodeControl !== null) frameContainer.addAtom(nodeId, nodeControl.add());
-			}
-
-			function onClickAtomLink(nodeList)
-			{
-				alert(nodeList);
-			}
-
-			function onClickAtomLinkType(nodeList)
-			{
-				alert(nodeList);
-			}
-
-			function onClickDelAtom(nodeId, atomIndex)
-			{
-				var nodeControl = frameControl.getNodeControl(nodeId);
-
-                if (nodeControl !== null && nodeControl.remove( atomIndex ))
-                {
-                    frameContainer.delAtom(nodeId + '_atom_' + atomIndex);
-                }
-			}
-            */
-            function onClickAddLink(nodeContainerId)
+			function onClickAddLink(nodeContainerId)
             {
                 var select = document.createElement('select');
                 select.setAttribute('id', 'select_' + nodeContainerId);
-                select.options[0] = new Option('Выберите ноду для связывания', null);
+                select.options[0] = new Option('Select link node.', null);
 
-                var matrix = frameControl.getMatrix();
-				for (var nodeId in matrix)
+                var nodeMatrix = frameControl.getMatrix();
+				for (var nodeId in nodeMatrix)
 				{
 					select.options[select.options.length] = new Option(nodeId, nodeId);
 				}
-
                 select.setAttribute('onChange', 'onAddLink("' + nodeContainerId + '")');
-
                 var nodeContainer = document.getElementById(nodeContainerId);
                 nodeContainer.appendChild(select);
             }
@@ -211,9 +157,9 @@
             {
                 var select = document.getElementById('select_' + nodeId);
                 var nodeSelected = select.options[select.selectedIndex].value;
-                var tag = {};
-                tag[nodeSelected] = false;
-                frameContainer.setNodeTags(nodeId, tag);
+                var links = {};
+                links[nodeSelected] = true;
+                frameContainer.setNodeLinks(nodeId, links);
             }
 		</script>
 	</head>
