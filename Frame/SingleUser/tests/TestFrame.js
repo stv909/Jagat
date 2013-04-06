@@ -7,15 +7,8 @@ function runAllTests(output)
 
 	function pushResults()
 	{
-		var pull = new testPull();
-		for (var testFunctionName in pull)
+		function generateTestParagraph(testFunctionName, resultText)
 		{
-			var resultText = '[invalid test function object]';
-			if (typeof pull[testFunctionName] === 'function')
-			{
-				resultText = pull[testFunctionName]();
-			}
-
 			var testParagraph = document.createElement('p');
 			var testTitle = document.createTextNode(testFunctionName);
 			var view = document.createElement('textarea');
@@ -24,7 +17,18 @@ function runAllTests(output)
 			testParagraph.appendChild(testTitle);
 			testParagraph.appendChild(document.createElement('br'));
 			testParagraph.appendChild(view);
-			output.appendChild(testParagraph);
+			return testParagraph;
+		}
+
+		var pull = new testPull();
+		for (var testFunctionName in pull)
+		{
+			var resultText = '[invalid test function object]';
+			if (typeof pull[testFunctionName] === 'function')
+			{
+				resultText = pull[testFunctionName]();
+			}
+			output.appendChild(generateTestParagraph(testFunctionName, resultText));
 		}
 	}
 
