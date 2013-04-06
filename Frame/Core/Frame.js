@@ -12,6 +12,15 @@ function Uuid()
 	this.generate = b;
 }
 
+////////////////////
+// Tag Conception //
+////////////////////
+
+function Tag(initTagTypes)
+{
+	this.types = initTagTypes|| {};
+}
+
 /////////////////////
 // Node Conception //
 /////////////////////
@@ -156,7 +165,7 @@ function NodeControl(nodeId, initNode)
 			var tagElement = true;
 			if (includeTypes)
 			{
-				var control = new TagControl(node.tags, tagLink);
+				var control = new TagControl(tagLink, node.tags[tagLink]);
 				tagElement = control.getMatrix();
 			}
 			result[tagLink] = tagElement;
@@ -180,23 +189,23 @@ function NodeControl(nodeId, initNode)
 // Tag Implementation //
 ////////////////////////
 
-function TagControl(initTags, initTagId)
+function TagControl(tagId, initTag)
 {
-	var tags = initTags;
-	var tagId = initTagId;
+	var id = tagId;
+	var tag = initTag;
 
 	var addTagType = function(typeId)
 	{
-		if (typeId in tags[tagId])
+		if (typeId in tag.types)
 			return;
-		tags[tagId][typeId] = true;
+		tag.types[typeId] = true;
 	};
 
 	var removeTagType = function(typeId)
 	{
-		if (typeId in tags[tagId])
+		if (typeId in tag.types)
 		{
-			delete tags[tagId][typeId];
+			delete tag.types[typeId];
 			return true;
 		}
 		return false;
@@ -204,13 +213,18 @@ function TagControl(initTags, initTagId)
 
 	var clearTagTypes = function()
 	{
-		tags[tagId] = {};
+		tag.types = {};
 	};
+
+	var getTagId = function()
+	{
+		return id;
+	}
 
 	var getTagTypesMatrix = function()
 	{
 		var result = {};
-		for (var tagType in tags[tagId])
+		for (var tagType in tag.types)
 		{
 			result[tagType] = true;
 		}
@@ -221,6 +235,7 @@ function TagControl(initTags, initTagId)
 	this.remove = removeTagType;
 	this.clear = clearTagTypes;
 
+	this.getId = getTagId;
 	this.getMatrix = getTagTypesMatrix;
 }
 
