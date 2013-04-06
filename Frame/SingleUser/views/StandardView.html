@@ -14,8 +14,8 @@
             .atomContainer a    { font-size:9pt; width: 100%; text-align: right; display:block;}
         -->
         </style>
-		<script src="../coreStreams/Content.js"></script>
-		<script src="../coreStreams/Frame.js"></script>
+		<script src="../../Core/Content.js"></script>
+		<script src="../../Core/Frame.js"></script>
 		<script>
 
 			var frame           = new Frame();
@@ -48,19 +48,19 @@
 				    var nodeContainer = document.getElementById(nodeContainerId);
                     nodeContainer.parentNode.removeChild(nodeContainer);
 				};
-                
+
                 this.setNodeContent = function(nodeId, newContent)
 				{
 	                var nodeContent = document.getElementById(nodeId + '_content');
 	                nodeContent.innerHTML = newContent;
 				};
-                
+
                 this.setNodeTags = function(nodeId, tags)
     			{
 	                var nodeLinks = document.getElementById(nodeId + '_links');
                     nodeLinks.innerHTML = '';
                     for (var i in tags) nodeLinks.innerHTML += i;
-                    
+
                     var select = document.getElementById('select_' + nodeId);
                     select.parentNode.removeChild(select);
 				};
@@ -79,14 +79,14 @@
 					nodeContainer.appendChild(atomContainer);
 				};
 
-			
+
 				this.delAtom = function(atomContainerId)
 				{
 					var atomContainer = document.getElementById(atomContainerId);
                     atomContainer.parentNode.removeChild(atomContainer);
 				};
                 */
-                
+
                 this.refreshFrame = function(nodeList)
 				{
 					this.reset(nodeList);
@@ -122,9 +122,9 @@
 					console.log('Can not parse given content string as JSON. String: ' + source + '; Name: ' + e.name + '; Desc: ' + e.message);
 					initNodes = {};
 				}
-                
+
 				frame = new Frame(initNodes);
-                frameControl = new FrameControl(frame); 
+                frameControl = new FrameControl(frame);
 				frameContainer.refreshFrame(nodeList);
 			}
 
@@ -137,7 +137,7 @@
 			{
                 var nodeId = frameControl.add();
                 frameContainer.addNode(nodeList, nodeId);
-                
+
                 //auto add atom
                 var nodeControl = frameControl.getNodeControl(nodeId);
     			nodeControl.add();
@@ -147,7 +147,7 @@
 			{
                 if (frameControl.remove(nodeId)) frameContainer.delNode(nodeId);
 			}
-            
+
             function onClickChangeNodeContent(nodeId)
 			{
 				var nodeControl = frameControl.getNodeControl(nodeId);
@@ -161,7 +161,7 @@
 				atomControl.setContent(newContent);
 				frameContainer.setNodeContent(nodeId, atomControl.getContent());
 			}
-            
+
             /*
 			function onClickNewAtom(nodeId)
 			{
@@ -206,7 +206,7 @@
                 var nodeContainer = document.getElementById(nodeContainerId);
                 nodeContainer.appendChild(select);
             }
-            
+
             function onAddLink(nodeId)
             {
                 var select = document.getElementById('select_' + nodeId);
