@@ -100,7 +100,7 @@ function FrameControl(initFrame)
 	this.clear = clearNodes;
 
 	this.getElement = getNodeControl;
-	this.getMatrix = getFrameNodesMatrix;
+	this.getMatrix = getNodesMatrix;
 	this.getFrameCode = stringifyFrame;
 }
 
