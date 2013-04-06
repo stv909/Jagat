@@ -122,90 +122,52 @@ function testPull()
 
 		var typeLinkedFrame = null;
 
-	this.p05CreateTypeLinkedFrame = function()
+	this.p05CreateAspectLinkedFrame = function()
 	{
 		var frame = new Frame();
 		var frameControl = new FrameControl(frame);
 
-		var nodeControlLink = frameControl.getNodeControl(frameControl.add());
-		var nodeControlLT01 = frameControl.getNodeControl(frameControl.add());
-		var nodeControlLT02 = frameControl.getNodeControl(frameControl.add());
+		var nodeControlLink = frameControl.getElement(frameControl.add());
+		var nodeControlLA01 = frameControl.getElement(frameControl.add());
+		var nodeControlLA02 = frameControl.getElement(frameControl.add());
+		nodeControlLink.setContent('Link Aspects');
+		nodeControlLA01.setContent('01 Link Aspect');
+		nodeControlLA02.setContent('02 Link Aspect');
 
-		nodeControlLink.getAtomControl(nodeControlLink.add(new Atom(null, 'LinkTypes')));
-		var tagControlLT01 = nodeControlLT01.getAtomControl(
-			nodeControlLT01.add(new Atom(null, 'LinkType01'))
-		).getTagsControl();
-		var tagControlLT02 = nodeControlLT02.getAtomControl(
-			nodeControlLT02.add(new Atom(null, 'LinkType02'))
-		).getTagsControl();
+		nodeControlLA01.add(nodeControlLink.getId());
+		nodeControlLA02.add(nodeControlLink.getId());
 
-		tagControlLT01.add(nodeControlLink.getId());
-		tagControlLT02.add(nodeControlLink.getId());
+		var nodeControl01 = frameControl.getElement(frameControl.add());
+		var nodeControl02 = frameControl.getElement(frameControl.add());
+		var nodeControl03 = frameControl.getElement(frameControl.add());
+		nodeControl01.setContent('01 node');
+		nodeControl02.setContent('02 node');
+		nodeControl03.setContent('03 node');
 
-		var nodeControl01 = frameControl.getNodeControl(frameControl.add());
-		var nodeControl02 = frameControl.getNodeControl(frameControl.add());
-		var nodeControl03 = frameControl.getNodeControl(frameControl.add());
+		var linkId = nodeControl01.getId();
+		nodeControl02.add(linkId);
+		nodeControl02.getElement(linkId).add(nodeControlLA01.getId());
 
-		var tagsControl11 = nodeControl01.getAtomControl(
-			nodeControl01.add(new Atom(null, '01 node 01 atom'))
-		).getTagsControl();
-		var tagsControl21 = nodeControl02.getAtomControl(
-			nodeControl02.add(new Atom(null, '02 node 01 atom'))
-		).getTagsControl();
-		var tagsControl22 = nodeControl02.getAtomControl(
-			nodeControl02.add(new Atom(null, '02 node 02 atom'))
-		).getTagsControl();
-		var tagsControl23 = nodeControl02.getAtomControl(
-			nodeControl02.add(new Atom(null, '02 node 03 atom'))
-		).getTagsControl();
-		var tagsControl31 = nodeControl03.getAtomControl(
-			nodeControl03.add(new Atom(null, '03 node 01 atom'))
-		).getTagsControl();
-		var tagsControl32 = nodeControl03.getAtomControl(
-			nodeControl03.add(new Atom(null, '03 node 02 atom'))
-		).getTagsControl();
+		linkId = nodeControl03.getId();
+		nodeControl02.add(linkId);
+		nodeControl02.getElement(linkId).add(nodeControlLA01.getId());
+		nodeControl02.getElement(linkId).add(nodeControlLA02.getId());
 
-		var tagControl = null;
-		var nodeId = null;
-
-		nodeId = nodeControl01.getId();
-		tagsControl21.add(nodeId);
-		tagControl = tagsControl21.getControl(nodeId);
-		tagControl.add(nodeControlLT01.getId());
-
-		nodeId = nodeControl03.getId();
-		tagsControl21.add(nodeId);
-		tagControl = tagsControl21.getControl(nodeId);
-		tagControl.add(nodeControlLT01.getId());
-
-		nodeId = nodeControl01.getId();
-		tagsControl22.add(nodeId);
-		tagControl = tagsControl22.getControl(nodeId);
-		tagControl.add(nodeControlLT02.getId());
-
-		nodeId = nodeControl03.getId();
-		tagsControl23.add(nodeId);
-		tagControl = tagsControl23.getControl(nodeId);
-		tagControl.add(nodeControlLT02.getId());
-
-		nodeId = nodeControl03.getId();
-		tagsControl11.add(nodeId);
-		tagControl = tagsControl11.getControl(nodeId);
-		tagControl.add(nodeControlLT01.getId());
-		tagControl.add(nodeControlLT02.getId());
+		linkId = nodeControl03.getId();
+		nodeControl01.add(linkId);
+		nodeControl01.getElement(linkId).add(nodeControlLA02.getId());
 
 		typeLinkedFrame = frame;
 
 		var result =
 			JSON.stringify(frame) + '\r\n' + '\r\n' +
 			JSON.stringify(frameControl.getMatrix()) + '\r\n' + '\r\n' +
-			GetLinkageMatrix(frameControl, false) + '\r\n' +
-			GetLinkageMatrix(frameControl, true) + '\r\n' +
+			GetLinkageMatrix(frameControl) + '\r\n' +
 			frameControl.getFrameCode();
 		return result;
 	};
 
-	this.p06RemoveLinkTypesInFrame = function()
+	this.p06RemoveLinkAspectsInFrame = function()
 	{
 		var frame = typeLinkedFrame;
 		var frameControl = new FrameControl(frame);
@@ -213,90 +175,17 @@ function testPull()
 		var nodeMatrix = frameControl.getMatrix();
 		for (var nodeId in nodeMatrix)
 		{
-			var nodeControl = frameControl.getNodeControl(nodeId);
-			var atomsCount = nodeControl.getAtomsCount();
-			for (var i = 0; i <atomsCount; ++i)
+			var nodeControl = frameControl.getElement(nodeId);
+			var linksMatrix = nodeControl.getMatrix();
+			for (var linkId in linksMatrix)
 			{
-				var atomControl = nodeControl.getAtomControl(i);
-				var tagsControl = atomControl.getTagsControl();
-				var tagsMatrix = tagsControl.getMatrix();
-				for (var tagId in tagsMatrix)
-				{
-					var tagControl = tagsControl.getControl(tagId);
-
-					var counter = 0;
-					for (var nodeId in nodeMatrix)
-					{
-						if (counter++ > 1)
-							break;
-						tagControl.remove(nodeId);
-					}
-				}
-			}
-		}
-
-		var result =
-			JSON.stringify(frame) + '\r\n' + '\r\n' +
-			JSON.stringify(frameControl.getMatrix()) + '\r\n' + '\r\n' +
-			GetLinkageMatrix(frameControl, false) + '\r\n' +
-			GetLinkageMatrix(frameControl, true) + '\r\n' +
-			frameControl.getFrameCode();
-		return result;
-	};
-
-	this.p07ClearLinkTypesInFrame = function()
-	{
-		var frame = typeLinkedFrame;
-		var frameControl = new FrameControl(frame);
-
-		var nodeMatrix = frameControl.getMatrix();
-		for (var nodeId in nodeMatrix)
-		{
-			var nodeControl = frameControl.getNodeControl(nodeId);
-			var atomsCount = nodeControl.getAtomsCount();
-			for (var i = 0; i < atomsCount; ++i)
-			{
-				var atomControl = nodeControl.getAtomControl(i);
-				var tagsControl = atomControl.getTagsControl();
-				var tagsMatrix = tagsControl.getMatrix();
-				for (var tagId in tagsMatrix)
-				{
-					var tagControl = tagsControl.getControl(tagId);
-					tagControl.clear();
-				}
-			}
-		}
-
-		var result =
-			JSON.stringify(frame) + '\r\n' + '\r\n' +
-			JSON.stringify(frameControl.getMatrix()) + '\r\n' + '\r\n' +
-			GetLinkageMatrix(frameControl, false) + '\r\n' +
-			GetLinkageMatrix(frameControl, true) + '\r\n' +
-			frameControl.getFrameCode();
-		return result;
-	};
-
-	this.p08RemoveTagsInFrame = function()
-	{
-		var frame = typeLinkedFrame;
-		var frameControl = new FrameControl(frame);
-
-		var nodeMatrix = frameControl.getMatrix();
-		for (var nodeId in nodeMatrix)
-		{
-			var nodeControl = frameControl.getNodeControl(nodeId);
-			var atomsCount = nodeControl.getAtomsCount();
-			for (var i = 0; i <atomsCount; ++i)
-			{
-				var atomControl = nodeControl.getAtomControl(i);
-				var tagsControl = atomControl.getTagsControl();
-
+				var linkControl = nodeControl.getElement(linkId);
 				var counter = 0;
-				for (var nodeId in nodeMatrix)
+				for (var aspectId in nodeMatrix)
 				{
-					if (++counter % 2 === 0)
-						continue;
-					tagsControl.remove(nodeId);
+					if (counter++ > 1)
+						break;
+					linkControl.remove(aspectId);
 				}
 			}
 		}
@@ -304,13 +193,12 @@ function testPull()
 		var result =
 			JSON.stringify(frame) + '\r\n' + '\r\n' +
 			JSON.stringify(frameControl.getMatrix()) + '\r\n' + '\r\n' +
-			GetLinkageMatrix(frameControl, false) + '\r\n' +
-			GetLinkageMatrix(frameControl, true) + '\r\n' +
+			GetLinkageMatrix(frameControl) + '\r\n' +
 			frameControl.getFrameCode();
 		return result;
 	};
 
-	this.p09ClearTagsInFrame = function()
+	this.p07ClearLinkAspectsInFrame = function()
 	{
 		var frame = typeLinkedFrame;
 		var frameControl = new FrameControl(frame);
@@ -318,53 +206,51 @@ function testPull()
 		var nodeMatrix = frameControl.getMatrix();
 		for (var nodeId in nodeMatrix)
 		{
-			var nodeControl = frameControl.getNodeControl(nodeId);
-			var atomsCount = nodeControl.getAtomsCount();
-			for (var i = 0; i <atomsCount; ++i)
+			var nodeControl = frameControl.getElement(nodeId);
 			{
-				var atomControl = nodeControl.getAtomControl(i);
-				var tagsControl = atomControl.getTagsControl();
-				tagsControl.clear();
+				var linkMatrix = nodeControl.getMatrix();
+				for (var linkId in linkMatrix)
+				{
+					var linkControl = nodeControl.getElement(linkId);
+					linkControl.clear();
+				}
 			}
 		}
 
 		var result =
 			JSON.stringify(frame) + '\r\n' + '\r\n' +
 			JSON.stringify(frameControl.getMatrix()) + '\r\n' + '\r\n' +
-			GetLinkageMatrix(frameControl, false) + '\r\n' +
-			GetLinkageMatrix(frameControl, true) + '\r\n' +
+			GetLinkageMatrix(frameControl) + '\r\n' +
 			frameControl.getFrameCode();
 		return result;
 	};
 
-	this.p10ChangeAtomsContentInFrame = function()
+	this.p08RemoveLinksInFrame = function()
 	{
 		var frame = typeLinkedFrame;
 		var frameControl = new FrameControl(frame);
 
 		var nodeMatrix = frameControl.getMatrix();
+		var removeLinkId = null;
+		for (var linkId in nodeMatrix)
+		{
+			removeLinkId = linkId;
+		}
 		for (var nodeId in nodeMatrix)
 		{
-			var nodeControl = frameControl.getNodeControl(nodeId);
-			var atomsCount = nodeControl.getAtomsCount();
-			for (var i = 0; i <atomsCount; ++i)
-			{
-				var atomControl = nodeControl.getAtomControl(i);
-				var newContent = atomControl.getContent() + ' <- modified!';
-				atomControl.setContent(newContent);
-			}
+			var nodeControl = frameControl.getElement(nodeId);
+			nodeControl.remove(removeLinkId);
 		}
 
 		var result =
 			JSON.stringify(frame) + '\r\n' + '\r\n' +
 			JSON.stringify(frameControl.getMatrix()) + '\r\n' + '\r\n' +
-			GetLinkageMatrix(frameControl, false) + '\r\n' +
-			GetLinkageMatrix(frameControl, true) + '\r\n' +
+			GetLinkageMatrix(frameControl) + '\r\n' +
 			frameControl.getFrameCode();
 		return result;
 	};
 
-	this.p11RemoveNodeAtomsInFrame = function()
+	this.p09ClearLinksInFrame = function()
 	{
 		var frame = typeLinkedFrame;
 		var frameControl = new FrameControl(frame);
@@ -372,45 +258,40 @@ function testPull()
 		var nodeMatrix = frameControl.getMatrix();
 		for (var nodeId in nodeMatrix)
 		{
-			var nodeControl = frameControl.getNodeControl(nodeId);
-			nodeControl.remove(1);
-		}
-
-		var result =
-			JSON.stringify(frame) + '\r\n' + '\r\n' +
-			JSON.stringify(frameControl.getMatrix()) + '\r\n' + '\r\n' +
-			GetLinkageMatrix(frameControl, false) + '\r\n' +
-			GetLinkageMatrix(frameControl, true) + '\r\n' +
-			frameControl.getFrameCode();
-		return result;
-	};
-
-	this.p12ClearNodeAtomsFrame = function()
-	{
-		var frame = typeLinkedFrame;
-		var frameControl = new FrameControl(frame);
-
-		var nodeMatrix = frameControl.getMatrix();
-
-		var counter = 0;
-		for (var nodeId in nodeMatrix)
-		{
-			if (++counter % 2 === 0)
-				continue;
-			var nodeControl = frameControl.getNodeControl(nodeId);
+			var nodeControl = frameControl.getElement(nodeId);
 			nodeControl.clear();
 		}
 
 		var result =
 			JSON.stringify(frame) + '\r\n' + '\r\n' +
 			JSON.stringify(frameControl.getMatrix()) + '\r\n' + '\r\n' +
-			GetLinkageMatrix(frameControl, false) + '\r\n' +
-			GetLinkageMatrix(frameControl, true) + '\r\n' +
+			GetLinkageMatrix(frameControl) + '\r\n' +
 			frameControl.getFrameCode();
 		return result;
 	};
 
-	this.p13RemoveNodesInFrame = function()
+	this.p10ChangeNodeContentInFrame = function()
+	{
+		var frame = typeLinkedFrame;
+		var frameControl = new FrameControl(frame);
+
+		var nodeMatrix = frameControl.getMatrix();
+		for (var nodeId in nodeMatrix)
+		{
+			var nodeControl = frameControl.getElement(nodeId);
+			var newContent = nodeControl.getContent() + ' <- modified!';
+			nodeControl.setContent(newContent);
+		}
+
+		var result =
+			JSON.stringify(frame) + '\r\n' + '\r\n' +
+			JSON.stringify(frameControl.getMatrix()) + '\r\n' + '\r\n' +
+			GetLinkageMatrix(frameControl) + '\r\n' +
+			frameControl.getFrameCode();
+		return result;
+	};
+
+	this.p11RemoveNodesInFrame = function()
 	{
 		var frame = typeLinkedFrame;
 		var frameControl = new FrameControl(frame);
@@ -428,13 +309,12 @@ function testPull()
 		var result =
 			JSON.stringify(frame) + '\r\n' + '\r\n' +
 			JSON.stringify(frameControl.getMatrix()) + '\r\n' + '\r\n' +
-			GetLinkageMatrix(frameControl, false) + '\r\n' +
-			GetLinkageMatrix(frameControl, true) + '\r\n' +
+			GetLinkageMatrix(frameControl) + '\r\n' +
 			frameControl.getFrameCode();
 		return result;
 	};
 
-	this.p14ClearNodesInFrame = function()
+	this.p12ClearNodesInFrame = function()
 	{
 		var frame = typeLinkedFrame;
 		var frameControl = new FrameControl(frame);
@@ -443,8 +323,7 @@ function testPull()
 		var result =
 			JSON.stringify(frame) + '\r\n' + '\r\n' +
 			JSON.stringify(frameControl.getMatrix()) + '\r\n' + '\r\n' +
-			GetLinkageMatrix(frameControl, false) + '\r\n' +
-			GetLinkageMatrix(frameControl, true) + '\r\n' +
+			GetLinkageMatrix(frameControl) + '\r\n' +
 			frameControl.getFrameCode();
 		return result;
 	};

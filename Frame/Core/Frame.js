@@ -213,7 +213,7 @@ function LinkControl(initId, initLink)
 	var getLinkId = function()
 	{
 		return id;
-	}
+	};
 
 	var getLinkAspectsMatrix = function()
 	{
