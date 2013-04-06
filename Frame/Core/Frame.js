@@ -13,22 +13,13 @@ function Uuid()
 }
 
 /////////////////////
-// Atom Conception //
-/////////////////////
-
-function Atom(initTags, initContent)
-{
-	this.tags = initTags|| {};
-	this.content = initContent || null;
-}
-
-/////////////////////
 // Node Conception //
 /////////////////////
 
-function Node(initAtoms)
+function Node(initTags, initContent)
 {
-	this.atoms = initAtoms || []; // TODO: make it {} with atom ids.
+	this.tags = initTags|| {};
+	this.content = initContent || null;
 }
 
 //////////////////////
