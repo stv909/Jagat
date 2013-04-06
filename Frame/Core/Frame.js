@@ -117,7 +117,7 @@ function NodeControl(nodeId, initNode)
 	{
 		if (tagId in node.tags)
 			return;
-		node.tags[tagId] = {};
+		node.tags[tagId] = new Tag();
 	};
 
 	var removeTagLink = function(tagId)
@@ -138,16 +138,16 @@ function NodeControl(nodeId, initNode)
 	var getTagLinkControl = function(tagId)
 	{
 		if (tagId in node.tags)
-			return new TagControl(node.tags, tagId);
+			return new TagControl(tagId, node.tags[tagId]);
 		return null;
 	};
 
-	var getAtomContent = function()
+	var getNodeContent = function()
 	{
 		return node.content;
 	};
 
-	var setAtomContent = function(newContent)
+	var setNodeContent = function(newContent)
 	{
 		node.content = newContent;
 	};
@@ -157,18 +157,12 @@ function NodeControl(nodeId, initNode)
 		return id;
 	};
 
-	var getNodeTagsMatrix = function(includeTypes)
+	var getNodeTagsMatrix = function()
 	{
 		var result = {};
 		for (var tagLink in node.tags)
 		{
-			var tagElement = true;
-			if (includeTypes)
-			{
-				var control = new TagControl(tagLink, node.tags[tagLink]);
-				tagElement = control.getMatrix();
-			}
-			result[tagLink] = tagElement;
+			result[tagLink] = true;
 		}
 		return result;
 	};
@@ -177,8 +171,8 @@ function NodeControl(nodeId, initNode)
 	this.remove = removeTagLink;
 	this.clear = clearTagLinks;
 
-	this.getContent = getAtomContent;
-	this.setContent = setAtomContent;
+	this.getContent = getNodeContent;
+	this.setContent = setNodeContent;
 
 	this.getId = getNodeId;
 	this.getElement = getTagLinkControl;
@@ -238,9 +232,3 @@ function TagControl(tagId, initTag)
 	this.getId = getTagId;
 	this.getMatrix = getTagTypesMatrix;
 }
-
-/////////////////////////////////
-// Frame Filter Implementation //
-/////////////////////////////////
-
-// TODO: implement.
