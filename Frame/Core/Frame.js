@@ -104,163 +104,59 @@ function NodeControl(nodeId, initNode)
 	var id = nodeId;
 	var node = initNode;
 
-	var getNodeId = function()
+	var addTagLink = function(tagId)
 	{
-		return id;
-	};
-
-	var addNodeAtom = function(initAtom)
-	{
-		node.atoms.push(initAtom || new Atom());
-		return node.atoms.length - 1;
-	};
-
-	var removeNodeAtom = function(atomIndex)
-	{
-		if (atomIndex < 0 || atomIndex >= node.atoms.length || node.atoms[atomIndex] === null)
-			return false;
-		//node.atoms.splice(atomIndex, 1);
-        //TODO: find new solution, remove binding with array index. Variant: use ids for atoms.
-        node.atoms[atomIndex] = null;
-		return true;
-	};
-
-	var clearNodeAtoms = function()
-	{
-		node.atoms = [];
-	};
-
-	var getNodeAtomControl = function(atomIndex)
-	{
-		if (atomIndex < 0 || atomIndex >= node.atoms.length || node.atoms[atomIndex] === null)
-			return null;
-		return new AtomControl(node.atoms[atomIndex]);
-	};
-
-	var getNodeAtomsCount = function()
-	{
-		return node.atoms.length;
-	};
-
-	var getNodeTagsMatrix = function(includeTypes)
-	{
-		var result = {};
-		var atomresults = [];
-		for (var i = 0; i < node.atoms.length; ++i)
-		{
-			if (node.atoms[i] === null)
-				continue;
-			var control = new TagsControl(node.atoms[i]);
-			atomresults.push(control.getMatrix(includeTypes));
-		}
-		for (var j = 0; j < atomresults.length; j++)
-		{
-			for (var tagLink in atomresults[j])
-			{
-				if (includeTypes)
-				{
-					if (!(tagLink in result))
-					{
-						result[tagLink] = {};
-					}
-					for (var tagType in atomresults[j][tagLink])
-					{
-						result[tagLink][tagType] = true;
-					}
-				}
-				else
-				{
-					result[tagLink] = true;
-				}
-			}
-		}
-		return result;
-	};
-
-	this.getId = getNodeId;
-	this.add = addNodeAtom;
-	this.remove = removeNodeAtom;
-	this.clear = clearNodeAtoms;
-	this.getAtomControl = getNodeAtomControl;
-
-	this.getAtomsCount = getNodeAtomsCount;
-	this.getMatrix = getNodeTagsMatrix;
-}
-
-/////////////////////////
-// Atom Implementation //
-/////////////////////////
-
-function AtomControl(initAtom)
-{
-	var atom = initAtom;
-
-	var getAtomContent = function()
-	{
-		return atom.content;
-	};
-
-	var setAtomContent = function(newContent)
-	{
-		atom.content = newContent;
-	};
-
-	var getAtomTagsControl = function()
-	{
-		return new TagsControl(atom);
-	};
-
-	this.getContent = getAtomContent;
-	this.setContent = setAtomContent;
-	this.getTagsControl = getAtomTagsControl;
-}
-
-/////////////////////////
-// Tags Implementation //
-/////////////////////////
-
-function TagsControl(initAtom)
-{
-	var atom = initAtom;
-
-	var addTag = function(tagId)
-	{
-		if (tagId in atom.tags)
+		if (tagId in node.tags)
 			return;
-		atom.tags[tagId] = {};
+		node.tags[tagId] = {};
 	};
 
-	var removeTag = function(tagId)
+	var removeTagLink = function(tagId)
 	{
-		if (tagId in atom.tags)
+		if (tagId in node.tags)
 		{
-			delete atom.tags[tagId];
+			delete node.tags[tagId];
 			return true;
 		}
 		return false;
 	};
 
-	var clearTags = function()
+	var clearTagLinks = function()
 	{
-		atom.tags = {};
+		node.tags = {};
 	};
 
-	var getTagControl = function(tagId)
+	var getTagLinkControl = function(tagId)
 	{
-		if (tagId in atom.tags)
-			return new TagControl(atom.tags, tagId);
+		if (tagId in node.tags)
+			return new TagControl(node.tags, tagId);
 		return null;
 	};
 
-	var getTagsMatrix = function(includeTypes)
+	var getAtomContent = function()
+	{
+		return node.content;
+	};
+
+	var setAtomContent = function(newContent)
+	{
+		node.content = newContent;
+	};
+
+	var getNodeId = function()
+	{
+		return id;
+	};
+
+	var getNodeTagsMatrix = function(includeTypes)
 	{
 		var result = {};
-		for (var tagLink in atom.tags)
+		for (var tagLink in node.tags)
 		{
 			var tagElement = true;
 			if (includeTypes)
 			{
-				var control = new TagControl(atom.tags, tagLink);
+				var control = new TagControl(node.tags, tagLink);
 				tagElement = control.getMatrix();
 			}
 			result[tagLink] = tagElement;
@@ -268,12 +164,16 @@ function TagsControl(initAtom)
 		return result;
 	};
 
-	this.add = addTag;
-	this.remove = removeTag;
-	this.clear = clearTags;
-	this.getControl = getTagControl;
+	this.add = addTagLink;
+	this.remove = removeTagLink;
+	this.clear = clearTagLinks;
 
-	this.getMatrix = getTagsMatrix;
+	this.getContent = getAtomContent;
+	this.setContent = setAtomContent;
+
+	this.getId = getNodeId;
+	this.getElement = getTagLinkControl;
+	this.getMatrix = getNodeTagsMatrix;
 }
 
 ////////////////////////
