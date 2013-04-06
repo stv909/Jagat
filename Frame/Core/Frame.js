@@ -64,14 +64,14 @@ function FrameControl(initFrame)
 		frame.nodes = {};
 	};
 
-	var getFrameNodeControl = function(nodeId)
+	var getNodeControl = function(nodeId)
 	{
 		if (nodeId in frame.nodes)
 			return new NodeControl(nodeId, frame.nodes[nodeId]);
 		return null;
 	};
 
-	var getFrameNodesMatrix = function()
+	var getNodesMatrix = function()
 	{
 		var result = {};
 		for (var nodeId in frame.nodes)
@@ -89,11 +89,10 @@ function FrameControl(initFrame)
 	this.add = addNode;
 	this.remove = removeNode;
 	this.clear = clearNodes;
-	this.getNodeControl = getFrameNodeControl;
 
+	this.getElement = getNodeControl;
 	this.getMatrix = getFrameNodesMatrix;
-
-	this.stringify = stringifyFrame;
+	this.getFrameCode = stringifyFrame;
 }
 
 /////////////////////////
