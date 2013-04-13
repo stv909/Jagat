@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Frame View: 01 Text.</title>
+		<script src="../../Core/Frame.js"></script>
+		<script src="TestFrame.js"></script>
+		<script>
+			var frame = null;
+            var frameControl = null;
+
+			function loadFrame(frameJSON)
+			{
+				var initNodes;
+				try
+				{
+					initNodes = JSON.parse(frameJSON).nodes;
+				}
+				catch (e)
+				{
+					console.log('Can not parse given content string as JSON. String: ' + frameJSON + '; Name: ' + e.name + '; Desc: ' + e.message);
+					initNodes = {};
+				}
+
+				frame = new Frame(initNodes);
+                frameControl = new FrameControl(frame);
+			}
+
+			function viewFrame(viewControl)
+			{
+				viewControl.value = frameControl.getFrameCode();
+			}
+
+			function onClickLoadFrame(source, view)
+			{
+				loadFrame(source.value);
+				viewFrame(view);
+			}
+		</script>
+	</head>
+	<body>
+		<div id="source">
+			JSON Frame Source:
+			<textarea id="frameSource"></textarea>
+			<button onclick="onClickLoadFrame(document.getElementById('frameSource'), document.getElementById('frameView'));">
+				Load Frame
+			</button>
+		<div>
+		<div id="view">
+			<textarea id="frameView"></textarea>
+		<div>
+	</body>
+</html>
