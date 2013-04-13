@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Frame View: 02 Frame.</title>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<style type="text/css" media="screen">
+			.ace_editor {
+				position: relative !important;
+				border: 1px solid lightgray;
+				margin: auto;
+				height: 256px;
+				width: 100%;
+			}
+
+			.ace_editor.fullScreen {
+				height: auto;
+				width: auto;
+				border: 0;
+				margin: 0;
+				position: fixed !important;
+				top: 0;
+				bottom: 0;
+				left: 0;
+				right: 0;
+				z-index: 10;
+				background: white;
+			}
+
+			.fullScreen {
+				overflow: hidden
+			}
+		</style>
+
+		<script src="../../Core/Frame.js" type="text/javascript" charset="utf-8"></script>
+		<!-- TODO: fix this stub with paths to ACE. -->
+		<script src="../../../node_modules/connect-ace/ace-builds/src-min-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript" charset="utf-8">
+			var frame = null;
+		    var frameControl = null;
+		    var frameEditor = null;
+
+			function loadFrame(frameJSON)
+			{
+				var initNodes;
+				try
+				{
+					initNodes = JSON.parse(frameJSON).nodes;
+				}
+				catch (e)
+				{
+					console.log('Can not parse given content string as JSON. String: ' + frameJSON + '; Name: ' + e.name + '; Desc: ' + e.message);
+					initNodes = {};
+				}
+
+				frame = new Frame(initNodes);
+		        frameControl = new FrameControl(frame);
+			}
+
+			function viewFrame()
+			{
+				var frameViewContainer = document.getElementById("frameView");
+				frameViewContainer.innerHTML = '';
+				frameEditor = [];
+				var frameMatrix = frameControl.getMatrix();
+				for (var nodeId in frameMatrix)
+				{
+					var frameViewElement = document.createElement("div");
+					frameViewContainer.appendChild(frameViewElement);
+					var elementWhitespace = document.createElement("br");
+					frameViewElement.appendChild(elementWhitespace);
+					var elementTitle = document.createElement("div");
+					elementTitle.innerHTML = nodeId;
+					frameViewElement.appendChild(elementTitle);
+					var elementEditor = document.createElement("div");
+					frameViewElement.appendChild(elementEditor);
+
+					var editor = ace.edit(elementEditor);
+					editor.setTheme("ace/theme/pastel_on_dark");
+					editor.session.setMode("ace/mode/json");
+					editor.setReadOnly(true);
+					editor.getSession().setUseSoftTabs(false);
+					editor.setShowInvisibles(true);
+
+					editor.setValue(frameControl.getElement(nodeId).getNodeCode());
+					frameEditor.push(editor);
+				}
+			}
+
+			function onClickLoadFrame(source)
+			{
+				loadFrame(source.value);
+				source.value = '';
+				viewFrame();
+			}
+		</script>
+	</head>
+	<body>
+		<div id="source">
+			JSON Frame Source:
+			<textarea id="frameSource">Place your Frame here.</textarea>
+			<button onclick="onClickLoadFrame(document.getElementById('frameSource'));">
+				Load Frame
+			</button>
+		</div>
+		<div id="frameView">Your Frame will be shown here.</div>
+	</body>
+</html>

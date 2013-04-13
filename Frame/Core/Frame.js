@@ -167,6 +167,11 @@ function NodeControl(initId, initNode)
 		return result;
 	};
 
+	var stringifyNode = function(compact)
+	{
+		return JSON.stringify(node, null, compact ? null : '\t');
+	};
+
 	this.add = addLink;
 	this.remove = removeLink;
 	this.clear = clearLinks;
@@ -177,6 +182,7 @@ function NodeControl(initId, initNode)
 	this.getId = getNodeId;
 	this.getElement = getLinkControl;
 	this.getMatrix = getNodeLinksMatrix;
+	this.getNodeCode = stringifyNode;
 }
 
 /////////////////////////
