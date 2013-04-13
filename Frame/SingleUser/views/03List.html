@@ -8,12 +8,32 @@
 			.fullScreen {
 				overflow: hidden
 			}
+			.wrap {
+			   width:1024px;
+			   margin:0 auto;
+			}
+			.frameList {
+			   float:left;
+			   width:256px;
+			}
+			.nodeList {
+			   float:left;
+			   width:256px;
+			}
+			.linkList {
+			   float:left;
+			   width:256px;
+			}
+			.aspectList {
+			   float:left;
+			   width:256px;
+			}
 		</style>
 
 		<script src="../../Core/Frame.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript" charset="utf-8">
 			var frame = null;
-		    var frameControl = null;
+			var frameControl = null;
 
 			function loadFrame(frameJSON)
 			{
@@ -29,14 +49,13 @@
 				}
 
 				frame = new Frame(initNodes);
-		        frameControl = new FrameControl(frame);
+				frameControl = new FrameControl(frame);
 			}
 
 			function viewFrame()
 			{
 				var frameViewContainer = document.getElementById("frameView");
-				frameViewContainer.innerHTML = '';
-				// TODO: make 4 columns with headers: Frame, CurrentNode, CurrentLink, CurrentAspect.
+				frameViewContainer.innerHTML = '[frame]';
 				var frameMatrix = frameControl.getMatrix();
 				for (var nodeId in frameMatrix)
 				{
@@ -48,6 +67,7 @@
 					frameViewElement.appendChild(nodeButton);
 					frameViewContainer.appendChild(frameViewElement);
 				}
+				// TODO: fill 4 columns with headers: Frame, CurrentNode, CurrentLink, CurrentAspect.
 			}
 
 			function onClickLoadFrame(source)
@@ -66,6 +86,19 @@
 				Load Frame
 			</button>
 		</div>
-		<div id="frameView">Your Frame will be shown here.</div>
+		<div class="wrap">
+		    <div class="frameList" id="frameView">
+		        [frame]
+		    </div>
+		    <div class="nodeList">
+		        [node]
+		    </div>
+		    <div class="linkList">
+		        [link]
+		    </div>
+		    <div class="aspectList">
+		        [aspect]
+		    </div>
+		</div>
 	</body>
 </html>
