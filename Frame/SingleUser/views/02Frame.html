@@ -38,7 +38,6 @@
 		<script type="text/javascript" charset="utf-8">
 			var frame = null;
 		    var frameControl = null;
-		    var frameEditor = null;
 
 			function loadFrame(frameJSON)
 			{
@@ -61,7 +60,6 @@
 			{
 				var frameViewContainer = document.getElementById("frameView");
 				frameViewContainer.innerHTML = '';
-				frameEditor = [];
 				var frameMatrix = frameControl.getMatrix();
 				for (var nodeId in frameMatrix)
 				{
@@ -81,9 +79,7 @@
 					editor.setReadOnly(true);
 					editor.getSession().setUseSoftTabs(false);
 					editor.setShowInvisibles(true);
-
 					editor.setValue(frameControl.getElement(nodeId).getNodeCode());
-					frameEditor.push(editor);
 				}
 			}
 
