@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Frame View: 04 Tree.</title>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<style type="text/css" media="screen">
+			.fullScreen {
+				overflow: hidden
+			}
+			.wrap {
+			   width:1024px;
+			   margin:0 auto;
+			}
+			.frameList {
+			   float:left;
+			   width:256px;
+			}
+			.nodeList {
+			   float:left;
+			   width:256px;
+			}
+			.linkList {
+			   float:left;
+			   width:256px;
+			}
+			.aspectList {
+			   float:left;
+			   width:256px;
+			}
+		</style>
+
+		<script src="../../Core/Frame.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript" charset="utf-8">
+			var frame = null;
+			var frameControl = null;
+
+			function Selection()
+			{
+				var node = null;
+				var link = null;
+				var aspect = null;
+
+				this.setNode = function(newNodeId)
+				{
+					node = newNodeId;
+					link = null;
+					aspect = null;
+				};
+				this.setLink = function(newLinkId)
+				{
+					if (node === null)
+						return;
+					link = newLinkId;
+					aspect = null;
+				};
+				this.setAspect = function(newAspectId)
+				{
+					if (node === null || link === null)
+						return;
+					aspect = newAspectId;
+				};
+				this.get = function()
+				{
+					return [node, link, aspect];
+				};
+				this.reset = function()
+				{
+					node = null;
+					link = null;
+					aspect = null;
+				}
+			}
+
+			var selection = new Selection();
+
+			function loadFrame(frameJSON)
+			{
+				var initNodes;
+				try
+				{
+					initNodes = JSON.parse(frameJSON).nodes;
+				}
+				catch (e)
+				{
+					console.log('Can not parse given content string as JSON. String: ' + frameJSON + '; Name: ' + e.name + '; Desc: ' + e.message);
+					initNodes = {};
+				}
+
+				frame = new Frame(initNodes);
+				frameControl = new FrameControl(frame);
+			}
+
+				function getNodeContent(nodeId)
+				{
+					var nodeControl = frameControl.getElement(nodeId);
+					return nodeControl.getContent();
+				}
+
+				function onNodeButtonClick()
+				{
+					selection.setNode(this.title);
+					viewFrame();
+				}
+				function onLinkButtonClick()
+				{
+					selection.setLink(this.title);
+					viewFrame();
+				}
+				function onAspectButtonClick()
+				{
+					selection.setAspect(this.title);
+					viewFrame();
+				}
+
+				function visualizeNodeContent(container, elementId, onButtonClick)
+				{
+					var nodeControl = frameControl.getElement(elementId[0]);
+					var matrix = nodeControl.getMatrix();
+					for (var linkId in matrix)
+					{
+						var viewElement = document.createElement("div");
+						var elementButton = document.createElement("button");
+						elementButton.innerHTML = getNodeContent(linkId);
+						elementButton.title = linkId;
+						elementButton.onclick = onButtonClick;
+						viewElement.appendChild(elementButton);
+						container.appendChild(viewElement);
+					}
+				}
+
+				function visualizeLinkContent(container, elementId, onButtonClick)
+				{
+					var nodeControl = frameControl.getElement(elementId[0]);
+					var linkControl = nodeControl.getElement(elementId[1]);
+					var matrix = linkControl.getMatrix();
+					for (var aspectId in matrix)
+					{
+						var viewElement = document.createElement("div");
+						var elementButton = document.createElement("button");
+						elementButton.innerHTML = getNodeContent(aspectId);
+						elementButton.title = aspectId;
+						elementButton.onclick = onButtonClick;
+						viewElement.appendChild(elementButton);
+						container.appendChild(viewElement);
+					}
+				}
+
+			function viewFrame()
+			{
+				var frameViewContainer = document.getElementById("frameView");
+				frameViewContainer.innerHTML = '[frame]';
+				var frameMatrix = frameControl.getMatrix();
+				for (var nodeId in frameMatrix)
+				{
+					var frameViewElement = document.createElement("div");
+					var nodeButton = document.createElement("button");
+					nodeButton.innerHTML = getNodeContent(nodeId);
+					nodeButton.title = nodeId;
+					nodeButton.onclick = onNodeButtonClick;
+					frameViewElement.appendChild(nodeButton);
+					frameViewContainer.appendChild(frameViewElement);
+				}
+				var containers = ['nodeView', 'linkView', 'aspectView'];
+				var emptyValues = ['[node]', '[link]', '[aspect]'];
+				var onButtonClicks = [onLinkButtonClick, onAspectButtonClick, null];
+				var visualizeContent = [visualizeNodeContent, visualizeLinkContent, null];
+
+				var selectionElements = selection.get();
+				for (var i in selectionElements)
+				{
+					var container = document.getElementById(containers[i]);
+					var elementId = selectionElements[i];
+					if (elementId === null)
+					{
+						container.innerHTML = emptyValues[i];
+					}
+					else
+					{
+						container.innerHTML = getNodeContent(elementId);
+
+						var elementButton = document.createElement("button");
+						elementButton.innerHTML = 'select';
+						elementButton.title = elementId;
+						elementButton.onclick = onNodeButtonClick;
+						container.appendChild(elementButton);
+
+						if (visualizeContent[i] !== null)
+						{
+							var idArray = i == 0 ? [elementId]:
+								i == 1 ? [selectionElements[i-1], elementId]:
+									i == 2 ? [selectionElements[i-2], selectionElements[i-1], elementId]:
+										null;
+							visualizeContent[i](container, idArray, onButtonClicks[i]);
+						}
+					}
+				}
+			}
+
+			function onClickLoadFrame(source)
+			{
+				loadFrame(source.value);
+				source.value = '';
+				viewFrame();
+			}
+
+			function onResetFrameSelection()
+			{
+				selection.reset();
+				viewFrame();
+			}
+		</script>
+	</head>
+	<body>
+		<div id="source">
+			JSON Frame Source:
+			<textarea id="frameSource">Place your Frame here.</textarea>
+			<button onclick="onClickLoadFrame(document.getElementById('frameSource'));">
+				Load Frame
+			</button>
+			<button onclick="onResetFrameSelection();">
+				Reset Selection
+			</button>
+		</div>
+		<div class="wrap">
+		    <div class="frameList" id="frameView">
+		        [frame]
+		    </div>
+		    <div class="nodeList" id="nodeView">
+		        [node]
+		    </div>
+		    <div class="linkList" id="linkView">
+		        [link]
+		    </div>
+		    <div class="aspectList" id="aspectView">
+		        [aspect]
+		    </div>
+		</div>
+	</body>
+</html>
