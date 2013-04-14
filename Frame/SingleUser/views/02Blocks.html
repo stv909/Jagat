@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<title>Frame View: 02 Frame.</title>
+		<title>Frame View: 02 Blocks.</title>
 		<meta charset="UTF-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 		<style type="text/css" media="screen">
@@ -33,8 +33,10 @@
 		</style>
 
 		<script src="../../Core/Frame.js" type="text/javascript" charset="utf-8"></script>
+
 		<!-- TODO: fix this stub with paths to ACE. -->
 		<script src="../../../node_modules/connect-ace/ace-builds/src-min-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
+
 		<script type="text/javascript" charset="utf-8">
 			var frame = null;
 			var frameControl = null;
@@ -56,8 +58,20 @@
 				frameControl = new FrameControl(frame);
 			}
 
+			function createAceEditor(elementEditor, initText)
+			{
+				var editor = ace.edit(elementEditor);
+				editor.setTheme("ace/theme/pastel_on_dark");
+				editor.session.setMode("ace/mode/json");
+				editor.setReadOnly(true);
+				editor.getSession().setUseSoftTabs(false);
+				editor.setShowInvisibles(true);
+				editor.setValue(initText);
+			}
+
 			function viewFrame()
 			{
+				// TODO: make correct height for every code block.
 				var frameViewContainer = document.getElementById("frameView");
 				frameViewContainer.innerHTML = '';
 				var frameMatrix = frameControl.getMatrix();
@@ -65,21 +79,16 @@
 				{
 					var frameViewElement = document.createElement("div");
 					frameViewContainer.appendChild(frameViewElement);
-					var elementWhitespace = document.createElement("br");
-					frameViewElement.appendChild(elementWhitespace);
-					var elementTitle = document.createElement("div");
-					elementTitle.innerHTML = nodeId;
-					frameViewElement.appendChild(elementTitle);
-					var elementEditor = document.createElement("div");
-					frameViewElement.appendChild(elementEditor);
-
-					var editor = ace.edit(elementEditor);
-					editor.setTheme("ace/theme/pastel_on_dark");
-					editor.session.setMode("ace/mode/json");
-					editor.setReadOnly(true);
-					editor.getSession().setUseSoftTabs(false);
-					editor.setShowInvisibles(true);
-					editor.setValue(frameControl.getElement(nodeId).getNodeCode());
+					{
+						var elementWhitespace = document.createElement("br");
+						frameViewElement.appendChild(elementWhitespace);
+						var elementTitle = document.createElement("div");
+						elementTitle.innerHTML = nodeId;
+						frameViewElement.appendChild(elementTitle);
+						var elementEditor = document.createElement("div");
+						createAceEditor(elementEditor, frameControl.getElement(nodeId).getNodeCode());
+						frameViewElement.appendChild(elementEditor);
+					}
 				}
 			}
 
