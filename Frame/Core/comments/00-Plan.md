@@ -11,6 +11,10 @@ Tactical plans of Jagat implementation.
 			2.5.2+ Blocks.
 			2.5.3+ List.
 			2.5.4: Tree.
+				2.5.4.1+ Working prototype.
+				2.5.4.2: Reloading Frame from JSON by button without page refresh.
+				2.5.4.3. Dynamic control for levels deepness and node size.
+				2.5.4.4. Link aspects representation and filtering.
 			2.5.5. Flow.
 			2.5.6. Multiflow.
 			2.5.7. Think about proper place of tests: SingleUser or Core folder.

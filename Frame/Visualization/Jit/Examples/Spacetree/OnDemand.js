@@ -25,23 +25,7 @@ var Log = {
   }
 };
 
-function init(json, initNodes){
-    //A client-side tree generator
-    var getTree = (function() {
-        var i = 0;
-        return function(nodeId, level) {
-          var subtree = eval('(' + json.replace(/id:\"([a-zA-Z0-9]+)\"/g,
-          function(all, match) {
-            return "id:\"" + match + "_" + i + "\""
-          }) + ')');
-          $jit.json.prune(subtree, level); i++;
-          return {
-              'id': nodeId,
-              'children': subtree.children
-          };
-        };
-    })();
-
+function init(initNodes, getSubtree){
     //Implement a node rendering function called 'nodeline' that plots a straight line
     //when contracting or expanding a subtree.
     $jit.ST.Plot.NodeTypes.implement({
@@ -83,8 +67,8 @@ function init(json, initNodes){
         //set overridable=true for styling individual
         //nodes or edges
         Node: {
-            height: 20,
-            width: 40,
+            height: 40,
+            width: 60,
             //use a custom
             //node rendering function
             type: 'nodeline',
@@ -177,8 +161,22 @@ function init(json, initNodes){
         }
     });
 
+    //A client-side tree generator
+    var getTree = (function() {
+        var i = 0;
+        return function(treeNodeId, level) {
+			var treeNode = st.graph.nodes[treeNodeId];
+			var subtree = getSubtree(treeNode ? treeNode.data.nodeUuid : null, level);
+			$jit.json.prune(subtree, level); i++;
+			return {
+				'id': treeNodeId,
+				'children': subtree.children
+			};
+        };
+    })();
+
     //load json data
-    st.loadJSON(initNodes); // eval( '(' + json + ')' )
+    st.loadJSON(initNodes);
     //compute node positions and layout
     st.compute();
     //emulate a click on the root node.
