@@ -5,8 +5,15 @@ Tactical plans of Jagat implementation.
 		2.1+ Objects conception.
 		2.2+ Objects implementation.
 		2.3+ Module test suit.
-		2.4: Use simple node-relation structure for frame core.
-		2.5. SingleUser implementation: basic frame views.
+		2.4+ Use simple node-link structure for frame core.
+		2.5: SingleUser implementation: basic frame views:
+			2.5.1+ Text.
+			2.5.2: Blocks.
+			2.5.3. List.
+			2.5.4. Tree.
+			2.5.5. Flow.
+			2.5.6. Multiflow.
+			2.5.7. Think about proper place of tests: SingleUser or Core folder.
 		2.6. Formalized as NPM module for iterative self-development.
 		2.7. Example application:
 			2.7.1. Notes manager.
