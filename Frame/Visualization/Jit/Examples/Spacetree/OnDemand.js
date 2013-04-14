@@ -25,8 +25,7 @@ var Log = {
   }
 };
 
-
-function init(json){
+function init(json, initNodes){
     //A client-side tree generator
     var getTree = (function() {
         var i = 0;
@@ -65,7 +64,6 @@ function init(json){
               }
           }
         }
-
     });
 
     //init Spacetree
@@ -112,8 +110,8 @@ function init(json){
         //subtree and then handle it to the onComplete callback.
         //Here we just use a client-side tree generator (the getTree function).
         request: function(nodeId, level, onComplete) {
-          var ans = getTree(nodeId, level);
-          onComplete.onComplete(nodeId, ans);
+            var ans = getTree(nodeId, level);
+            onComplete.onComplete(nodeId, ans);
         },
 
         onBeforeCompute: function(node){
@@ -178,17 +176,18 @@ function init(json){
             }
         }
     });
+
     //load json data
-    st.loadJSON(eval( '(' + json + ')' ));
+    st.loadJSON(initNodes); // eval( '(' + json + ')' )
     //compute node positions and layout
     st.compute();
     //emulate a click on the root node.
     st.onClick(st.root);
     //end
     //Add event handlers to switch spacetree orientation.
-   function get(id) {
-      return document.getElementById(id);
-    };
+    function get(id) {
+        return document.getElementById(id);
+    }
 
     var top = get('r-top'),
     left = get('r-left'),
@@ -204,9 +203,8 @@ function init(json){
                 }
             });
         }
-    };
+    }
 
     top.onchange = left.onchange = bottom.onchange = right.onchange = changeHandler;
     //end
-
 }
