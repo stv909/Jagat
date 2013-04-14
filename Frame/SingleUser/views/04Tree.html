@@ -8,26 +8,6 @@
 			.fullScreen {
 				overflow: hidden
 			}
-			.wrap {
-			   width:1024px;
-			   margin:0 auto;
-			}
-			.frameList {
-			   float:left;
-			   width:256px;
-			}
-			.nodeList {
-			   float:left;
-			   width:256px;
-			}
-			.linkList {
-			   float:left;
-			   width:256px;
-			}
-			.aspectList {
-			   float:left;
-			   width:256px;
-			}
 		</style>
 		<link type="text/css" href="../../Visualization/Jit/Examples/css/base.css" rel="stylesheet" />
 		<link type="text/css" href="../../Visualization/Jit/Examples/css/Spacetree.css" rel="stylesheet" />
@@ -39,45 +19,6 @@
 		<script type="text/javascript" charset="utf-8">
 			var frame = null;
 			var frameControl = null;
-
-			function Selection()
-			{
-				var node = null;
-				var link = null;
-				var aspect = null;
-
-				this.setNode = function(newNodeId)
-				{
-					node = newNodeId;
-					link = null;
-					aspect = null;
-				};
-				this.setLink = function(newLinkId)
-				{
-					if (node === null)
-						return;
-					link = newLinkId;
-					aspect = null;
-				};
-				this.setAspect = function(newAspectId)
-				{
-					if (node === null || link === null)
-						return;
-					aspect = newAspectId;
-				};
-				this.get = function()
-				{
-					return [node, link, aspect];
-				};
-				this.reset = function()
-				{
-					node = null;
-					link = null;
-					aspect = null;
-				}
-			}
-
-			var selection = new Selection();
 
 			function loadFrame(frameJSON)
 			{
@@ -96,110 +37,9 @@
 				frameControl = new FrameControl(frame);
 			}
 
-				function getNodeContent(nodeId)
-				{
-					var nodeControl = frameControl.getElement(nodeId);
-					return nodeControl.getContent();
-				}
-
-				function onNodeButtonClick()
-				{
-					selection.setNode(this.title);
-					viewFrame();
-				}
-				function onLinkButtonClick()
-				{
-					selection.setLink(this.title);
-					viewFrame();
-				}
-				function onAspectButtonClick()
-				{
-					selection.setAspect(this.title);
-					viewFrame();
-				}
-
-				function visualizeNodeContent(container, elementId, onButtonClick)
-				{
-					var nodeControl = frameControl.getElement(elementId[0]);
-					var matrix = nodeControl.getMatrix();
-					for (var linkId in matrix)
-					{
-						var viewElement = document.createElement("div");
-						var elementButton = document.createElement("button");
-						elementButton.innerHTML = getNodeContent(linkId);
-						elementButton.title = linkId;
-						elementButton.onclick = onButtonClick;
-						viewElement.appendChild(elementButton);
-						container.appendChild(viewElement);
-					}
-				}
-
-				function visualizeLinkContent(container, elementId, onButtonClick)
-				{
-					var nodeControl = frameControl.getElement(elementId[0]);
-					var linkControl = nodeControl.getElement(elementId[1]);
-					var matrix = linkControl.getMatrix();
-					for (var aspectId in matrix)
-					{
-						var viewElement = document.createElement("div");
-						var elementButton = document.createElement("button");
-						elementButton.innerHTML = getNodeContent(aspectId);
-						elementButton.title = aspectId;
-						elementButton.onclick = onButtonClick;
-						viewElement.appendChild(elementButton);
-						container.appendChild(viewElement);
-					}
-				}
-
 			function viewFrame()
 			{
-				var frameViewContainer = document.getElementById("frameView");
-				frameViewContainer.innerHTML = '[frame]';
-				var frameMatrix = frameControl.getMatrix();
-				for (var nodeId in frameMatrix)
-				{
-					var frameViewElement = document.createElement("div");
-					var nodeButton = document.createElement("button");
-					nodeButton.innerHTML = getNodeContent(nodeId);
-					nodeButton.title = nodeId;
-					nodeButton.onclick = onNodeButtonClick;
-					frameViewElement.appendChild(nodeButton);
-					frameViewContainer.appendChild(frameViewElement);
-				}
-				var containers = ['nodeView', 'linkView', 'aspectView'];
-				var emptyValues = ['[node]', '[link]', '[aspect]'];
-				var onButtonClicks = [onLinkButtonClick, onAspectButtonClick, null];
-				var visualizeContent = [visualizeNodeContent, visualizeLinkContent, null];
-
-				var selectionElements = selection.get();
-				for (var i in selectionElements)
-				{
-					var container = document.getElementById(containers[i]);
-					var elementId = selectionElements[i];
-					if (elementId === null)
-					{
-						container.innerHTML = emptyValues[i];
-					}
-					else
-					{
-						container.innerHTML = getNodeContent(elementId);
-
-						var elementButton = document.createElement("button");
-						elementButton.innerHTML = 'select';
-						elementButton.title = elementId;
-						elementButton.onclick = onNodeButtonClick;
-						container.appendChild(elementButton);
-
-						if (visualizeContent[i] !== null)
-						{
-							var idArray = i == 0 ? [elementId]:
-								i == 1 ? [selectionElements[i-1], elementId]:
-									i == 2 ? [selectionElements[i-2], selectionElements[i-1], elementId]:
-										null;
-							visualizeContent[i](container, idArray, onButtonClicks[i]);
-						}
-					}
-				}
+				// TODO: implement via spacetree
 			}
 
 			function onClickLoadFrame(source)
@@ -209,108 +49,65 @@
 				viewFrame();
 			}
 
-			function onResetFrameSelection()
+			function initSpacetree()
 			{
-				selection.reset();
-				viewFrame();
+				var json = "{id:\"node02\", name:\"0.2\", data:{}, children:[{id:\"node13\", name:\"1.3\", data:{}, children:[{id:\"node24\", name:\"2.4\", data:{}, children:[{id:\"node35\", name:\"3.5\", data:{}, children:[{id:\"node46\", name:\"4.6\", data:{}, children:[]}]}, {id:\"node37\", name:\"3.7\", data:{}, children:[{id:\"node48\", name:\"4.8\", data:{}, children:[]}, {id:\"node49\", name:\"4.9\", data:{}, children:[]}, {id:\"node410\", name:\"4.10\", data:{}, children:[]}, {id:\"node411\", name:\"4.11\", data:{}, children:[]}]}, {id:\"node312\", name:\"3.12\", data:{}, children:[{id:\"node413\", name:\"4.13\", data:{}, children:[]}]}, {id:\"node314\", name:\"3.14\", data:{}, children:[{id:\"node415\", name:\"4.15\", data:{}, children:[]}, {id:\"node416\", name:\"4.16\", data:{}, children:[]}, {id:\"node417\", name:\"4.17\", data:{}, children:[]}, {id:\"node418\", name:\"4.18\", data:{}, children:[]}]}, {id:\"node319\", name:\"3.19\", data:{}, children:[{id:\"node420\", name:\"4.20\", data:{}, children:[]}, {id:\"node421\", name:\"4.21\", data:{}, children:[]}]}]}, {id:\"node222\", name:\"2.22\", data:{}, children:[{id:\"node323\", name:\"3.23\", data:{}, children:[{id:\"node424\", name:\"4.24\", data:{}, children:[]}]}]}]}, {id:\"node125\", name:\"1.25\", data:{}, children:[{id:\"node226\", name:\"2.26\", data:{}, children:[{id:\"node327\", name:\"3.27\", data:{}, children:[{id:\"node428\", name:\"4.28\", data:{}, children:[]}, {id:\"node429\", name:\"4.29\", data:{}, children:[]}]}, {id:\"node330\", name:\"3.30\", data:{}, children:[{id:\"node431\", name:\"4.31\", data:{}, children:[]}]}, {id:\"node332\", name:\"3.32\", data:{}, children:[{id:\"node433\", name:\"4.33\", data:{}, children:[]}, {id:\"node434\", name:\"4.34\", data:{}, children:[]}, {id:\"node435\", name:\"4.35\", data:{}, children:[]}, {id:\"node436\", name:\"4.36\", data:{}, children:[]}]}]}, {id:\"node237\", name:\"2.37\", data:{}, children:[{id:\"node338\", name:\"3.38\", data:{}, children:[{id:\"node439\", name:\"4.39\", data:{}, children:[]}, {id:\"node440\", name:\"4.40\", data:{}, children:[]}, {id:\"node441\", name:\"4.41\", data:{}, children:[]}]}, {id:\"node342\", name:\"3.42\", data:{}, children:[{id:\"node443\", name:\"4.43\", data:{}, children:[]}]}, {id:\"node344\", name:\"3.44\", data:{}, children:[{id:\"node445\", name:\"4.45\", data:{}, children:[]}, {id:\"node446\", name:\"4.46\", data:{}, children:[]}, {id:\"node447\", name:\"4.47\", data:{}, children:[]}]}, {id:\"node348\", name:\"3.48\", data:{}, children:[{id:\"node449\", name:\"4.49\", data:{}, children:[]}, {id:\"node450\", name:\"4.50\", data:{}, children:[]}, {id:\"node451\", name:\"4.51\", data:{}, children:[]}, {id:\"node452\", name:\"4.52\", data:{}, children:[]}, {id:\"node453\", name:\"4.53\", data:{}, children:[]}]}, {id:\"node354\", name:\"3.54\", data:{}, children:[{id:\"node455\", name:\"4.55\", data:{}, children:[]}, {id:\"node456\", name:\"4.56\", data:{}, children:[]}, {id:\"node457\", name:\"4.57\", data:{}, children:[]}]}]}, {id:\"node258\", name:\"2.58\", data:{}, children:[{id:\"node359\", name:\"3.59\", data:{}, children:[{id:\"node460\", name:\"4.60\", data:{}, children:[]}, {id:\"node461\", name:\"4.61\", data:{}, children:[]}, {id:\"node462\", name:\"4.62\", data:{}, children:[]}, {id:\"node463\", name:\"4.63\", data:{}, children:[]}, {id:\"node464\", name:\"4.64\", data:{}, children:[]}]}]}]}, {id:\"node165\", name:\"1.65\", data:{}, children:[{id:\"node266\", name:\"2.66\", data:{}, children:[{id:\"node367\", name:\"3.67\", data:{}, children:[{id:\"node468\", name:\"4.68\", data:{}, children:[]}, {id:\"node469\", name:\"4.69\", data:{}, children:[]}, {id:\"node470\", name:\"4.70\", data:{}, children:[]}, {id:\"node471\", name:\"4.71\", data:{}, children:[]}]}, {id:\"node372\", name:\"3.72\", data:{}, children:[{id:\"node473\", name:\"4.73\", data:{}, children:[]}, {id:\"node474\", name:\"4.74\", data:{}, children:[]}, {id:\"node475\", name:\"4.75\", data:{}, children:[]}, {id:\"node476\", name:\"4.76\", data:{}, children:[]}]}, {id:\"node377\", name:\"3.77\", data:{}, children:[{id:\"node478\", name:\"4.78\", data:{}, children:[]}, {id:\"node479\", name:\"4.79\", data:{}, children:[]}]}, {id:\"node380\", name:\"3.80\", data:{}, children:[{id:\"node481\", name:\"4.81\", data:{}, children:[]}, {id:\"node482\", name:\"4.82\", data:{}, children:[]}]}]}, {id:\"node283\", name:\"2.83\", data:{}, children:[{id:\"node384\", name:\"3.84\", data:{}, children:[{id:\"node485\", name:\"4.85\", data:{}, children:[]}]}, {id:\"node386\", name:\"3.86\", data:{}, children:[{id:\"node487\", name:\"4.87\", data:{}, children:[]}, {id:\"node488\", name:\"4.88\", data:{}, children:[]}, {id:\"node489\", name:\"4.89\", data:{}, children:[]}, {id:\"node490\", name:\"4.90\", data:{}, children:[]}, {id:\"node491\", name:\"4.91\", data:{}, children:[]}]}, {id:\"node392\", name:\"3.92\", data:{}, children:[{id:\"node493\", name:\"4.93\", data:{}, children:[]}, {id:\"node494\", name:\"4.94\", data:{}, children:[]}, {id:\"node495\", name:\"4.95\", data:{}, children:[]}, {id:\"node496\", name:\"4.96\", data:{}, children:[]}]}, {id:\"node397\", name:\"3.97\", data:{}, children:[{id:\"node498\", name:\"4.98\", data:{}, children:[]}]}, {id:\"node399\", name:\"3.99\", data:{}, children:[{id:\"node4100\", name:\"4.100\", data:{}, children:[]}, {id:\"node4101\", name:\"4.101\", data:{}, children:[]}, {id:\"node4102\", name:\"4.102\", data:{}, children:[]}, {id:\"node4103\", name:\"4.103\", data:{}, children:[]}]}]}, {id:\"node2104\", name:\"2.104\", data:{}, children:[{id:\"node3105\", name:\"3.105\", data:{}, children:[{id:\"node4106\", name:\"4.106\", data:{}, children:[]}, {id:\"node4107\", name:\"4.107\", data:{}, children:[]}, {id:\"node4108\", name:\"4.108\", data:{}, children:[]}]}]}, {id:\"node2109\", name:\"2.109\", data:{}, children:[{id:\"node3110\", name:\"3.110\", data:{}, children:[{id:\"node4111\", name:\"4.111\", data:{}, children:[]}, {id:\"node4112\", name:\"4.112\", data:{}, children:[]}]}, {id:\"node3113\", name:\"3.113\", data:{}, children:[{id:\"node4114\", name:\"4.114\", data:{}, children:[]}, {id:\"node4115\", name:\"4.115\", data:{}, children:[]}, {id:\"node4116\", name:\"4.116\", data:{}, children:[]}]}, {id:\"node3117\", name:\"3.117\", data:{}, children:[{id:\"node4118\", name:\"4.118\", data:{}, children:[]}, {id:\"node4119\", name:\"4.119\", data:{}, children:[]}, {id:\"node4120\", name:\"4.120\", data:{}, children:[]}, {id:\"node4121\", name:\"4.121\", data:{}, children:[]}]}, {id:\"node3122\", name:\"3.122\", data:{}, children:[{id:\"node4123\", name:\"4.123\", data:{}, children:[]}, {id:\"node4124\", name:\"4.124\", data:{}, children:[]}]}]}, {id:\"node2125\", name:\"2.125\", data:{}, children:[{id:\"node3126\", name:\"3.126\", data:{}, children:[{id:\"node4127\", name:\"4.127\", data:{}, children:[]}, {id:\"node4128\", name:\"4.128\", data:{}, children:[]}, {id:\"node4129\", name:\"4.129\", data:{}, children:[]}]}]}]}, {id:\"node1130\", name:\"1.130\", data:{}, children:[{id:\"node2131\", name:\"2.131\", data:{}, children:[{id:\"node3132\", name:\"3.132\", data:{}, children:[{id:\"node4133\", name:\"4.133\", data:{}, children:[]}, {id:\"node4134\", name:\"4.134\", data:{}, children:[]}, {id:\"node4135\", name:\"4.135\", data:{}, children:[]}, {id:\"node4136\", name:\"4.136\", data:{}, children:[]}, {id:\"node4137\", name:\"4.137\", data:{}, children:[]}]}]}, {id:\"node2138\", name:\"2.138\", data:{}, children:[{id:\"node3139\", name:\"3.139\", data:{}, children:[{id:\"node4140\", name:\"4.140\", data:{}, children:[]}, {id:\"node4141\", name:\"4.141\", data:{}, children:[]}]}, {id:\"node3142\", name:\"3.142\", data:{}, children:[{id:\"node4143\", name:\"4.143\", data:{}, children:[]}, {id:\"node4144\", name:\"4.144\", data:{}, children:[]}, {id:\"node4145\", name:\"4.145\", data:{}, children:[]}, {id:\"node4146\", name:\"4.146\", data:{}, children:[]}, {id:\"node4147\", name:\"4.147\", data:{}, children:[]}]}]}]}]}";
+				init(json);
 			}
 		</script>
 	</head>
-<body onload="init();">
-<div id="container">
-
-<div id="left-container">
-
-
-
-<div class="text">
-<h4>
-SpaceTree with on-demand nodes
-</h4>
-
-            This example shows how you can use the <b>request</b> controller method to create a SpaceTree with <b>on demand</b> nodes<br /><br />
-            The basic JSON Tree structure is cloned and appended on demand on each node to create an <b>infinite large SpaceTree</b><br /><br />
-            You can select the <b>tree orientation</b> by changing the select box in the right column.
-
-</div>
-
-<div id="id-list"></div>
-
-
-<div style="text-align:center;"><a href="example2.js">See the Example Code</a></div>
-</div>
-
-<div id="center-container">
-    <div id="infovis"></div>
-</div>
-
-<div id="right-container">
-
-<h4>Change Tree Orientation</h4>
-<table>
-    <tr>
-        <td>
-            <label for="r-left">left </label>
-        </td>
-        <td>
-            <input type="radio" id="r-left" name="orientation" checked="checked" value="left" />
-        </td>
-    </tr>
-    <tr>
-         <td>
-            <label for="r-top">top </label>
-         </td>
-         <td>
-            <input type="radio" id="r-top" name="orientation" value="top" />
-         </td>
-    <tr>
-         <td>
-            <label for="r-bottom">bottom </label>
-          </td>
-          <td>
-            <input type="radio" id="r-bottom" name="orientation" value="bottom" />
-          </td>
-    </tr>
-    <tr>
-          <td>
-            <label for="r-right">right </label>
-          </td>
-          <td>
-           <input type="radio" id="r-right" name="orientation" value="right" />
-          </td>
-    </tr>
-</table>
-
-</div>
-
-<div id="log"></div>
-</div>
-
-		<div>
-		<div id="source">
-			JSON Frame Source:
-			<textarea id="frameSource">Place your Frame here.</textarea>
-			<button onclick="onClickLoadFrame(document.getElementById('frameSource'));">
-				Load Frame
-			</button>
-			<button onclick="onResetFrameSelection();">
-				Reset Selection
-			</button>
-		</div>
-		<div class="wrap">
-		    <div class="frameList" id="frameView">
-		        [frame]
-		    </div>
-		    <div class="nodeList" id="nodeView">
-		        [node]
-		    </div>
-		    <div class="linkList" id="linkView">
-		        [link]
-		    </div>
-		    <div class="aspectList" id="aspectView">
-		        [aspect]
-		    </div>
-		</div>
+	<body onload="initSpacetree();">
+		<div id="container">
+			<div id="left-container">
+				<div id="source">
+					<h4>JSON Frame Source:</h4>
+					<textarea id="frameSource">Place your Frame here.</textarea>
+					<button onclick="onClickLoadFrame(document.getElementById('frameSource'));">
+						Load Frame
+					</button>
+				</div>
+			</div>
+			<div id="center-container">
+			    <div id="infovis"></div>
+			</div>
+			<div id="right-container">
+				<h4>Frame Tree Orientation</h4>
+				<table>
+					<tr>
+						<td>
+							<label for="r-left">left </label>
+						</td>
+						<td>
+							<input type="radio" id="r-left" name="orientation" checked="checked" value="left" />
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<label for="r-top">top </label>
+						</td>
+						<td>
+							<input type="radio" id="r-top" name="orientation" value="top" />
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<label for="r-bottom">bottom </label>
+						</td>
+						<td>
+							<input type="radio" id="r-bottom" name="orientation" value="bottom" />
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<label for="r-right">right </label>
+						</td>
+						<td>
+							<input type="radio" id="r-right" name="orientation" value="right" />
+						</td>
+					</tr>
+				</table>
+			</div>
+			<div id="log"></div>
 		</div>
 	</body>
 </html>
