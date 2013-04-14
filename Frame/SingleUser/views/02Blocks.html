@@ -86,7 +86,7 @@
 						elementTitle.innerHTML = nodeId;
 						frameViewElement.appendChild(elementTitle);
 						var elementEditor = document.createElement("div");
-						createAceEditor(elementEditor, frameControl.getElement(nodeId).getNodeCode());
+						createAceEditor(elementEditor, frameControl.getElement(nodeId).getCode());
 						frameViewElement.appendChild(elementEditor);
 					}
 				}

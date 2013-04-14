@@ -61,7 +61,7 @@ function testPull()
 		var result =
 			JSON.stringify(frame) + '\r\n' + '\r\n' +
 			JSON.stringify(frameControl.getMatrix()) + '\r\n' + '\r\n' +
-			frameControl.getFrameCode();
+			frameControl.getCode();
 		return result;
 	};
 
@@ -81,7 +81,7 @@ function testPull()
 		var result =
 			JSON.stringify(frame) + '\r\n' + '\r\n' +
 			JSON.stringify(frameControl.getMatrix()) + '\r\n' + '\r\n' +
-			frameControl.getFrameCode();
+			frameControl.getCode();
 		return result;
 	};
 
@@ -116,7 +116,7 @@ function testPull()
 			JSON.stringify(frame) + '\r\n' + '\r\n' +
 			JSON.stringify(frameControl.getMatrix()) + '\r\n' + '\r\n' +
 			GetLinkageMatrix(frameControl) + '\r\n' +
-			frameControl.getFrameCode();
+			frameControl.getCode();
 		return result;
 	};
 
@@ -163,7 +163,7 @@ function testPull()
 			JSON.stringify(frame) + '\r\n' + '\r\n' +
 			JSON.stringify(frameControl.getMatrix()) + '\r\n' + '\r\n' +
 			GetLinkageMatrix(frameControl) + '\r\n' +
-			frameControl.getFrameCode();
+			frameControl.getCode();
 		return result;
 	};
 
@@ -194,7 +194,7 @@ function testPull()
 			JSON.stringify(frame) + '\r\n' + '\r\n' +
 			JSON.stringify(frameControl.getMatrix()) + '\r\n' + '\r\n' +
 			GetLinkageMatrix(frameControl) + '\r\n' +
-			frameControl.getFrameCode();
+			frameControl.getCode();
 		return result;
 	};
 
@@ -221,7 +221,7 @@ function testPull()
 			JSON.stringify(frame) + '\r\n' + '\r\n' +
 			JSON.stringify(frameControl.getMatrix()) + '\r\n' + '\r\n' +
 			GetLinkageMatrix(frameControl) + '\r\n' +
-			frameControl.getFrameCode();
+			frameControl.getCode();
 		return result;
 	};
 
@@ -246,7 +246,7 @@ function testPull()
 			JSON.stringify(frame) + '\r\n' + '\r\n' +
 			JSON.stringify(frameControl.getMatrix()) + '\r\n' + '\r\n' +
 			GetLinkageMatrix(frameControl) + '\r\n' +
-			frameControl.getFrameCode();
+			frameControl.getCode();
 		return result;
 	};
 
@@ -266,7 +266,7 @@ function testPull()
 			JSON.stringify(frame) + '\r\n' + '\r\n' +
 			JSON.stringify(frameControl.getMatrix()) + '\r\n' + '\r\n' +
 			GetLinkageMatrix(frameControl) + '\r\n' +
-			frameControl.getFrameCode();
+			frameControl.getCode();
 		return result;
 	};
 
@@ -287,7 +287,7 @@ function testPull()
 			JSON.stringify(frame) + '\r\n' + '\r\n' +
 			JSON.stringify(frameControl.getMatrix()) + '\r\n' + '\r\n' +
 			GetLinkageMatrix(frameControl) + '\r\n' +
-			frameControl.getFrameCode();
+			frameControl.getCode();
 		return result;
 	};
 
@@ -310,7 +310,7 @@ function testPull()
 			JSON.stringify(frame) + '\r\n' + '\r\n' +
 			JSON.stringify(frameControl.getMatrix()) + '\r\n' + '\r\n' +
 			GetLinkageMatrix(frameControl) + '\r\n' +
-			frameControl.getFrameCode();
+			frameControl.getCode();
 		return result;
 	};
 
@@ -324,7 +324,7 @@ function testPull()
 			JSON.stringify(frame) + '\r\n' + '\r\n' +
 			JSON.stringify(frameControl.getMatrix()) + '\r\n' + '\r\n' +
 			GetLinkageMatrix(frameControl) + '\r\n' +
-			frameControl.getFrameCode();
+			frameControl.getCode();
 		return result;
 	};
 }

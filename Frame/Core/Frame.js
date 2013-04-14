@@ -101,7 +101,7 @@ function FrameControl(initFrame)
 
 	this.getElement = getNodeControl;
 	this.getMatrix = getNodesMatrix;
-	this.getFrameCode = stringifyFrame;
+	this.getCode = stringifyFrame;
 }
 
 /////////////////////////
@@ -182,7 +182,7 @@ function NodeControl(initId, initNode)
 	this.getId = getNodeId;
 	this.getElement = getLinkControl;
 	this.getMatrix = getNodeLinksMatrix;
-	this.getNodeCode = stringifyNode;
+	this.geCode = stringifyNode;
 }
 
 /////////////////////////
@@ -231,10 +231,16 @@ function LinkControl(initId, initLink)
 		return result;
 	};
 
+	var stringifyLink = function(compact)
+	{
+		return JSON.stringify(link, null, compact ? null : '\t');
+	};
+
 	this.add = addLinkAspect;
 	this.remove = removeLinkAspect;
 	this.clear = clearLinkAspects;
 
 	this.getId = getLinkId;
 	this.getMatrix = getLinkAspectsMatrix;
+	this.geCode = stringifyLink;
 }
