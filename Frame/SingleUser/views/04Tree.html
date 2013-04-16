@@ -114,8 +114,36 @@
 
 			function viewFrame()
 			{
+				function callbackSelectedTreeNode(treeNode)
+				{
+					var linkView = document.getElementById('linkView');
+					linkView.innerHTML = '';
+					var selectedNode = treeNode.data.nodeUuid;
+					if (selectedNode == (new Uuid()).empty)
+						return;
+					// TODO: make usefull control elements to describe (node) - (node) aspected link.
+					linkView.innerHTML = linkView.innerHTML + '<h5>Unknown node</h5>';
+
+					var nodeControl = frameControl.getElement(selectedNode);
+					var linkMatrix = nodeControl.getMatrix();
+					// TODO: add aspects for only 1 link, visually connected with corresponding tree node.
+					for (var linkId in linkMatrix)
+					{
+						var linkControl = nodeControl.getElement(linkId);
+						var aspectMatrix = linkControl.getMatrix();
+						for (var aspectId in aspectMatrix)
+						{
+							var aspectControl = frameControl.getElement(aspectId);
+							linkView.innerHTML = linkView.innerHTML + '<div>' + aspectControl.getContent() + '</div>';
+						}
+						linkView.innerHTML = linkView.innerHTML + '<div>---------</div>';
+					}
+
+					linkView.innerHTML = linkView.innerHTML + '<h5>' + nodeControl.getContent() + '</h5>';
+				}
+
 				var spacetreeDataGenerator = new SpacetreeDataGenerator();
-				init(spacetreeDataGenerator.create(), spacetreeDataGenerator.expand);
+				init(spacetreeDataGenerator.create(), spacetreeDataGenerator.expand, callbackSelectedTreeNode);
 			}
 
 			function onClickLoadFrame(source)
@@ -135,6 +163,8 @@
 					<button onclick="onClickLoadFrame(document.getElementById('frameSource'));">
 						Load Frame
 					</button>
+					<h4>Link Aspects:</h4>
+					<div id="linkView"></div>
 				</div>
 			</div>
 			<div id="center-container">
@@ -176,7 +206,7 @@
 						</td>
 					</tr>
 				</table>
-				<h4>TODO: control levels to view and size of node</h4>
+				<h4>TODO: control levels to view, size of node, animation duration, nodes distance.</h4>
 			</div>
 			<div id="log"></div>
 		</div>

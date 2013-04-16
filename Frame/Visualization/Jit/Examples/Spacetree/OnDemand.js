@@ -25,7 +25,7 @@ var Log = {
   }
 };
 
-function init(initNodes, getSubtree){
+function init(initNodes, getSubtree, callbackSelectedTreeNode){
     //Implement a node rendering function called 'nodeline' that plots a straight line
     //when contracting or expanding a subtree.
     $jit.ST.Plot.NodeTypes.implement({
@@ -55,7 +55,7 @@ function init(initNodes, getSubtree){
     var st = new $jit.ST({
         'injectInto': 'infovis',
         //set duration for the animation
-        duration: 800,
+        duration: 200,
         //set animation transition type
         transition: $jit.Trans.Quart.easeInOut,
         //set distance between node and its children
@@ -100,6 +100,7 @@ function init(initNodes, getSubtree){
 
         onBeforeCompute: function(node){
             Log.write("loading " + node.name);
+            callbackSelectedTreeNode(node);
         },
 
         onAfterCompute: function(){
