@@ -50,7 +50,7 @@
 				this.create = function()
 				{
 					var uuid = new Uuid();
-					var root = new SpacetreeNode(null,'Frame', {nodeUuid:uuid.empty});
+					var root = new SpacetreeNode(null,'Frame', {nodeUuid:uuid.empty, parentNodeUuid:uuid.empty});
 
 					var matrix = frameControl.getMatrix();
 					for (var nodeId in matrix)
@@ -62,7 +62,7 @@
 								new SpacetreeNode(
 									null,
 									nodeControl.getContent(),
-									{nodeUuid:nodeId}
+									{nodeUuid:nodeId, parentNodeUuid:uuid.empty}
 								)
 							);
 						}
@@ -87,7 +87,7 @@
 								var newTreeNode = new SpacetreeNode(
 									null,
 									nodeControl.getContent(),
-									{nodeUuid: nodeId}
+									{nodeUuid: nodeId, parentNodeUuid: abstract.frame}
 								);
 								abstract.tree.children.push(newTreeNode);
 								concreteNodes.push({frame: nodeId, tree: newTreeNode});
@@ -118,28 +118,46 @@
 				{
 					var linkView = document.getElementById('linkView');
 					linkView.innerHTML = '';
-					var selectedNode = treeNode.data.nodeUuid;
-					if (selectedNode == (new Uuid()).empty)
+					var selectedNodeId = treeNode.data.nodeUuid;
+					var parentNodeId = treeNode.data.parentNodeUuid;
+					var uuid = new Uuid();
+					if (selectedNodeId === uuid.empty || parentNodeId === uuid.empty)
 						return;
 					// TODO: make usefull control elements to describe (node) - (node) aspected link.
-					linkView.innerHTML = linkView.innerHTML + '<h5>Unknown node</h5>';
 
-					var nodeControl = frameControl.getElement(selectedNode);
-					var linkMatrix = nodeControl.getMatrix();
-					// TODO: add aspects for only 1 link, visually connected with corresponding tree node.
-					for (var linkId in linkMatrix)
+					var linkViewQ = document.createElement("blockquote");
+					linkView.appendChild(linkViewQ);
+
+					var parentNodeControl = frameControl.getElement(parentNodeId);
+					var abstractNodeElement = document.createElement("h5");
+					abstractNodeElement.innerHTML = parentNodeControl.getContent();
+					abstractNodeElement.title = parentNodeControl.getId();
+					linkViewQ.appendChild(abstractNodeElement);
+
+					var nodeControl = frameControl.getElement(selectedNodeId);
+					var linkControl = nodeControl.getElement(parentNodeId);
+					if (linkControl)
 					{
-						var linkControl = nodeControl.getElement(linkId);
 						var aspectMatrix = linkControl.getMatrix();
 						for (var aspectId in aspectMatrix)
 						{
 							var aspectControl = frameControl.getElement(aspectId);
-							linkView.innerHTML = linkView.innerHTML + '<div>' + aspectControl.getContent() + '</div>';
+							var aspectElement = document.createElement("button");
+							aspectElement.innerHTML = aspectControl.getContent();
+							aspectElement.title = aspectControl.getId();
+							linkViewQ.appendChild(aspectElement);
 						}
-						linkView.innerHTML = linkView.innerHTML + '<div>---------</div>';
 					}
-
-					linkView.innerHTML = linkView.innerHTML + '<h5>' + nodeControl.getContent() + '</h5>';
+					else
+					{
+						console.log('TreeNode ' + selectedNodeId + ' contains error in .data.parentNodeUuid = ' + parentNodeId +
+							' but it is not a valid abstract link!'
+						);
+					}
+					var concreteNodeElement = document.createElement("h5");
+					concreteNodeElement.innerHTML = nodeControl.getContent();
+					concreteNodeElement.title = nodeControl.getId();
+					linkViewQ.appendChild(concreteNodeElement);
 				}
 
 				var spacetreeDataGenerator = new SpacetreeDataGenerator();
@@ -175,18 +193,10 @@
 				<table>
 					<tr>
 						<td>
-							<label for="r-left">left </label>
-						</td>
-						<td>
-							<input type="radio" id="r-left" name="orientation" checked="checked" value="left" />
-						</td>
-					</tr>
-					<tr>
-						<td>
 							<label for="r-top">top </label>
 						</td>
 						<td>
-							<input type="radio" id="r-top" name="orientation" value="top" />
+							<input type="radio" id="r-top" name="orientation" checked="checked" value="top" />
 						</td>
 					</tr>
 					<tr>
@@ -195,6 +205,14 @@
 						</td>
 						<td>
 							<input type="radio" id="r-bottom" name="orientation" value="bottom" />
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<label for="r-left">left </label>
+						</td>
+						<td>
+							<input type="radio" id="r-left" name="orientation" value="left" />
 						</td>
 					</tr>
 					<tr>

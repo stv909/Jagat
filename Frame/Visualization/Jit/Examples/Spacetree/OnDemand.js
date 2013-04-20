@@ -54,6 +54,8 @@ function init(initNodes, getSubtree, callbackSelectedTreeNode){
     //Create a new ST instance
     var st = new $jit.ST({
         'injectInto': 'infovis',
+		//set default orientation
+        orientation: 'top',
         //set duration for the animation
         duration: 200,
         //set animation transition type
