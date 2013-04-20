@@ -21,6 +21,13 @@ Tactical plans of Jagat implementation.
 				2.5.2.5. Flow.
 			2.5.3. Basic frame editors:
 				2.5.3.1. Tree.
+					2.5.3.1.1. Save Frame.
+					2.5.3.1.2. Add Node.
+					2.5.3.1.3. Add Link.
+					2.5.3.1.4. Add Aspect.
+					2.5.3.1.5. Delete Node.
+					2.5.3.1.6. Delete Link.
+					2.5.3.1.7. Delete Aspect.
 				2.5.3.2. Flow.
 				2.5.3.3. Text.
 				2.5.3.4. Blocks.
