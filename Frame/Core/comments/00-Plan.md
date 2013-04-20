@@ -16,18 +16,19 @@ Tactical plans of Jagat implementation.
 					2.5.2.4.1+ Working prototype.
 					2.5.2.4.2+ Link aspects representation.
 					2.5.2.4.3+ Spawn new Tree View for selected aspect exploring.
-					2.5.2.4.4: Dynamic control for levels deepness and node size.
+					2.5.2.4.4: Dynamic control for levels deepness and node config.
 					2.5.2.4.5. Reloading Frame from JSON by button without page refresh.
 				2.5.2.5. Flow.
 			2.5.3. Basic frame editors:
 				2.5.3.1. Tree.
 					2.5.3.1.1. Save Frame.
-					2.5.3.1.2. Add Node.
-					2.5.3.1.3. Add Link.
-					2.5.3.1.4. Add Aspect.
-					2.5.3.1.5. Delete Node.
-					2.5.3.1.6. Delete Link.
-					2.5.3.1.7. Delete Aspect.
+					2.5.3.1.2. Change node.content.
+					2.5.3.1.3. Add Node.
+					2.5.3.1.4. Add Link.
+					2.5.3.1.5. Add Aspect.
+					2.5.3.1.6. Delete Node.
+					2.5.3.1.7. Delete Link.
+					2.5.3.1.8. Delete Aspect.
 				2.5.3.2. Flow.
 				2.5.3.3. Text.
 				2.5.3.4. Blocks.
