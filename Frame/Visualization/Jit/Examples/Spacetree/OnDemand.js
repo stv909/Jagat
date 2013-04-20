@@ -25,7 +25,23 @@ var Log = {
   }
 };
 
-function init(initNodes, getSubtree, callbackSelectedTreeNode){
+function init(infovis, initLevelsToShow, initNodes, getSubtree, callbackSelectedTreeNode, selection)
+{
+	var unhandledSelection = null;
+	var unhandledRootCounter = 0;
+	var unhandledSelectionCounter = 0;
+
+	function getTreeNodeByFrameNodyId(frameNodeId)
+	{
+		// STUB // WARNING: this works only if graph is full expanded.
+		for (var treeNode in st.graph.nodes)
+		{
+			if (st.graph.nodes[treeNode].data.nodeUuid === frameNodeId)
+				return treeNode;
+		}
+		return null;
+	}
+
     //Implement a node rendering function called 'nodeline' that plots a straight line
     //when contracting or expanding a subtree.
     $jit.ST.Plot.NodeTypes.implement({
@@ -53,7 +69,7 @@ function init(initNodes, getSubtree, callbackSelectedTreeNode){
     //init Spacetree
     //Create a new ST instance
     var st = new $jit.ST({
-        'injectInto': 'infovis',
+        'injectInto': infovis,
 		//set default orientation
         orientation: 'top',
         //set duration for the animation
@@ -64,7 +80,7 @@ function init(initNodes, getSubtree, callbackSelectedTreeNode){
         levelDistance: 50,
         //set max levels to show. Useful when used with
         //the request method for requesting trees of specific depth
-        levelsToShow: 2,
+        levelsToShow: initLevelsToShow,
         //set node and edge styles
         //set overridable=true for styling individual
         //nodes or edges
@@ -102,11 +118,31 @@ function init(initNodes, getSubtree, callbackSelectedTreeNode){
 
         onBeforeCompute: function(node){
             Log.write("loading " + node.name);
-            callbackSelectedTreeNode(node);
+            if (callbackSelectedTreeNode)
+            {
+				callbackSelectedTreeNode(node);
+            }
         },
 
         onAfterCompute: function(){
             Log.write("done");
+			if (unhandledRootCounter > 0)
+			{
+				--unhandledRootCounter;
+				st.onClick(st.root);
+			}
+			else if (unhandledSelection && unhandledSelectionCounter > 0)
+            {
+				var selectedTreeNode = getTreeNodeByFrameNodyId(unhandledSelection);
+				if (--unhandledSelectionCounter <= 0)
+				{
+					unhandledSelection = null;
+				}
+				if (selectedTreeNode)
+				{
+					st.onClick(selectedTreeNode);
+				}
+            }
         },
 
         //This method is called on DOM label creation.
@@ -183,10 +219,15 @@ function init(initNodes, getSubtree, callbackSelectedTreeNode){
     //compute node positions and layout
     st.compute();
     //emulate a click on the root node.
-    st.onClick(st.root);
+    unhandledSelection = selection;
+    unhandledRootCounter = 1;
+    unhandledSelectionCounter = 2;
+	st.onClick(st.root);
+
     //end
     //Add event handlers to switch spacetree orientation.
-    function get(id) {
+    function get(id)
+    {
         return document.getElementById(id);
     }
 
@@ -195,11 +236,14 @@ function init(initNodes, getSubtree, callbackSelectedTreeNode){
     bottom = get('r-bottom'),
     right = get('r-right');
 
-    function changeHandler() {
-        if(this.checked) {
+    function changeHandler()
+    {
+        if (this.checked)
+        {
             top.disabled = bottom.disabled = right.disabled = left.disabled = true;
             st.switchPosition(this.value, "animate", {
-                onComplete: function(){
+                onComplete: function()
+                {
                     top.disabled = bottom.disabled = right.disabled = left.disabled = false;
                 }
             });

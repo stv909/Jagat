@@ -13,8 +13,8 @@ Tactical plans of Jagat implementation.
 			2.5.4: Tree.
 				2.5.4.1+ Working prototype.
 				2.5.4.2+ Link aspects representation.
-				2.5.4.3: Second spacetree view for aspects exploring.
-				2.5.4.4. Dynamic control for levels deepness and node size.
+				2.5.4.3+ Spawn new Tree View for selected aspect exploring.
+				2.5.4.4: Dynamic control for levels deepness and node size.
 				2.5.4.5. Reloading Frame from JSON by button without page refresh.
 			2.5.5. Flow.
 			2.5.6. Multiflow.

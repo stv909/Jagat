@@ -112,7 +112,7 @@
 				};
 			}
 
-			function viewFrame()
+			function viewFrame(levelsToShow, selection)
 			{
 				function callbackSelectedTreeNode(treeNode)
 				{
@@ -123,7 +123,16 @@
 					var uuid = new Uuid();
 					if (selectedNodeId === uuid.empty || parentNodeId === uuid.empty)
 						return;
-					// TODO: make usefull control elements to describe (node) - (node) aspected link.
+
+					function onAspectButtonClick()
+					{
+						var pageAspectView =
+							document.location.href +
+							'?frame=' + encodeURIComponent(frameControl.getCode(true)) +
+							'&selection=' + this.title +
+							'&levels=32000';
+						window.open(pageAspectView);
+					}
 
 					var linkViewQ = document.createElement("blockquote");
 					linkView.appendChild(linkViewQ);
@@ -145,6 +154,7 @@
 							var aspectElement = document.createElement("button");
 							aspectElement.innerHTML = aspectControl.getContent();
 							aspectElement.title = aspectControl.getId();
+							aspectElement.onclick = onAspectButtonClick;
 							linkViewQ.appendChild(aspectElement);
 						}
 					}
@@ -161,24 +171,49 @@
 				}
 
 				var spacetreeDataGenerator = new SpacetreeDataGenerator();
-				init(spacetreeDataGenerator.create(), spacetreeDataGenerator.expand, callbackSelectedTreeNode);
+				init('infovis', levelsToShow, spacetreeDataGenerator.create(), spacetreeDataGenerator.expand, callbackSelectedTreeNode, selection);
 			}
 
-			function onClickLoadFrame(source)
+			function onClickLoadFrame(source, levelsToShow, selection)
 			{
 				loadFrame(source.value);
 				source.value = '';
-				viewFrame();
+				viewFrame(levelsToShow, selection);
+			}
+
+			function onLoadBody()
+			{
+				function gup( name )
+				{
+					name = name.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
+					var regexS = "[\\?&]"+name+"=([^&#]*)";
+					var regex = new RegExp(regexS);
+					var results = regex.exec(window.location.href);
+					if (results)
+						return results[1];
+					return null;
+				}
+
+				var frameParameter = gup('frame');
+				if (frameParameter)
+				{
+					frameParameter = decodeURIComponent(frameParameter);
+					var sourceElement = document.getElementById('frameSource');
+					sourceElement.value = frameParameter;
+					var selectionParameter = gup('selection');
+					var levelsToShowParameter = gup('levels');
+					onClickLoadFrame(sourceElement, levelsToShowParameter, selectionParameter);
+				}
 			}
 		</script>
 	</head>
-	<body>
+	<body onload='onLoadBody();'>
 		<div id="container">
 			<div id="left-container">
 				<div id="source">
 					<h4>JSON Frame Source:</h4>
 					<textarea id="frameSource">Place your Frame here.</textarea>
-					<button onclick="onClickLoadFrame(document.getElementById('frameSource'));">
+					<button onclick="onClickLoadFrame(document.getElementById('frameSource'), 2);">
 						Load Frame
 					</button>
 					<h4>Link Aspects:</h4>
