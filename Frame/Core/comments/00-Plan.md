@@ -6,21 +6,26 @@ Tactical plans of Jagat implementation.
 		2.2+ Objects implementation.
 		2.3+ Module test suit.
 		2.4+ Use simple node-link structure for frame core.
-		2.5: SingleUser implementation: basic frame views:
-			2.5.1+ Text.
-			2.5.2+ Blocks.
-			2.5.3+ List.
-			2.5.4: Tree.
-				2.5.4.1+ Working prototype.
-				2.5.4.2+ Link aspects representation.
-				2.5.4.3+ Spawn new Tree View for selected aspect exploring.
-				2.5.4.4: Dynamic control for levels deepness and node size.
-				2.5.4.5. Reloading Frame from JSON by button without page refresh.
-			2.5.5. Flow.
-			2.5.6. Multiflow.
-			2.5.7. Think about proper place of tests: SingleUser or Core folder.
-		2.6. Formalized as NPM module for iterative self-development.
-		2.7. Explore JIT possibilities, think about new ways of Frame visualization.
+		2.5: SingleUser implementation:
+			2.5.1. Think about proper place of tests: SingleUser or Core folder.
+			2.5.2. Basic frame views:
+				2.5.2.1+ Text.
+				2.5.2.2+ Blocks.
+				2.5.2.3+ List.
+				2.5.2.4: Tree.
+					2.5.2.4.1+ Working prototype.
+					2.5.2.4.2+ Link aspects representation.
+					2.5.2.4.3+ Spawn new Tree View for selected aspect exploring.
+					2.5.2.4.4: Dynamic control for levels deepness and node size.
+					2.5.2.4.5. Reloading Frame from JSON by button without page refresh.
+				2.5.2.5. Flow.
+			2.5.3. Basic frame editors:
+				2.5.3.1. Tree.
+				2.5.3.2. Flow.
+				2.5.3.3. Text.
+				2.5.3.4. Blocks.
+		2.6. Explore JIT possibilities, think about new ways of Frame visualization.
+		2.7. Formalized as NPM module for iterative self-development.
 		2.8. Example application:
 			2.8.1. Notes manager.
 			2.8.2. IM Client.
@@ -29,6 +34,8 @@ Tactical plans of Jagat implementation.
 			2.8.5. 3D Modelling tool.
 		2.9. Frame Filter.
 		2.10. MultiUser implementation.
+			2.10.1. Locking version control system.
+			2.10.2. Operational Transformations storage system.
 		2.11. Data access management.
 	3. Connect Frame with different conceptions:
 		3.1. SCM via files and some SCM.
@@ -49,4 +56,5 @@ System Needs.
 	10. Cloud hosting and storage.
 	11. Access from wide range of devices without complex infrastructure.
 	12. Abstract modeling system (entities - links).
-	13. Facebook-like Massive Entity Web.
+	13. Flexible data access management.
+	14. Facebook-like Massive Entity Web.
