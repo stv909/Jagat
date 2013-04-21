@@ -15,7 +15,7 @@ Tactical plans of Jagat implementation.
 				2.5.2.4: Tree.
 					2.5.2.4.1+ Working prototype.
 					2.5.2.4.2+ Link aspects representation.
-					2.5.2.4.3: Spawn new Tree View for selected aspect exploring.
+					2.5.2.4.3+ Spawn new Tree View for selected aspect exploring.
 					2.5.2.4.4+ Reloading Frame from JSON by button without page refresh.
 					2.5.2.4.4. Realtime editing for graph config.
 				2.5.2.5. Flow.

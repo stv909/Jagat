@@ -236,9 +236,10 @@
 					frameParameter = decodeURIComponent(frameParameter);
 					var sourceElement = document.getElementById('frameSource');
 					sourceElement.value = frameParameter;
-					var selectionParameter = gup('selection');
 					var levelsToShowParameter = gup('levels');
-					onClickLoadFrame(sourceElement, levelsToShowParameter, selectionParameter);
+					var selectionParameter = gup('selection');
+					var infovis = document.getElementById('infovis');
+					onClickLoadFrame(sourceElement, levelsToShowParameter, selectionParameter, infovis);
 				}
 			}
 		</script>
