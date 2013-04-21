@@ -130,17 +130,33 @@
 					var linkViewQ = document.createElement('blockquote');
 					linkView.appendChild(linkViewQ);
 
+					function onAspectButtonClick()
+					{
+						var pageAspectView =
+							document.location.href +
+							'?frame=' + encodeURIComponent(frameControl.getCode(true)) +
+							'&selection=' + this.title +
+							'&levels=32000';
+						window.open(pageAspectView);
+					}
+					function onAddChildClick()
+					{
+						var childId = window.prompt('Enter nodeId of child:', null);
+						// TODO: implement
+					}
+					function onAddParentClick()
+					{
+						var parentId = window.prompt('Enter nodeId of parent:', null);
+						// TODO: implement
+					}
+					function onAddAspectButtonClick()
+					{
+						var aspectId = window.prompt('Enter nodeId of aspect:', null);
+						// TODO: implement
+					}
+
 					if (parentNodeId !== uuid.empty)
 					{
-						function onAspectButtonClick()
-						{
-							var pageAspectView =
-								document.location.href +
-								'?frame=' + encodeURIComponent(frameControl.getCode(true)) +
-								'&selection=' + this.title +
-								'&levels=32000';
-							window.open(pageAspectView);
-						}
 						var parentNodeControl = frameControl.getElement(parentNodeId);
 
 						var abstractNodeElement = document.createElement('input');
@@ -151,6 +167,13 @@
 						abstractNodeElement.readonly = true;
 						linkViewQ.appendChild(abstractNodeElement);
 
+						var abstractNodeAddConcrete = document.createElement('button');
+						abstractNodeAddConcrete.innerHTML = '+ child';
+						abstractNodeAddConcrete.title = parentNodeControl.getId();
+						abstractNodeAddConcrete.onclick = onAddChildClick;
+						linkViewQ.appendChild(abstractNodeAddConcrete);
+						linkViewQ.appendChild(document.createElement('br'));
+
 						var linkControl = nodeControl.getElement(parentNodeId);
 						if (linkControl)
 						{
@@ -158,12 +181,19 @@
 							for (var aspectId in aspectMatrix)
 							{
 								var aspectControl = frameControl.getElement(aspectId);
-								var aspectElement = document.createElement('button');
+								var aspectElement = document.createElement('a');
 								aspectElement.innerHTML = aspectControl.getContent();
 								aspectElement.title = aspectControl.getId();
+								aspectElement.href = 'javascript:void(0);';
 								aspectElement.onclick = onAspectButtonClick;
 								linkViewQ.appendChild(aspectElement);
+								linkViewQ.appendChild(document.createElement('br'));
 							}
+							var newAspectElement = document.createElement('button');
+							newAspectElement.innerHTML = '+ aspect';
+							newAspectElement.onclick = onAddAspectButtonClick;
+							linkViewQ.appendChild(newAspectElement);
+							linkViewQ.appendChild(document.createElement('br'));
 						}
 						else
 						{
@@ -193,6 +223,21 @@
 						concreteNodeElement.correspondingTreeNode = treeNode;
 						concreteNodeElement.onchange = onNodeContentChange;
 						linkViewQ.appendChild(concreteNodeElement);
+
+						var concreteNodeAddParent = document.createElement('button');
+						concreteNodeAddParent.innerHTML = '+ parent';
+						concreteNodeAddParent.title = nodeControl.getId();
+						concreteNodeAddParent.onclick = onAddParentClick;
+						linkViewQ.appendChild(concreteNodeAddParent);
+						linkViewQ.appendChild(document.createElement('br'));
+
+						var concreteNodeIdElement = document.createElement('input');
+						concreteNodeIdElement.type = 'text';
+						concreteNodeIdElement.value = nodeControl.getId();
+						concreteNodeIdElement.disabled = true;
+						concreteNodeIdElement.readonly = true;
+						concreteNodeIdElement.style.width = '210px';
+						linkViewQ.appendChild(concreteNodeIdElement);
 					}
 				}
 
@@ -257,6 +302,7 @@
 				<div id="source">
 					<h4>JSON Frame Source</h4>
 					<textarea id="frameSource">Place your Frame here.</textarea>
+					<br>
 					<button onclick="onClickLoadFrame(document.getElementById('frameSource'), 2, null, document.getElementById('infovis'));">
 						Load Frame
 					</button>
@@ -267,10 +313,10 @@
 					<h4>New node</h4>
 					<div id="newNode">
 						<input id="newNodeName" type="text">
-						<button onclick="onClickAddNode(document.getElementById('newNodeName'));">add</button>
+						<button onclick="onClickAddNode(document.getElementById('newNodeName'));">create</button>
 					</div>
 
-					<h4>Link Aspects</h4>
+					<h4>Current node</h4>
 					<div id="linkView"></div>
 				</div>
 			</div>
