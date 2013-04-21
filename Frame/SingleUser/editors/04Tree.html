@@ -37,6 +37,11 @@
 				frameControl = new FrameControl(frame);
 			}
 
+			function saveFrame()
+			{
+				return frameControl.getCode();
+			}
+
 			function SpacetreeDataGenerator()
 			{
 				function SpacetreeNode(initUuid, initName, initData)
@@ -182,6 +187,11 @@
 				viewFrame(levelsToShow, selection, infovis);
 			}
 
+			function onClickSaveFrame(destination)
+			{
+				destination.value = saveFrame();
+			}
+
 			function onLoadBody()
 			{
 				function gup( name )
@@ -216,6 +226,9 @@
 					<textarea id="frameSource">Place your Frame here.</textarea>
 					<button onclick="onClickLoadFrame(document.getElementById('frameSource'), 2, null, document.getElementById('infovis'));">
 						Load Frame
+					</button>
+					<button onclick="onClickSaveFrame(document.getElementById('frameSource'));">
+						Save Frame
 					</button>
 					<h4>Link Aspects:</h4>
 					<div id="linkView"></div>

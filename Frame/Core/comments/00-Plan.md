@@ -8,7 +8,7 @@ Tactical plans of Jagat implementation.
 		2.4+ Use simple node-link structure for frame core.
 		2.5: SingleUser implementation:
 			2.5.1. Think about proper place of tests: SingleUser or Core folder.
-			2.5.2. Basic frame views:
+			2.5.2: Basic frame views:
 				2.5.2.1+ Text.
 				2.5.2.2+ Blocks.
 				2.5.2.3+ List.
@@ -16,13 +16,13 @@ Tactical plans of Jagat implementation.
 					2.5.2.4.1+ Working prototype.
 					2.5.2.4.2+ Link aspects representation.
 					2.5.2.4.3+ Spawn new Tree View for selected aspect exploring.
-					2.5.2.4.4: Dynamic control for levels deepness and node config.
-					2.5.2.4.5. Reloading Frame from JSON by button without page refresh.
+					2.5.2.4.4+ Reloading Frame from JSON by button without page refresh.
+					2.5.2.4.4. Realtime editing for graph config.
 				2.5.2.5. Flow.
-			2.5.3. Basic frame editors:
-				2.5.3.1. Tree.
-					2.5.3.1.1. Save Frame.
-					2.5.3.1.2. Change node.content.
+			2.5.3: Basic frame editors:
+				2.5.3.1: Tree.
+					2.5.3.1.1+ Save Frame.
+					2.5.3.1.2: Change node.content.
 					2.5.3.1.3. Add Node.
 					2.5.3.1.4. Add Link.
 					2.5.3.1.5. Add Aspect.
