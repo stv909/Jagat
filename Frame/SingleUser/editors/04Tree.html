@@ -242,13 +242,20 @@
 					onClickLoadFrame(sourceElement, levelsToShowParameter, selectionParameter, infovis);
 				}
 			}
+
+			function onClickAddNode(contentSource)
+			{
+				var newNodeId = frameControl.add();
+				var newNodeControl = frameControl.getElement(newNodeId);
+				newNodeControl.setContent(contentSource.value);
+			}
 		</script>
 	</head>
 	<body onload='onLoadBody();'>
 		<div id="container">
 			<div id="left-container">
 				<div id="source">
-					<h4>JSON Frame Source:</h4>
+					<h4>JSON Frame Source</h4>
 					<textarea id="frameSource">Place your Frame here.</textarea>
 					<button onclick="onClickLoadFrame(document.getElementById('frameSource'), 2, null, document.getElementById('infovis'));">
 						Load Frame
@@ -256,7 +263,14 @@
 					<button onclick="onClickSaveFrame(document.getElementById('frameSource'));">
 						Save Frame
 					</button>
-					<h4>Link Aspects:</h4>
+
+					<h4>New node</h4>
+					<div id="newNode">
+						<input id="newNodeName" type="text">
+						<button onclick="onClickAddNode(document.getElementById('newNodeName'));">add</button>
+					</div>
+
+					<h4>Link Aspects</h4>
 					<div id="linkView"></div>
 				</div>
 			</div>
