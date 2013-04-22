@@ -122,11 +122,11 @@
 				function callbackSelectedTreeNode(treeNode)
 				{
 					var linkView = document.getElementById('linkView');
-					var deleteNodeButton = document.getElementById('deleteNode');
-					var deleteLinkButton = document.getElementById('deleteLink');
+					var removeNodeButton = document.getElementById('removeNode');
+					var removeLinkButton = document.getElementById('removeLink');
 					linkView.innerHTML = '';
-					deleteNodeButton.disabled = true;
-					deleteLinkButton.disabled = true;
+					removeNodeButton.disabled = true;
+					removeLinkButton.disabled = true;
 
 					var selectedNodeId = treeNode.data.nodeUuid;
 					var parentNodeId = treeNode.data.parentNodeUuid;
@@ -176,6 +176,15 @@
 							linkControl.add(aspectId);
 						}
 					}
+					function onRemoveAspectButtonClick()
+					{
+						var abstractId = document.getElementById('linkParentNodeElement').title;
+						var concreteId = document.getElementById('linkChildNodeElement').title;
+						var linkAspectId = this.title;
+						var concreteControl = frameControl.getElement(concreteId);
+						var linkControl = concreteControl.getElement(abstractId);
+						linkControl.remove(linkAspectId);
+					}
 					function onNodeContentChange()
 					{
 						var editNodeControl = frameControl.getElement(this.title);
@@ -189,7 +198,7 @@
 
 					if (parentNodeId !== uuid.empty)
 					{
-						deleteLinkButton.disabled = false;
+						removeLinkButton.disabled = false;
 						var parentNodeControl = frameControl.getElement(parentNodeId);
 
 						var abstractNodeElement = document.createElement('input');
@@ -221,6 +230,13 @@
 								aspectElement.href = 'javascript:void(0);';
 								aspectElement.onclick = onAspectButtonClick;
 								linkViewQ.appendChild(aspectElement);
+
+								var removeAspectElement = document.createElement('button');
+								removeAspectElement.innerHTML = '- aspect';
+								removeAspectElement.title = aspectControl.getId();
+								removeAspectElement.onclick = onRemoveAspectButtonClick;
+								linkViewQ.appendChild(removeAspectElement);
+
 								linkViewQ.appendChild(document.createElement('br'));
 							}
 							var newAspectElement = document.createElement('button');
@@ -239,7 +255,7 @@
 
 					if (selectedNodeId !== uuid.empty)
 					{
-						deleteNodeButton.disabled = false;
+						removeNodeButton.disabled = false;
 
 						var concreteNodeElement = document.createElement('input');
 						concreteNodeElement.id = 'linkChildNodeElement';
@@ -321,13 +337,13 @@
 				newNodeControl.setContent(contentSource.value);
 			}
 
-			function onClickDeleteNode()
+			function onClickRemoveNode()
 			{
 				var nodeId = document.getElementById('linkChildNodeElement').title;
 				frameControl.remove(nodeId);
 			}
 
-			function onClickDeleteLink()
+			function onClickRemoveLink()
 			{
 				var nodeId = document.getElementById('linkChildNodeElement').title;
 				var linkId = document.getElementById('linkParentNodeElement').title;
@@ -358,8 +374,8 @@
 
 					<h4>
 						Current node
-						<button id="deleteNode" onclick="onClickDeleteNode();" disabled>- node</button>
-						<button id="deleteLink" onclick="onClickDeleteLink();" disabled>- link</button>
+						<button id="removeNode" onclick="onClickRemoveNode();" disabled>- node</button>
+						<button id="removeLink" onclick="onClickRemoveLink();" disabled>- link</button>
 					</h4>
 					<div id="linkView"></div>
 				</div>
