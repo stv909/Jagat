@@ -141,18 +141,35 @@
 					}
 					function onAddChildClick()
 					{
+						var abstractId = document.getElementById('linkParentNodeElement').title;
 						var childId = window.prompt('Enter nodeId of child:', null);
-						// TODO: implement
+						if (childId)
+						{
+							var childControl = frameControl.getElement(childId);
+							childControl.add(abstractId);
+						}
 					}
 					function onAddParentClick()
 					{
+						var concreteId = document.getElementById('linkChildNodeElement').title;
 						var parentId = window.prompt('Enter nodeId of parent:', null);
-						// TODO: implement
+						if (parentId)
+						{
+							var concreteControl = frameControl.getElement(concreteId);
+							concreteControl.add(parentId);
+						}
 					}
 					function onAddAspectButtonClick()
 					{
+						var abstractId = document.getElementById('linkParentNodeElement').title;
+						var concreteId = document.getElementById('linkChildNodeElement').title;
 						var aspectId = window.prompt('Enter nodeId of aspect:', null);
-						// TODO: implement
+						if (aspectId)
+						{
+							var concreteControl = frameControl.getElement(concreteId);
+							var linkControl = concreteControl.getElement(abstractId);
+							linkControl.add(aspectId);
+						}
 					}
 
 					if (parentNodeId !== uuid.empty)
@@ -160,6 +177,7 @@
 						var parentNodeControl = frameControl.getElement(parentNodeId);
 
 						var abstractNodeElement = document.createElement('input');
+						abstractNodeElement.id = 'linkParentNodeElement';
 						abstractNodeElement.type = 'text';
 						abstractNodeElement.value = parentNodeControl.getContent();
 						abstractNodeElement.title = parentNodeControl.getId();
@@ -217,6 +235,7 @@
 						}
 
 						var concreteNodeElement = document.createElement('input');
+						concreteNodeElement.id = 'linkChildNodeElement';
 						concreteNodeElement.type = 'text';
 						concreteNodeElement.value = nodeControl.getContent();
 						concreteNodeElement.title = nodeControl.getId();

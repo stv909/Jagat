@@ -23,13 +23,15 @@ Tactical plans of Jagat implementation.
 				2.5.3.1: Tree.
 					2.5.3.1.1+ Save Frame.
 					2.5.3.1.2+ Change node.content.
-					2.5.3.1.3: Add Node.
-					2.5.3.1.4. Add Link.
-					2.5.3.1.5. Add Aspect.
-					2.5.3.1.6. Delete Node.
-					2.5.3.1.7. Delete Link.
-					2.5.3.1.8. Delete Aspect.
-					2.5.3.1.9. View changes in realtime.
+					2.5.3.1.3+ Add Node.
+					2.5.3.1.4+ Add Link.
+					2.5.3.1.5+ Add Aspect.
+					2.5.3.1.6: Delete Node.
+					2.5.3.1.7: Delete Link.
+					2.5.3.1.8: Delete Aspect.
+					2.5.3.1.9. Search Node by Id.
+					2.5.3.1.10. Search Node by Content.
+					2.5.3.1.11. View changes in realtime.
 				2.5.3.2. Flow.
 				2.5.3.3. Text.
 				2.5.3.4. Blocks.
