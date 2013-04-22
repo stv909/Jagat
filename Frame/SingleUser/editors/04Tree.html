@@ -122,7 +122,12 @@
 				function callbackSelectedTreeNode(treeNode)
 				{
 					var linkView = document.getElementById('linkView');
+					var deleteNodeButton = document.getElementById('deleteNode');
+					var deleteLinkButton = document.getElementById('deleteLink');
 					linkView.innerHTML = '';
+					deleteNodeButton.disabled = true;
+					deleteLinkButton.disabled = true;
+
 					var selectedNodeId = treeNode.data.nodeUuid;
 					var parentNodeId = treeNode.data.parentNodeUuid;
 					var uuid = new Uuid();
@@ -171,9 +176,20 @@
 							linkControl.add(aspectId);
 						}
 					}
+					function onNodeContentChange()
+					{
+						var editNodeControl = frameControl.getElement(this.title);
+						if (editNodeControl)
+						{
+							editNodeControl.setContent(this.value);
+							this.correspondingTreeNode.name = editNodeControl.getContent();
+							// TODO: make this change visible in spacetree in realtime.
+						}
+					}
 
 					if (parentNodeId !== uuid.empty)
 					{
+						deleteLinkButton.disabled = false;
 						var parentNodeControl = frameControl.getElement(parentNodeId);
 
 						var abstractNodeElement = document.createElement('input');
@@ -223,16 +239,7 @@
 
 					if (selectedNodeId !== uuid.empty)
 					{
-						function onNodeContentChange()
-						{
-							var editNodeControl = frameControl.getElement(this.title);
-							if (editNodeControl)
-							{
-								editNodeControl.setContent(this.value);
-								this.correspondingTreeNode.name = editNodeControl.getContent();
-								// TODO: make this change visible in spacetree in realtime.
-							}
-						}
+						deleteNodeButton.disabled = false;
 
 						var concreteNodeElement = document.createElement('input');
 						concreteNodeElement.id = 'linkChildNodeElement';
@@ -313,6 +320,20 @@
 				var newNodeControl = frameControl.getElement(newNodeId);
 				newNodeControl.setContent(contentSource.value);
 			}
+
+			function onClickDeleteNode()
+			{
+				var nodeId = document.getElementById('linkChildNodeElement').title;
+				frameControl.remove(nodeId);
+			}
+
+			function onClickDeleteLink()
+			{
+				var nodeId = document.getElementById('linkChildNodeElement').title;
+				var linkId = document.getElementById('linkParentNodeElement').title;
+				var nodeControl = frameControl.getElement(nodeId);
+				nodeControl.remove(linkId);
+			}
 		</script>
 	</head>
 	<body onload='onLoadBody();'>
@@ -332,10 +353,14 @@
 					<h4>New node</h4>
 					<div id="newNode">
 						<input id="newNodeName" type="text">
-						<button onclick="onClickAddNode(document.getElementById('newNodeName'));">create</button>
+						<button onclick="onClickAddNode(document.getElementById('newNodeName'));">+ node</button>
 					</div>
 
-					<h4>Current node</h4>
+					<h4>
+						Current node
+						<button id="deleteNode" onclick="onClickDeleteNode();" disabled>- node</button>
+						<button id="deleteLink" onclick="onClickDeleteLink();" disabled>- link</button>
+					</h4>
 					<div id="linkView"></div>
 				</div>
 			</div>
