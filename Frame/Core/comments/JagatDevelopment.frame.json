@@ -50,6 +50,11 @@
 					"aspects": {
 						"1343f6c3-fa18-4ed3-bb73-ace2f510db87": true
 					}
+				},
+				"86e45267-f235-497f-ad4d-19ea2249c4ac": {
+					"aspects": {
+						"46c52ca2-0a8f-4da0-a5f0-03413082caf0": true
+					}
 				}
 			},
 			"content": "Figure out place for unit tests."
@@ -172,9 +177,198 @@
 					"aspects": {
 						"1343f6c3-fa18-4ed3-bb73-ace2f510db87": true
 					}
+				},
+				"86e45267-f235-497f-ad4d-19ea2249c4ac": {
+					"aspects": {
+						"46c52ca2-0a8f-4da0-a5f0-03413082caf0": true
+					}
 				}
 			},
 			"content": "Use NPM for iterative self-development."
+		},
+		"abf16c14-4a91-4d4a-b3a2-3198b26d7ffb": {
+			"links": {
+				"c754ace4-755e-4f5a-92c3-e9a35e9e2fde": {
+					"aspects": {}
+				}
+			},
+			"content": "Conception"
+		},
+		"e6848286-8572-4eb2-aa5d-549dd494f58f": {
+			"links": {
+				"c754ace4-755e-4f5a-92c3-e9a35e9e2fde": {
+					"aspects": {}
+				}
+			},
+			"content": "Functionality"
+		},
+		"45ce0e89-a828-4aac-98c0-02f5c553655d": {
+			"links": {
+				"4f1d950f-b96a-4ce2-b830-aedf65b2a453": {
+					"aspects": {}
+				}
+			},
+			"content": "Uuid"
+		},
+		"4f1d950f-b96a-4ce2-b830-aedf65b2a453": {
+			"links": {
+				"0c7183d9-b362-4a1a-a4f8-3846111a1aca": {
+					"aspects": {}
+				}
+			},
+			"content": "Node"
+		},
+		"ec8c1e27-dd40-4dd3-821d-0543e8c32cc6": {
+			"links": {
+				"4f1d950f-b96a-4ce2-b830-aedf65b2a453": {
+					"aspects": {}
+				}
+			},
+			"content": "Link"
+		},
+		"92092de2-c3e0-4a53-a781-2e61f07bd1e9": {
+			"links": {
+				"ec8c1e27-dd40-4dd3-821d-0543e8c32cc6": {
+					"aspects": {}
+				}
+			},
+			"content": "Aspect"
+		},
+		"0c7183d9-b362-4a1a-a4f8-3846111a1aca": {
+			"links": {
+				"abf16c14-4a91-4d4a-b3a2-3198b26d7ffb": {
+					"aspects": {}
+				}
+			},
+			"content": "Frame"
+		},
+		"e033f224-473b-493e-86bf-9ebf6d155aec": {
+			"links": {
+				"e6848286-8572-4eb2-aa5d-549dd494f58f": {
+					"aspects": {}
+				}
+			},
+			"content": "Control"
+		},
+		"c415f1f7-6fcc-4d01-b487-c62817c23407": {
+			"links": {
+				"e6848286-8572-4eb2-aa5d-549dd494f58f": {
+					"aspects": {}
+				}
+			},
+			"content": "Processor"
+		},
+		"ca32220d-d3a3-4c27-9022-74f5b80d3c10": {
+			"links": {
+				"e6848286-8572-4eb2-aa5d-549dd494f58f": {
+					"aspects": {}
+				}
+			},
+			"content": "Utility"
+		},
+		"0e137e44-5877-45cc-a114-a2c0af0a7a34": {
+			"links": {
+				"1264c0d6-b09a-42df-a3b4-bcd1fc6f0885": {
+					"aspects": {}
+				}
+			},
+			"content": "Single User"
+		},
+		"b271d9c6-c743-40a2-93d0-6123dfb3c274": {
+			"links": {
+				"1264c0d6-b09a-42df-a3b4-bcd1fc6f0885": {
+					"aspects": {}
+				}
+			},
+			"content": "Multiuser User"
+		},
+		"1264c0d6-b09a-42df-a3b4-bcd1fc6f0885": {
+			"links": {
+				"f790ea2a-f70e-4102-b73f-2a3497be0713": {
+					"aspects": {}
+				}
+			},
+			"content": "Storage"
+		},
+		"d12b102a-dbdc-481f-93c7-647c9e1084ee": {
+			"links": {
+				"b271d9c6-c743-40a2-93d0-6123dfb3c274": {
+					"aspects": {}
+				}
+			},
+			"content": "Blocking DataBase"
+		},
+		"32e5c34a-df20-4243-bb53-76b445806515": {
+			"links": {
+				"b271d9c6-c743-40a2-93d0-6123dfb3c274": {
+					"aspects": {}
+				}
+			},
+			"content": "Operational Transformations"
+		},
+		"28ced398-b8eb-46b7-b64d-8caacb7039a3": {
+			"links": {
+				"0e137e44-5877-45cc-a114-a2c0af0a7a34": {
+					"aspects": {}
+				}
+			},
+			"content": "JSON"
+		},
+		"534985a6-b641-4fa8-99c6-ebadf239571e": {
+			"links": {
+				"84e5411d-d5cb-4333-bb1e-398c9b02c535": {
+					"aspects": {}
+				}
+			},
+			"content": "Team"
+		},
+		"86e45267-f235-497f-ad4d-19ea2249c4ac": {
+			"links": {
+				"07b35831-9afc-4edb-a0dc-40deeab0d558": {
+					"aspects": {}
+				}
+			},
+			"content": "Stanislav Rodionov"
+		},
+		"a3acde21-f03b-4bf9-87f0-8ee94d3b7145": {
+			"links": {
+				"07b35831-9afc-4edb-a0dc-40deeab0d558": {
+					"aspects": {}
+				}
+			},
+			"content": "Maxim Koverdyaev"
+		},
+		"a97c3ecd-cf38-4610-96bc-887d5c834ad4": {
+			"links": {
+				"3cb92eec-f399-4675-beb4-8d1a74cbbc2a": {
+					"aspects": {}
+				}
+			},
+			"content": "Design"
+		},
+		"07b35831-9afc-4edb-a0dc-40deeab0d558": {
+			"links": {
+				"534985a6-b641-4fa8-99c6-ebadf239571e": {
+					"aspects": {}
+				}
+			},
+			"content": "Members"
+		},
+		"9801a304-6079-4b4d-8a82-5fd6339d9250": {
+			"links": {
+				"534985a6-b641-4fa8-99c6-ebadf239571e": {
+					"aspects": {}
+				}
+			},
+			"content": "Duties"
+		},
+		"46c52ca2-0a8f-4da0-a5f0-03413082caf0": {
+			"links": {
+				"9801a304-6079-4b4d-8a82-5fd6339d9250": {
+					"aspects": {}
+				}
+			},
+			"content": "Responsibility"
 		}
 	}
 }

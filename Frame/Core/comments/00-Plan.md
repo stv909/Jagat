@@ -1,7 +1,7 @@
 Tactical plans of Jagat implementation.
 
 	1+ Implement demos of union of these technologies: C9, Direct Text Editor, NodeJS, ShareJS, ThreeJS, Frame.
-!	2: Implement abstract Frame conception:
+#	2: Implement abstract Frame conception:
 		2.1+ Objects conception.
 		2.2+ Objects implementation.
 		2.3+ Module test suit.

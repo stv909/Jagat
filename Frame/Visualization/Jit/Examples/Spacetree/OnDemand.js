@@ -21,7 +21,7 @@ var Log = {
     if (!this.elem)
       this.elem = document.getElementById('log');
     this.elem.innerHTML = text;
-    this.elem.style.left = '330px';
+    this.elem.style.left = '370px';
   }
 };
 

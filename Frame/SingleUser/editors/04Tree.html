@@ -146,12 +146,24 @@
 					}
 					function onAddChildClick()
 					{
-						var abstractId = document.getElementById('linkParentNodeElement').title;
+						var abstractId = this.title;
 						var childId = window.prompt('Enter nodeId of child:', null);
 						if (childId)
 						{
 							var childControl = frameControl.getElement(childId);
 							childControl.add(abstractId);
+						}
+					}
+					function onAddNewChildClick()
+					{
+						var abstractId = this.title;
+						var childContent = window.prompt('Enter node content of child:', null);
+						if (childContent)
+						{
+							var newChildId = frameControl.add();
+							var newChildControl = frameControl.getElement(newChildId);
+							newChildControl.setContent(childContent);
+							newChildControl.add(abstractId);
 						}
 					}
 					function onAddParentClick()
@@ -211,10 +223,11 @@
 						linkViewQ.appendChild(abstractNodeElement);
 
 						var abstractNodeAddConcrete = document.createElement('button');
-						abstractNodeAddConcrete.innerHTML = '+ child';
+						abstractNodeAddConcrete.innerHTML = '<- child';
 						abstractNodeAddConcrete.title = parentNodeControl.getId();
 						abstractNodeAddConcrete.onclick = onAddChildClick;
 						linkViewQ.appendChild(abstractNodeAddConcrete);
+
 						linkViewQ.appendChild(document.createElement('br'));
 
 						var linkControl = nodeControl.getElement(parentNodeId);
@@ -240,7 +253,7 @@
 								linkViewQ.appendChild(document.createElement('br'));
 							}
 							var newAspectElement = document.createElement('button');
-							newAspectElement.innerHTML = '+ aspect';
+							newAspectElement.innerHTML = '<- aspect';
 							newAspectElement.onclick = onAddAspectButtonClick;
 							linkViewQ.appendChild(newAspectElement);
 							linkViewQ.appendChild(document.createElement('br'));
@@ -267,10 +280,16 @@
 						linkViewQ.appendChild(concreteNodeElement);
 
 						var concreteNodeAddParent = document.createElement('button');
-						concreteNodeAddParent.innerHTML = '+ parent';
+						concreteNodeAddParent.innerHTML = '<- parent';
 						concreteNodeAddParent.title = nodeControl.getId();
 						concreteNodeAddParent.onclick = onAddParentClick;
 						linkViewQ.appendChild(concreteNodeAddParent);
+
+						var concreteNodeAddNewConcrete = document.createElement('button');
+						concreteNodeAddNewConcrete.innerHTML = '+ child';
+						concreteNodeAddNewConcrete.title = nodeControl.getId();
+						concreteNodeAddNewConcrete.onclick = onAddNewChildClick;
+						linkViewQ.appendChild(concreteNodeAddNewConcrete);
 						linkViewQ.appendChild(document.createElement('br'));
 
 						var concreteNodeIdElement = document.createElement('input');
@@ -278,7 +297,7 @@
 						concreteNodeIdElement.value = nodeControl.getId();
 						concreteNodeIdElement.disabled = true;
 						concreteNodeIdElement.readonly = true;
-						concreteNodeIdElement.style.width = '230px';
+						concreteNodeIdElement.style.width = '260px';
 						linkViewQ.appendChild(concreteNodeIdElement);
 					}
 				}
@@ -369,7 +388,9 @@
 					<h4>New node</h4>
 					<div id="newNode">
 						<input id="newNodeName" type="text">
-						<button onclick="onClickAddNode(document.getElementById('newNodeName'));">+ node</button>
+						<button onclick="onClickAddNode(document.getElementById('newNodeName'));">
+							+ node
+						</button>
 					</div>
 
 					<h4>
