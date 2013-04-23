@@ -19,6 +19,7 @@
 		<script type="text/javascript" charset="utf-8">
 			var frame = null;
 			var frameControl = null;
+			var defaultLevelsToShow = 512;
 
 			function loadFrame(frameJSON)
 			{
@@ -117,7 +118,7 @@
 				};
 			}
 
-			function viewFrame(levelsToShow, selection, infovis)
+			function viewFrame(selection, infovis)
 			{
 				function callbackSelectedTreeNode(treeNode)
 				{
@@ -141,7 +142,7 @@
 							document.location.href +
 							'?frame=' + encodeURIComponent(frameControl.getCode(true)) +
 							'&selection=' + this.title +
-							'&levels=32000';
+							'&levels=' + defaultLevelsToShow;
 						window.open(pageAspectView);
 					}
 					function onAddChildClick()
@@ -304,18 +305,18 @@
 
 				var spacetreeDataGenerator = new SpacetreeDataGenerator();
 				init(
-					infovis, levelsToShow,
+					infovis, defaultLevelsToShow,
 					spacetreeDataGenerator.create(), spacetreeDataGenerator.expand, callbackSelectedTreeNode,
 					selection
 				);
 			}
 
-			function onClickLoadFrame(source, levelsToShow, selection, infovis)
+			function onClickLoadFrame(source, selection, infovis)
 			{
 				loadFrame(source.value);
 				source.value = '';
 				infovis.innerHTML = '';
-				viewFrame(levelsToShow, selection, infovis);
+				viewFrame(selection, infovis);
 			}
 
 			function onClickSaveFrame(destination)
@@ -342,10 +343,25 @@
 					frameParameter = decodeURIComponent(frameParameter);
 					var sourceElement = document.getElementById('frameSource');
 					sourceElement.value = frameParameter;
-					var levelsToShowParameter = gup('levels');
 					var selectionParameter = gup('selection');
 					var infovis = document.getElementById('infovis');
-					onClickLoadFrame(sourceElement, levelsToShowParameter, selectionParameter, infovis);
+					onClickLoadFrame(sourceElement, selectionParameter, infovis);
+				}
+			}
+
+			function onSearchNodeByIdClick(nodeIdSource)
+			{
+				var nodeControl = frameControl.getElement(nodeIdSource.value);
+				if (nodeControl)
+				{
+					//set selection
+					spacetreeSelection.set(nodeControl.getId());
+				    //emulate a click on the root node
+					st.onClick(st.root);
+				}
+				else
+				{
+					alert('Node with id = ' + nodeIdSource.value + 'is not found in this Frame.' );
 				}
 			}
 
@@ -378,7 +394,7 @@
 					<h4>JSON Frame Source</h4>
 					<textarea id="frameSource">Place your Frame here.</textarea>
 					<br>
-					<button onclick="onClickLoadFrame(document.getElementById('frameSource'), 2, null, document.getElementById('infovis'));">
+					<button onclick="onClickLoadFrame(document.getElementById('frameSource'), null, document.getElementById('infovis'));">
 						Load Frame
 					</button>
 					<button onclick="onClickSaveFrame(document.getElementById('frameSource'));">
@@ -392,7 +408,13 @@
 							+ node
 						</button>
 					</div>
-
+					<h4>Search node</h4>
+					<div id="searchNode">
+						<input id="searchNodeId" type="text">
+						<button onclick="onSearchNodeByIdClick(document.getElementById('searchNodeId'));">
+							search by nodeId
+						</button>
+					</div>
 					<h4>
 						Current node
 						<button id="removeNode" onclick="onClickRemoveNode();" disabled>- node</button>

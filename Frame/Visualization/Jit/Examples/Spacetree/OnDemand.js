@@ -25,11 +25,33 @@ var Log = {
   }
 };
 
+function SpacetreeSelection()
+{
+	this.unhandledSelection = null;
+	this.unhandledRootCounter = 0;
+	this.unhandledSelectionCounter = 0;
+
+	this.reset = function()
+	{
+		this.unhandledSelection = null;
+		this.unhandledRootCounter = 0;
+		this.unhandledSelectionCounter = 0;
+	};
+
+	this.set = function(selection)
+	{
+		this.unhandledSelection = selection;
+		this.unhandledRootCounter = 1;
+		this.unhandledSelectionCounter = 2;
+	};
+}
+
+var st = null;
+var spacetreeSelection = new SpacetreeSelection();
+
 function init(infovis, initLevelsToShow, initNodes, getSubtree, callbackSelectedTreeNode, selection)
 {
-	var unhandledSelection = null;
-	var unhandledRootCounter = 0;
-	var unhandledSelectionCounter = 0;
+	spacetreeSelection.reset();
 
 	function getTreeNodeByFrameNodyId(frameNodeId)
 	{
@@ -68,7 +90,7 @@ function init(infovis, initLevelsToShow, initNodes, getSubtree, callbackSelected
 
     //init Spacetree
     //Create a new ST instance
-    var st = new $jit.ST({
+    st = new $jit.ST({
         'injectInto': infovis,
 		//set default orientation
         orientation: 'top',
@@ -126,17 +148,19 @@ function init(infovis, initLevelsToShow, initNodes, getSubtree, callbackSelected
 
         onAfterCompute: function(){
             Log.write("done");
-			if (unhandledRootCounter > 0)
+
+            // handle selection
+			if (spacetreeSelection.unhandledRootCounter > 0)
 			{
-				--unhandledRootCounter;
+				spacetreeSelection.unhandledRootCounter--;
 				st.onClick(st.root);
 			}
-			else if (unhandledSelection && unhandledSelectionCounter > 0)
+			else if (spacetreeSelection.unhandledSelection && spacetreeSelection.unhandledSelectionCounter > 0)
             {
-				var selectedTreeNode = getTreeNodeByFrameNodyId(unhandledSelection);
-				if (--unhandledSelectionCounter <= 0)
+				var selectedTreeNode = getTreeNodeByFrameNodyId(spacetreeSelection.unhandledSelection);
+				if (--(spacetreeSelection.unhandledSelectionCounter) <= 0)
 				{
-					unhandledSelection = null;
+					spacetreeSelection.unhandledSelection = null;
 				}
 				if (selectedTreeNode)
 				{
@@ -218,10 +242,9 @@ function init(infovis, initLevelsToShow, initNodes, getSubtree, callbackSelected
     st.loadJSON(initNodes);
     //compute node positions and layout
     st.compute();
+	//set selection
+	spacetreeSelection.set(selection);
     //emulate a click on the root node.
-    unhandledSelection = selection;
-    unhandledRootCounter = 1;
-    unhandledSelectionCounter = 2;
 	st.onClick(st.root);
 
     //end
