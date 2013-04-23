@@ -1,0 +1,180 @@
+{
+	"nodes": {
+		"84e5411d-d5cb-4333-bb1e-398c9b02c535": {
+			"links": {},
+			"content": "Jagat"
+		},
+		"abc52d6a-cfa5-40ca-bd29-d6574b07f45c": {
+			"links": {
+				"3cb92eec-f399-4675-beb4-8d1a74cbbc2a": {
+					"aspects": {}
+				}
+			},
+			"content": "Development"
+		},
+		"1343f6c3-fa18-4ed3-bb73-ace2f510db87": {
+			"links": {
+				"3cb92eec-f399-4675-beb4-8d1a74cbbc2a": {
+					"aspects": {}
+				}
+			},
+			"content": "Plan"
+		},
+		"c754ace4-755e-4f5a-92c3-e9a35e9e2fde": {
+			"links": {
+				"f790ea2a-f70e-4102-b73f-2a3497be0713": {
+					"aspects": {}
+				}
+			},
+			"content": "Core"
+		},
+		"8a79a7b0-9129-4b8b-a938-3e4f045b3238": {
+			"links": {
+				"f790ea2a-f70e-4102-b73f-2a3497be0713": {
+					"aspects": {}
+				}
+			},
+			"content": "View"
+		},
+		"07c35afd-2603-4e67-9eff-f31e54fc6b32": {
+			"links": {
+				"f790ea2a-f70e-4102-b73f-2a3497be0713": {
+					"aspects": {}
+				}
+			},
+			"content": "Editor"
+		},
+		"d71c18e9-887e-4a4b-a724-d85c7d51a48d": {
+			"links": {
+				"c754ace4-755e-4f5a-92c3-e9a35e9e2fde": {
+					"aspects": {
+						"1343f6c3-fa18-4ed3-bb73-ace2f510db87": true
+					}
+				}
+			},
+			"content": "Figure out place for unit tests."
+		},
+		"3cb92eec-f399-4675-beb4-8d1a74cbbc2a": {
+			"links": {
+				"84e5411d-d5cb-4333-bb1e-398c9b02c535": {
+					"aspects": {}
+				}
+			},
+			"content": "Activity"
+		},
+		"f790ea2a-f70e-4102-b73f-2a3497be0713": {
+			"links": {
+				"84e5411d-d5cb-4333-bb1e-398c9b02c535": {
+					"aspects": {}
+				}
+			},
+			"content": "Modules"
+		},
+		"18884aa5-8bd4-4aa7-8072-a5b4f6ac703b": {
+			"links": {
+				"3cb92eec-f399-4675-beb4-8d1a74cbbc2a": {
+					"aspects": {}
+				}
+			},
+			"content": "Test"
+		},
+		"98f21bea-b953-4e80-887a-4a6a527982fc": {
+			"links": {
+				"18884aa5-8bd4-4aa7-8072-a5b4f6ac703b": {
+					"aspects": {}
+				}
+			},
+			"content": "Usability"
+		},
+		"82dabe7a-f775-47a4-9579-4cc6ad76e9bd": {
+			"links": {
+				"18884aa5-8bd4-4aa7-8072-a5b4f6ac703b": {
+					"aspects": {}
+				}
+			},
+			"content": "Stability"
+		},
+		"8aee760f-583b-498c-91d3-9d5607fdd288": {
+			"links": {
+				"8a79a7b0-9129-4b8b-a938-3e4f045b3238": {
+					"aspects": {}
+				}
+			},
+			"content": "Text"
+		},
+		"8a9e69b6-cd89-4a09-8b75-73831bc1195b": {
+			"links": {
+				"07c35afd-2603-4e67-9eff-f31e54fc6b32": {
+					"aspects": {}
+				}
+			},
+			"content": "Text"
+		},
+		"61c837ed-4dbe-40f5-94a9-8659321cf993": {
+			"links": {
+				"8a79a7b0-9129-4b8b-a938-3e4f045b3238": {
+					"aspects": {}
+				}
+			},
+			"content": "Blocks"
+		},
+		"3a06197b-eed9-47dd-b7e8-15b272958a08": {
+			"links": {
+				"07c35afd-2603-4e67-9eff-f31e54fc6b32": {
+					"aspects": {}
+				}
+			},
+			"content": "Blocks"
+		},
+		"6ea58515-97b7-4820-b895-0831a89c7f6b": {
+			"links": {
+				"8a79a7b0-9129-4b8b-a938-3e4f045b3238": {
+					"aspects": {}
+				}
+			},
+			"content": "List"
+		},
+		"85e8aaa6-01bd-4436-a8df-a1ce7ff9acbb": {
+			"links": {
+				"8a79a7b0-9129-4b8b-a938-3e4f045b3238": {
+					"aspects": {}
+				}
+			},
+			"content": "Tree"
+		},
+		"44e11667-b0cc-4154-abb5-ff63e7afc5a3": {
+			"links": {
+				"8a79a7b0-9129-4b8b-a938-3e4f045b3238": {
+					"aspects": {}
+				}
+			},
+			"content": "Flow"
+		},
+		"e5e57f22-81b7-4f0d-8bc4-d5541dfaeffd": {
+			"links": {
+				"07c35afd-2603-4e67-9eff-f31e54fc6b32": {
+					"aspects": {}
+				}
+			},
+			"content": "Tree"
+		},
+		"84655387-a6d4-4afb-9f6b-99a8cc90bbec": {
+			"links": {
+				"07c35afd-2603-4e67-9eff-f31e54fc6b32": {
+					"aspects": {}
+				}
+			},
+			"content": "Flow"
+		},
+		"69d4e528-d67f-4bfc-93c7-368818f28ae6": {
+			"links": {
+				"c754ace4-755e-4f5a-92c3-e9a35e9e2fde": {
+					"aspects": {
+						"1343f6c3-fa18-4ed3-bb73-ace2f510db87": true
+					}
+				}
+			},
+			"content": "Use NPM for iterative self-development."
+		}
+	}
+}

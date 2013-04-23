@@ -86,7 +86,7 @@ function init(infovis, initLevelsToShow, initNodes, getSubtree, callbackSelected
         //nodes or edges
         Node: {
             height: 40,
-            width: 60,
+            width: 72,
             //use a custom
             //node rendering function
             type: 'nodeline',
