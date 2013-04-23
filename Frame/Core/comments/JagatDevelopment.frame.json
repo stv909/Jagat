@@ -57,7 +57,7 @@
 					}
 				}
 			},
-			"content": "Figure out place for unit tests."
+			"content": "Place core unit tests in proper folder."
 		},
 		"3cb92eec-f399-4675-beb4-8d1a74cbbc2a": {
 			"links": {
@@ -294,9 +294,14 @@
 			"links": {
 				"b271d9c6-c743-40a2-93d0-6123dfb3c274": {
 					"aspects": {}
+				},
+				"a3acde21-f03b-4bf9-87f0-8ee94d3b7145": {
+					"aspects": {
+						"46c52ca2-0a8f-4da0-a5f0-03413082caf0": true
+					}
 				}
 			},
-			"content": "Blocking DataBase"
+			"content": "Locking DataBase"
 		},
 		"32e5c34a-df20-4243-bb53-76b445806515": {
 			"links": {
@@ -369,6 +374,217 @@
 				}
 			},
 			"content": "Responsibility"
+		},
+		"bf86daea-783c-455b-a773-4c70ab1d67db": {
+			"links": {
+				"28ced398-b8eb-46b7-b64d-8caacb7039a3": {
+					"aspects": {}
+				}
+			},
+			"content": "Local file"
+		},
+		"bfa8b3bb-ab82-4a91-9d45-deee067cc109": {
+			"links": {
+				"28ced398-b8eb-46b7-b64d-8caacb7039a3": {
+					"aspects": {}
+				}
+			},
+			"content": "Web file"
+		},
+		"8add2819-2d72-49dd-91a6-565fcea21eb4": {
+			"links": {
+				"85e8aaa6-01bd-4436-a8df-a1ce7ff9acbb": {
+					"aspects": {
+						"1343f6c3-fa18-4ed3-bb73-ace2f510db87": true
+					}
+				},
+				"86e45267-f235-497f-ad4d-19ea2249c4ac": {
+					"aspects": {
+						"46c52ca2-0a8f-4da0-a5f0-03413082caf0": true
+					}
+				}
+			},
+			"content": "Realtime editing for graph config parameters."
+		},
+		"5a4832d8-9fbf-4f10-b294-54502566b627": {
+			"links": {
+				"e5e57f22-81b7-4f0d-8bc4-d5541dfaeffd": {
+					"aspects": {
+						"1343f6c3-fa18-4ed3-bb73-ace2f510db87": true
+					}
+				}
+			},
+			"content": "Search Node by Id"
+		},
+		"97b55a83-e6f8-4a8a-9ede-9546984ec79f": {
+			"links": {
+				"e5e57f22-81b7-4f0d-8bc4-d5541dfaeffd": {
+					"aspects": {
+						"1343f6c3-fa18-4ed3-bb73-ace2f510db87": true
+					}
+				}
+			},
+			"content": "Spacetree refresh by one click."
+		},
+		"fc9d9e81-adc5-4360-881c-e8991cd9f346": {
+			"links": {
+				"85e8aaa6-01bd-4436-a8df-a1ce7ff9acbb": {
+					"aspects": {
+						"1343f6c3-fa18-4ed3-bb73-ace2f510db87": true
+					}
+				}
+			},
+			"content": "Search Node by Content."
+		},
+		"ae0a214d-b86b-4224-b736-239550ac6978": {
+			"links": {
+				"e5e57f22-81b7-4f0d-8bc4-d5541dfaeffd": {
+					"aspects": {
+						"1343f6c3-fa18-4ed3-bb73-ace2f510db87": true
+					}
+				}
+			},
+			"content": "View changes in realtime."
+		},
+		"a8998ac2-e2d1-498d-b944-84a4fe48b57f": {
+			"links": {
+				"ca32220d-d3a3-4c27-9022-74f5b80d3c10": {
+					"aspects": {}
+				}
+			},
+			"content": "Frame Filter"
+		},
+		"749a664d-b226-49ba-ba0d-53812ea537b2": {
+			"links": {
+				"e033f224-473b-493e-86bf-9ebf6d155aec": {
+					"aspects": {}
+				}
+			},
+			"content": "Frame"
+		},
+		"2b7c5c65-d6c1-446b-8737-78b36cc1ac02": {
+			"links": {
+				"e033f224-473b-493e-86bf-9ebf6d155aec": {
+					"aspects": {}
+				}
+			},
+			"content": "Node"
+		},
+		"38f36caf-b562-46b2-83a5-f578ea2b8f71": {
+			"links": {
+				"e033f224-473b-493e-86bf-9ebf6d155aec": {
+					"aspects": {}
+				}
+			},
+			"content": "Link"
+		},
+		"4601b4f5-e770-469f-9ef8-d013abb43889": {
+			"links": {
+				"e033f224-473b-493e-86bf-9ebf6d155aec": {
+					"aspects": {}
+				}
+			},
+			"content": "Aspect"
+		},
+		"e319f00a-6e58-4ee7-b8d5-d07091894b32": {
+			"links": {
+				"a8998ac2-e2d1-498d-b944-84a4fe48b57f": {
+					"aspects": {
+						"1343f6c3-fa18-4ed3-bb73-ace2f510db87": true
+					}
+				}
+			},
+			"content": "Filter by aspects: turn on/off aspects on the list."
+		},
+		"5b14cc05-e507-4186-b890-d7996ecb2c1b": {
+			"links": {
+				"f790ea2a-f70e-4102-b73f-2a3497be0713": {
+					"aspects": {}
+				}
+			},
+			"content": "Data Access"
+		},
+		"a64f31ec-898e-470f-83ae-1da898aca346": {
+			"links": {
+				"5b14cc05-e507-4186-b890-d7996ecb2c1b": {
+					"aspects": {}
+				}
+			},
+			"content": "User rights management."
+		},
+		"0e534cb1-a6e3-42ab-b66c-f482cb5a1d8d": {
+			"links": {
+				"84e5411d-d5cb-4333-bb1e-398c9b02c535": {
+					"aspects": {}
+				}
+			},
+			"content": "Example Applications"
+		},
+		"3b83db5d-cae2-492b-96d2-2dc26df5836f": {
+			"links": {
+				"0e534cb1-a6e3-42ab-b66c-f482cb5a1d8d": {
+					"aspects": {}
+				}
+			},
+			"content": "Notes Manager"
+		},
+		"bc7ee0bb-5430-495b-a0c0-4aad6d682457": {
+			"links": {
+				"0e534cb1-a6e3-42ab-b66c-f482cb5a1d8d": {
+					"aspects": {}
+				}
+			},
+			"content": "IM Client"
+		},
+		"09b5036e-cb1d-4c8e-9083-eb45c5226c96": {
+			"links": {
+				"0e534cb1-a6e3-42ab-b66c-f482cb5a1d8d": {
+					"aspects": {}
+				}
+			},
+			"content": "Coding System"
+		},
+		"f85186be-787d-4494-a7fa-4768105a8886": {
+			"links": {
+				"0e534cb1-a6e3-42ab-b66c-f482cb5a1d8d": {
+					"aspects": {}
+				}
+			},
+			"content": "Content Pipeline Toolkit"
+		},
+		"5dd7f204-141f-4663-ae55-6888aa90fd81": {
+			"links": {
+				"0e534cb1-a6e3-42ab-b66c-f482cb5a1d8d": {
+					"aspects": {}
+				}
+			},
+			"content": "3D Modelling Tool"
+		},
+		"da75de66-b45c-4654-844a-4c6c44a1edd6": {
+			"links": {
+				"e5e57f22-81b7-4f0d-8bc4-d5541dfaeffd": {
+					"aspects": {
+						"98f21bea-b953-4e80-887a-4a6a527982fc": true
+					}
+				}
+			},
+			"content": "Describe real objective fields."
+		},
+		"983058a6-8519-40ae-882d-d2f92e4c930c": {
+			"links": {
+				"da75de66-b45c-4654-844a-4c6c44a1edd6": {
+					"aspects": {}
+				}
+			},
+			"content": "Jagat.Frame Development"
+		},
+		"5eb99e8c-e3a5-42a8-bf83-3668f81f243a": {
+			"links": {
+				"da75de66-b45c-4654-844a-4c6c44a1edd6": {
+					"aspects": {}
+				}
+			},
+			"content": "Rain Content Pipeline."
 		}
 	}
 }

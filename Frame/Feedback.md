@@ -2,7 +2,17 @@
 	Positive:
 		1. Path from top abstraction to concrete entity is visible.
 	Negative:
-		1. The same node could exists in different places of the tree - very uncomfortably.
-		2. Load/Save are annoying: shoud work with web resource, use Refresh insted of [Save, Load, Find last selected node].
-		2. Drag spacetree needed.
-		3. Full expand for spacetree needed.
+		1! The same node could exists in different places of the tree, it's very uncomfortable. Solving: implement Flow view.
+		2. Sometimes I need to see entire tree - not only root-current path and some levels of deepness.
+		3. Sometimes I lost my data. Working with data is very uncomfortable.
+		4. Refreshing of the tree after changes is a too long process. Load/Save are annoying.
+
+	Tasks:
+		1. Search and view node in the tree by id.
+		2. Refresh insted of [Save, Load, Find last selected node].
+		3. View all links (parent nodes) for current node.
+		4. View place in the tree by click on parent node button.
+		5. Implement simple aspects list checkbox filtering.
+		6. Full expand for spacetree needed.
+		7. Drag spacetree needed.
+		8. Work with web resource.
