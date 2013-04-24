@@ -33,8 +33,9 @@ Tactical plans of Jagat implementation.
 					2.5.3.1.9: Search Node by Id.
 						2.5.3.1.9.1+ Fix problem with searching for deep trees.
 						2.5.3.1.9.2+ Fix problem with lags for levelsToShow >> 2 (04Tree.SpacetreeDataGenerator.expand.for_cycle).
-!						2.5.3.1.9.3. Make search univocal for treeNode - give both parentId and searchNodeId.
-!						2.5.3.1.9.4. Try to simplify onClick actions in spacetree needed for selection.
+						2.5.3.1.9.4+ Try to simplify onClick actions in spacetree needed for selection.
+!						2.5.3.1.9.5: Fix broken inirial selection fia html request parameter 'selection'.
+!						2.5.3.1.9.6. Make search univocal for treeNode - give both parentId and searchNodeId.
 					2.5.3.1.10. Spacetree refresh by one click.
 					2.5.3.1.11. View changes in realtime.
 				2.5.3.2. Flow.

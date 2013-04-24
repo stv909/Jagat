@@ -149,7 +149,19 @@ function init(infovis, initLevelsToShow, initNodes, getSubtree, callbackSelected
         onAfterCompute: function(){
             Log.write("done");
 
-            // handle selection
+			// handle selection - simple way
+			if (spacetreeSelection.unhandledSelection)
+			{
+				var selectedTreeNode = getTreeNodeByFrameNodyId(spacetreeSelection.unhandledSelection);
+				spacetreeSelection.unhandledSelection = null;
+				if (selectedTreeNode)
+				{
+					st.onClick(selectedTreeNode);
+				}
+			}
+
+            // handle selection - complex way
+            /*
 			if (spacetreeSelection.unhandledRootCounter > 0)
 			{
 				spacetreeSelection.unhandledRootCounter--;
@@ -167,6 +179,7 @@ function init(infovis, initLevelsToShow, initNodes, getSubtree, callbackSelected
 					st.onClick(selectedTreeNode);
 				}
             }
+            */
         },
 
         //This method is called on DOM label creation.
