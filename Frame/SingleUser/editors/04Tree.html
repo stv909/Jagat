@@ -110,8 +110,10 @@
 						var newConcreteNodes = [];
 						for (var j = 0; j < concreteNodes.length; ++j)
 						{
-							newConcreteNodes.concat(collectConcreteNodes(concreteNodes[j]));
+							newConcreteNodes = newConcreteNodes.concat(collectConcreteNodes(concreteNodes[j]));
 						}
+						if (newConcreteNodes.length <= 0)
+							break;
 						concreteNodes = newConcreteNodes;
 					}
 					return root;
