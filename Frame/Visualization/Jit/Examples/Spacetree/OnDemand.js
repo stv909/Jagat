@@ -49,7 +49,7 @@ function SpacetreeSelection()
 var st = null;
 var spacetreeSelection = new SpacetreeSelection();
 
-function init(infovis, initLevelsToShow, initNodes, getSubtree, callbackSelectedTreeNode, selection)
+function init(infovis, initLevelsToShow, initNodes, getSubtree, callbackSelectedTreeNode, selection, parentSelection)
 {
 	spacetreeSelection.reset();
 
@@ -260,7 +260,7 @@ function init(infovis, initLevelsToShow, initNodes, getSubtree, callbackSelected
     //emulate a click on the root node.
 	st.onClick(st.root);
 	//set selection
-	spacetreeSelection.set(selection, null, true);
+	spacetreeSelection.set(selection, parentSelection, true);
 
     //end
     //Add event handlers to switch spacetree orientation.

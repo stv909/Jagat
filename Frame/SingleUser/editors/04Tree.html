@@ -19,7 +19,7 @@
 		<script type="text/javascript" charset="utf-8">
 			var frame = null;
 			var frameControl = null;
-			var defaultLevelsToShow = 512;
+			var defaultLevelsToShow = 512; //65536;
 
 			function loadFrame(frameJSON)
 			{
@@ -120,7 +120,7 @@
 				};
 			}
 
-			function viewFrame(selection, infovis)
+			function viewFrame(selection, parentSelection, infovis)
 			{
 				function callbackSelectedTreeNode(treeNode)
 				{
@@ -144,6 +144,7 @@
 							document.location.href +
 							'?frame=' + encodeURIComponent(frameControl.getCode(true)) +
 							'&selection=' + this.title +
+							// '&parentSelection=' + ? + // we don't use it for now
 							'&levels=' + defaultLevelsToShow;
 						window.open(pageAspectView);
 					}
@@ -309,21 +310,34 @@
 				init(
 					infovis, defaultLevelsToShow,
 					spacetreeDataGenerator.create(), spacetreeDataGenerator.expand, callbackSelectedTreeNode,
-					selection
+					selection, parentSelection
 				);
 			}
 
-			function onClickLoadFrame(source, selection, infovis)
+			function onClickLoadFrame(source, selection, parentSelection, infovis)
 			{
 				loadFrame(source.value);
 				source.value = '';
 				infovis.innerHTML = '';
-				viewFrame(selection, infovis);
+				viewFrame(selection, parentSelection, infovis);
 			}
 
 			function onClickSaveFrame(destination)
 			{
 				destination.value = saveFrame();
+			}
+
+			function onClickRefreshFrame(infovis)
+			{
+				loadFrame(saveFrame());
+				infovis.innerHTML = '';
+
+				var childElement = document.getElementById('linkChildNodeElement');
+				var parentElement = document.getElementById('linkParentNodeElement');
+				var selection = childElement ? childElement.title : null;
+				var parentSelection = parentElement ? parentElement.title : null;
+
+				viewFrame(selection, parentSelection, infovis);
 			}
 
 			function onLoadBody()
@@ -346,8 +360,9 @@
 					var sourceElement = document.getElementById('frameSource');
 					sourceElement.value = frameParameter;
 					var selectionParameter = gup('selection');
+					var parentSelectionParameter = gup('parentSelection');
 					var infovis = document.getElementById('infovis');
-					onClickLoadFrame(sourceElement, selectionParameter, infovis);
+					onClickLoadFrame(sourceElement, selectionParameter, parentSelectionParameter, infovis);
 				}
 			}
 
@@ -415,11 +430,14 @@
 					<h4>JSON Frame Source</h4>
 					<textarea id="frameSource">Place your Frame here.</textarea>
 					<br>
-					<button onclick="onClickLoadFrame(document.getElementById('frameSource'), null, document.getElementById('infovis'));">
+					<button onclick="onClickLoadFrame(document.getElementById('frameSource'), null, null, document.getElementById('infovis'));">
 						Load Frame
 					</button>
 					<button onclick="onClickSaveFrame(document.getElementById('frameSource'));">
 						Save Frame
+					</button>
+					<button onclick="onClickRefreshFrame(document.getElementById('infovis'));">
+						Refresh Frame
 					</button>
 
 					<h4>New node</h4>
@@ -434,7 +452,7 @@
 						<input id="searchParentNodeId" type="text" title="parent nodeId (optional)">
 						<input id="searchNodeId" type="text" title="searching nodeId">
 						<button onclick="onSearchNodeByIdClick(document.getElementById('searchNodeId'), document.getElementById('searchParentNodeId'));">
-							search by nodeIds
+							go!
 						</button>
 					</div>
 					<h4>
