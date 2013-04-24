@@ -307,18 +307,36 @@
 						linkViewQ.appendChild(document.createElement('br'));
 					}
 
-					if (parentNodeId !== uuid.empty)
+					function onParentButtonClick()
 					{
-						var parentsTitleElement = document.createElement('h5');
-						parentsTitleElement.innerHTML = 'Parents';
-						linkViewQ.appendChild(parentsTitleElement);
-
-						// TODO: implement real parents list
-						var parentButton = document.createElement('button');
-						parentButton.innerHTML = 'some parent button';
-						linkViewQ.appendChild(parentButton);
+						var nodeId = document.getElementById('linkChildNodeElement').title;
+						var parentId = this.title;
+						spacetreeSelection.set(nodeId, parentId);
+						st.onClick(st.root);
 					}
 
+					if (parentNodeId !== uuid.empty)
+					{
+						var matrix = nodeControl.getMatrix();
+						if (Object.keys(matrix).length > 1)
+						{
+							var parentsTitleElement = document.createElement('h5');
+							parentsTitleElement.innerHTML = 'Other parents';
+							linkViewQ.appendChild(parentsTitleElement);
+							for (var linkId in matrix)
+							{
+								if (linkId == parentNodeId)
+									continue;
+								var linkNodeControl = frameControl.getElement(linkId);
+								var parentButton = document.createElement('button');
+								parentButton.innerHTML = linkNodeControl.getContent();
+								parentButton.title = linkNodeControl.getId();
+								parentButton.onclick = onParentButtonClick;
+								linkViewQ.appendChild(parentButton);
+								linkViewQ.appendChild(document.createElement('br'));
+							}
+						}
+					}
 				}
 
 				var spacetreeDataGenerator = new SpacetreeDataGenerator();
