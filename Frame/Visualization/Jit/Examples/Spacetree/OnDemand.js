@@ -28,17 +28,20 @@ var Log = {
 function SpacetreeSelection()
 {
 	this.unhandledSelection = null;
+	this.unhandledParent = null;
 	this.initial = false;
 
 	this.reset = function()
 	{
 		this.unhandledSelection = null;
+		this.unhandledParent = null;
 		this.initial = false;
 	};
 
-	this.set = function(selection, initial)
+	this.set = function(selection, parent, initial)
 	{
 		this.unhandledSelection = selection;
+		this.unhandledParent = parent || null;
 		this.initial = initial ? true : false;
 	};
 }
@@ -50,13 +53,24 @@ function init(infovis, initLevelsToShow, initNodes, getSubtree, callbackSelected
 {
 	spacetreeSelection.reset();
 
-	function getTreeNodeByFrameNodyId(frameNodeId)
+	function getTreeNodeByFrameNodyId(frameNodeId, frameParentNodeId)
 	{
 		// STUB // WARNING: this works only if graph is full expanded.
-		for (var treeNode in st.graph.nodes)
+		for (var treeNodeId in st.graph.nodes)
 		{
-			if (st.graph.nodes[treeNode].data.nodeUuid === frameNodeId)
-				return treeNode;
+			var treeNodeData = st.graph.nodes[treeNodeId].data;
+			if (treeNodeData.nodeUuid === frameNodeId)
+			{
+				if (frameParentNodeId)
+				{
+					if (treeNodeData.parentNodeUuid === frameParentNodeId)
+						return treeNodeId;
+				}
+				else
+				{
+					return treeNodeId;
+				}
+			}
 		}
 		return null;
 	}
@@ -156,11 +170,15 @@ function init(infovis, initLevelsToShow, initNodes, getSubtree, callbackSelected
 				}
 				else
 				{
-					var selectedTreeNode = getTreeNodeByFrameNodyId(spacetreeSelection.unhandledSelection);
+					var selectedTreeNodeId = getTreeNodeByFrameNodyId(
+						spacetreeSelection.unhandledSelection,
+						spacetreeSelection.unhandledParent
+					);
 					spacetreeSelection.unhandledSelection = null;
-					if (selectedTreeNode)
+					spacetreeSelection.unhandledParent = null;
+					if (selectedTreeNodeId)
 					{
-						st.onClick(selectedTreeNode);
+						st.onClick(selectedTreeNodeId);
 					}
 				}
 			}
@@ -242,7 +260,7 @@ function init(infovis, initLevelsToShow, initNodes, getSubtree, callbackSelected
     //emulate a click on the root node.
 	st.onClick(st.root);
 	//set selection
-	spacetreeSelection.set(selection, true);
+	spacetreeSelection.set(selection, null, true);
 
     //end
     //Add event handlers to switch spacetree orientation.

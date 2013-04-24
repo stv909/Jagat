@@ -351,19 +351,38 @@
 				}
 			}
 
-			function onSearchNodeByIdClick(nodeIdSource)
+			function onSearchNodeByIdClick(nodeIdSource, parentNodeIdSource)
 			{
 				var nodeControl = frameControl.getElement(nodeIdSource.value);
+				var parentNodeControl = null;
+				if (parentNodeIdSource && parentNodeIdSource.value.length > 0)
+				{
+					parentNodeControl = frameControl.getElement(parentNodeIdSource.value);
+					if (!parentNodeControl)
+					{
+						alert('Parent node with id = "' + parentNodeIdSource.value + '" is not found in this Frame.' );
+						return;
+					}
+				}
+
 				if (nodeControl)
 				{
 					//set selection
-					spacetreeSelection.set(nodeControl.getId());
+					if (parentNodeControl)
+					{
+						spacetreeSelection.set(nodeControl.getId(), parentNodeControl.getId());
+					}
+					else
+					{
+						spacetreeSelection.set(nodeControl.getId());
+					}
 				    //emulate a click on the root node
 					st.onClick(st.root);
 				}
 				else
 				{
 					alert('Node with id = "' + nodeIdSource.value + '" is not found in this Frame.' );
+					return;
 				}
 			}
 
@@ -412,9 +431,10 @@
 					</div>
 					<h4>Search node</h4>
 					<div id="searchNode">
-						<input id="searchNodeId" type="text">
-						<button onclick="onSearchNodeByIdClick(document.getElementById('searchNodeId'));">
-							search by nodeId
+						<input id="searchParentNodeId" type="text" title="parent nodeId (optional)">
+						<input id="searchNodeId" type="text" title="searching nodeId">
+						<button onclick="onSearchNodeByIdClick(document.getElementById('searchNodeId'), document.getElementById('searchParentNodeId'));">
+							search by nodeIds
 						</button>
 					</div>
 					<h4>
