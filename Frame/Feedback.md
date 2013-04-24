@@ -14,6 +14,6 @@
 		3: View all links (parent nodes) for current node.
 		4. View place in the tree by click on parent node button.
 		5. Implement simple aspects list checkbox filtering.
-		6+ Full expand for spacetree needed.
+		6. Work with web resource: use link on resource instead of json content - for aspect-tree-open-in-new-tab.
 		7. Drag spacetree needed.
-		8. Work with web resource: use link on resource instead of json content - for aspect-tree-open-in-new-tab.
+		8. Full expand for spacetree needed.

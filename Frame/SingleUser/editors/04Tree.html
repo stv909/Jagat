@@ -127,9 +127,11 @@
 					var linkView = document.getElementById('linkView');
 					var removeNodeButton = document.getElementById('removeNode');
 					var removeLinkButton = document.getElementById('removeLink');
+					var copyNodeIdButton = document.getElementById('copyNodeId');
 					linkView.innerHTML = '';
 					removeNodeButton.disabled = true;
 					removeLinkButton.disabled = true;
+					copyNodeIdButton.disabled = true;
 
 					var selectedNodeId = treeNode.data.nodeUuid;
 					var parentNodeId = treeNode.data.parentNodeUuid;
@@ -212,6 +214,13 @@
 						}
 					}
 
+					if (selectedNodeId !== uuid.empty)
+					{
+						var linkTitleElement = document.createElement('h5');
+						linkTitleElement.innerHTML = 'Link';
+						linkViewQ.appendChild(linkTitleElement);
+					}
+
 					if (parentNodeId !== uuid.empty)
 					{
 						removeLinkButton.disabled = false;
@@ -273,6 +282,7 @@
 					if (selectedNodeId !== uuid.empty)
 					{
 						removeNodeButton.disabled = false;
+						copyNodeIdButton.disabled = false;
 
 						var concreteNodeElement = document.createElement('input');
 						concreteNodeElement.id = 'linkChildNodeElement';
@@ -295,15 +305,20 @@
 						concreteNodeAddNewConcrete.onclick = onAddNewChildClick;
 						linkViewQ.appendChild(concreteNodeAddNewConcrete);
 						linkViewQ.appendChild(document.createElement('br'));
-
-						var concreteNodeIdElement = document.createElement('input');
-						concreteNodeIdElement.type = 'text';
-						concreteNodeIdElement.value = nodeControl.getId();
-						concreteNodeIdElement.disabled = true;
-						concreteNodeIdElement.readonly = true;
-						concreteNodeIdElement.style.width = '260px';
-						linkViewQ.appendChild(concreteNodeIdElement);
 					}
+
+					if (parentNodeId !== uuid.empty)
+					{
+						var parentsTitleElement = document.createElement('h5');
+						parentsTitleElement.innerHTML = 'Parents';
+						linkViewQ.appendChild(parentsTitleElement);
+
+						// TODO: implement real parents list
+						var parentButton = document.createElement('button');
+						parentButton.innerHTML = 'some parent button';
+						linkViewQ.appendChild(parentButton);
+					}
+
 				}
 
 				var spacetreeDataGenerator = new SpacetreeDataGenerator();
@@ -421,6 +436,12 @@
 				var nodeControl = frameControl.getElement(nodeId);
 				nodeControl.remove(linkId);
 			}
+
+			function onClickCopyNodeId()
+			{
+				var nodeId = document.getElementById('linkChildNodeElement').title;
+				window.prompt ("Copy to clipboard: Ctrl+C, Enter", nodeId);
+			}
 		</script>
 	</head>
 	<body onload='onLoadBody();'>
@@ -459,6 +480,7 @@
 						Current node
 						<button id="removeNode" onclick="onClickRemoveNode();" disabled>- node</button>
 						<button id="removeLink" onclick="onClickRemoveLink();" disabled>- link</button>
+						<button id="copyNodeId" onclick="onClickCopyNodeId();" disabled>copy nodeId</button>
 					</h4>
 					<div id="linkView"></div>
 				</div>
