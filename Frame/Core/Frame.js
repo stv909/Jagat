@@ -182,7 +182,7 @@ function NodeControl(initId, initNode)
 	this.getId = getNodeId;
 	this.getElement = getLinkControl;
 	this.getMatrix = getNodeLinksMatrix;
-	this.geCode = stringifyNode;
+	this.getCode = stringifyNode;
 }
 
 /////////////////////////
@@ -242,5 +242,5 @@ function LinkControl(initId, initLink)
 
 	this.getId = getLinkId;
 	this.getMatrix = getLinkAspectsMatrix;
-	this.geCode = stringifyLink;
+	this.getCode = stringifyLink;
 }
