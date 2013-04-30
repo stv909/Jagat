@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Frame View: 05 Flow.</title>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<style type="text/css" media="screen">
+			.fullScreen {
+				overflow: hidden
+			}
+			.wrap {
+			   width:1090px;
+			   margin:0 auto;
+			}
+			.frameList {
+			   float:left;
+			   width:320px;
+			}
+			.parentList {
+			   float:left;
+			   width:256px;
+			}
+			.nodeList {
+			   float:left;
+			   width:256px;
+			}
+			.childList {
+			   float:left;
+			   width:256px;
+			}
+		</style>
+
+		<script src="../../Core/Frame.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript" charset="utf-8">
+			var frame = null;
+			var frameControl = null;
+
+			function Selection()
+			{
+				var node = null;
+
+				this.set = function(newNodeId)
+				{
+					node = newNodeId;
+				};
+				this.get = function()
+				{
+					return node;
+				};
+				this.reset = function()
+				{
+					node = null;
+				};
+			}
+
+			var selection = new Selection();
+
+			function loadFrame(frameJSON)
+			{
+				var initNodes;
+				try
+				{
+					initNodes = JSON.parse(frameJSON).nodes;
+				}
+				catch (e)
+				{
+					console.log('Can not parse given content string as JSON. String: ' + frameJSON + '; Name: ' + e.name + '; Desc: ' + e.message);
+					initNodes = {};
+				}
+
+				frame = new Frame(initNodes);
+				frameControl = new FrameControl(frame);
+			}
+
+				function getNodeContent(nodeId)
+				{
+					var nodeControl = frameControl.getElement(nodeId);
+					return nodeControl.getContent();
+				}
+
+				function onNodeButtonClick()
+				{
+					selection.set(this.title);
+					viewFrame();
+				}
+
+				function visualizeNodeElement(container, elementId, onButtonClick)
+				{
+					var viewElement = document.createElement("div");
+					var elementButton = document.createElement("button");
+					elementButton.innerHTML = getNodeContent(elementId);
+					elementButton.title = elementId;
+					elementButton.onclick = onButtonClick;
+					viewElement.appendChild(elementButton);
+					container.appendChild(viewElement);
+				}
+
+			function viewFrame()
+			{
+				var frameViewContainer = document.getElementById("frameView");
+				frameViewContainer.innerHTML = '[frame]';
+				var frameMatrix = frameControl.getMatrix();
+				for (var nodeId in frameMatrix)
+				{
+					var frameViewElement = document.createElement("div");
+					var nodeButton = document.createElement("button");
+					nodeButton.innerHTML = getNodeContent(nodeId);
+					nodeButton.title = nodeId;
+					nodeButton.onclick = onNodeButtonClick;
+					frameViewElement.appendChild(nodeButton);
+					frameViewContainer.appendChild(frameViewElement);
+				}
+
+				var parentContainer = document.getElementById('parentView');
+				parentContainer.innerHTML = '[parent]';
+				var container = document.getElementById('nodeView');
+				container.innerHTML = '[node]';
+				var childContainer = document.getElementById('childView');
+				childContainer.innerHTML = '[child]';
+				var elementId = selection.get();
+				if (elementId)
+				{
+					// parents
+					var nodeControl = frameControl.getElement(elementId);
+					var parentMatrix = nodeControl.getMatrix();
+					for (var parentId in parentMatrix)
+					{
+						visualizeNodeElement(parentContainer, parentId, onNodeButtonClick);
+					}
+
+					// node itself
+					visualizeNodeElement(container, elementId, onNodeButtonClick);
+
+					// children
+					for (var childId in frameMatrix)
+					{
+						var childControl = frameControl.getElement(childId);
+						var matrix = childControl.getMatrix();
+						if (elementId in matrix)
+						{
+							visualizeNodeElement(childContainer, childId, onNodeButtonClick);
+						}
+					}
+				}
+			}
+
+			function onClickLoadFrame(source)
+			{
+				loadFrame(source.value);
+				source.value = '';
+				viewFrame();
+			}
+
+			function onResetFrameSelection()
+			{
+				selection.reset();
+				viewFrame();
+			}
+		</script>
+	</head>
+	<body>
+		<div id="source">
+			JSON Frame Source:
+			<textarea id="frameSource">Place your Frame here.</textarea>
+			<button onclick="onClickLoadFrame(document.getElementById('frameSource'));">
+				Load Frame
+			</button>
+			<button onclick="onResetFrameSelection();">
+				Reset Selection
+			</button>
+		</div>
+		<div class="wrap">
+		    <div class="frameList" id="frameView">
+		        [frame]
+		    </div>
+		    <div class="parentList" id="parentView">
+		        [parent]
+		    </div>
+		    <div class="nodeList" id="nodeView">
+		        [node]
+		    </div>
+		    <div class="childList" id="childView">
+		        [child]
+		    </div>
+		</div>
+	</body>
+</html>
