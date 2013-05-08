@@ -104,7 +104,7 @@ function init(infovis, initLevelsToShow, initNodes, getSubtree, callbackSelected
     st = new $jit.ST({
         'injectInto': infovis,
 		//set default orientation
-        orientation: 'top',
+        orientation: 'left',
         //set duration for the animation
         duration: 200,
         //set animation transition type

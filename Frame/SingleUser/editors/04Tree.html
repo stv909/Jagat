@@ -299,6 +299,12 @@
 						concreteNodeAddParent.onclick = onAddParentClick;
 						linkViewQ.appendChild(concreteNodeAddParent);
 
+						var concreteNodeAddChild = document.createElement('button');
+						concreteNodeAddChild.innerHTML = '<- child';
+						concreteNodeAddChild.title = nodeControl.getId();
+						concreteNodeAddChild.onclick = onAddChildClick;
+						linkViewQ.appendChild(concreteNodeAddChild);
+
 						var concreteNodeAddNewConcrete = document.createElement('button');
 						concreteNodeAddNewConcrete.innerHTML = '+ child';
 						concreteNodeAddNewConcrete.title = nodeControl.getId();
