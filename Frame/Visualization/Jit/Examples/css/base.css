@@ -28,8 +28,8 @@ a {
 }
 
 #container {
-    width: 1200px;
-    height: 600px;
+    width: 1360px;
+    height: 640px;
     margin:0 auto;
     position:relative;
 }
@@ -37,7 +37,7 @@ a {
 #left-container,
 #right-container,
 #center-container {
-    height:600px;
+    height:640px;
     position:absolute;
     top:0;
 }
@@ -73,7 +73,7 @@ a {
 }
 
 #center-container {
-    width:770px;
+    width:930px;
     left:350px;
     background-color:#1a1a1a;
     color:#ccc;
@@ -100,8 +100,8 @@ a {
 
 #infovis {
     position:relative;
-    width:600px;
-    height:600px;
+    width:930px;
+    height:640px;
     margin:auto;
     overflow:hidden;
 }
