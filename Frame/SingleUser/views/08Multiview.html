@@ -14,7 +14,7 @@
                 font-size:8pt;
             }
     		.wrap {
-                width:1024px;
+                width:1050px;
                 margin:0 auto;
                 overflow:auto;
 			}
@@ -54,6 +54,8 @@
 		<script type="text/javascript" charset="utf-8">
 			var frame = null;
 			var frameControl = null;
+
+            var viewerNumber = 0;
 
 			function Selection()
 			{
@@ -120,17 +122,17 @@
 			function onNodeButtonClick()
 			{
 				selection.setNode(this.title);
-				viewFrame();
+				viewFrame("0");
 			}
 			function onLinkButtonClick()
 			{
 				selection.setLink(this.title);
-				viewFrame();
+				viewFrame("0");
 			}
 			function onAspectButtonClick()
 			{
 				selection.setAspect(this.title);
-				viewFrame();
+				viewFrame("0");
 			}
 
 			function visualizeNodeContent(container, elementId, onButtonClick)
@@ -168,9 +170,10 @@
                 $("button").button();
 			}
 
-			function viewFrame()
+            //this function works only for first viewer
+			function viewFrame(viewerCountNumber)
 			{
-				$("#frameView").innerHTML = "[frame]";
+				$("#frameView"+viewerCountNumber).innerHTML = "[frame]";
 				var frameMatrix = frameControl.getMatrix();
 				for (var nodeId in frameMatrix)
 				{
@@ -180,9 +183,13 @@
 					nodeButton.title = nodeId;
 					nodeButton.onclick = onNodeButtonClick;
 					frameViewElement.appendChild(nodeButton);
-					$("#frameView").append(frameViewElement);
+					$("#frameView"+viewerCountNumber).append(frameViewElement);
 				}
-				var containers = ['nodeView', 'linkView', 'aspectView'];
+                var node = "nodeView"+viewerCountNumber;
+                var link = "linkView"+viewerCountNumber;
+                var aspect = "aspectView"+viewerCountNumber;
+                console.log(node);
+                var containers = [node, link, aspect];
 				var emptyValues = ['[node]', '[link]', '[aspect]'];
 				var onButtonClicks = [onLinkButtonClick, onAspectButtonClick, null];
 				var visualizeContent = [visualizeNodeContent, visualizeLinkContent, null];
@@ -223,19 +230,34 @@
 			{
 				loadFrame(source.value);
 				source.value = '';
-				viewFrame();
+				viewFrame("0");
 			}
 
 			function onResetFrameSelection()
 			{
 				selection.reset();
-				viewFrame();
+				viewFrame("0");
 			}
-            
-            function createViewer()
+
+            function createViewer(container)
             {
+                viewerNumber++;
                 var newViewer = document.createElement("div");
-             //   var wrap = 
+                newViewer.className = "wrap";
+                newViewer.appendChild(createViewerColumn("frame"));
+                newViewer.appendChild(createViewerColumn("node"));
+                newViewer.appendChild(createViewerColumn("link"));
+                newViewer.appendChild(createViewerColumn("aspect"));
+                $("#mainParent").append(newViewer);
+            }
+
+            function createViewerColumn(name)
+            {
+                var columnDiv = document.createElement("div");
+                columnDiv.className = name + "List";
+                columnDiv.id = name + "View" + viewerNumber;
+                columnDiv.innerHTML = "[" + name + "]";
+                return columnDiv;
             }
 
             $(function () {
@@ -243,7 +265,7 @@
                 $("#loadFrame").button( "option", "icons", { primary: null, secondary: "ui-icon-arrowthick-1-e" } ).click( function() {onClickLoadFrame(document.getElementById('frameSource'))});
                 $("#resetSelection").button().click(function(){onResetFrameSelection();});
                 //here we have button which add new viewer. Now it's disabled
-                $("#addViewer").button( "option", "disabled", true );
+                $("#addViewer").button().click(function(){createViewer()});
                 
 //                $(".resizable").resizable();
             });
@@ -263,21 +285,26 @@
 		</div>
         <div>
             <button id="addViewer">
-				Add New Viewer
+    			Add New Viewer
+			</button>
+		</div>
+        <div>
+            <button id="turnOnNewViewer">
+                
 			</button>
 		</div>
         <div id="mainParent">
     		<div class="wrap">
-                <div class="frameList" id="frameView">
+                <div class="frameList" id="frameView0">
     	            [frame]
                 </div>
-                <div class="nodeList" id="nodeView">
+                <div class="nodeList" id="nodeView0">
     		        [node]
                 </div>
-                <div class="linkList" id="linkView">
+                <div class="linkList" id="linkView0">
     		        [link]
                 </div>
-                <div class="aspectList" id="aspectView">
+                <div class="aspectList" id="aspectView0">
     		        [aspect]
                 </div>
             </div>
