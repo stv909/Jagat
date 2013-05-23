@@ -14,7 +14,7 @@
                 font-size:8pt;
             }
     		.wrap {
-                width:1050px;
+                width:1070px;
                 margin:0 auto;
                 overflow:auto;
 			}
@@ -51,11 +51,17 @@
         <script src="js/ui/jquery.ui.button.js"></script>
         <script src="js/ui/jquery.ui.mouse.js"></script>
         <script src="js/ui/jquery.ui.resizable.js"></script>
+        <script src="js/ui/jquery.ui.draggable.js"></script>
+        <script src="js/ui/jquery.ui.sortable.js"></script>
+        <script src="js/ui/jquery.ui.droppable.js"></script>
 		<script type="text/javascript" charset="utf-8">
-			var frame = null;
+//                border:2px ridge black;
+            var frame = null;
 			var frameControl = null;
 
-            var viewerNumber = 0;
+            var viewerCount = 0;
+            
+            var activeViewerNumber = 0;
 
 			function Selection()
 			{
@@ -122,17 +128,21 @@
 			function onNodeButtonClick()
 			{
 				selection.setNode(this.title);
-				viewFrame("0");
+                console.log(this.title + "this is Node");
+                var idd = this.parentNode.parentNode.id
+				viewFrame(idd.substr(idd.length - 1));
 			}
 			function onLinkButtonClick()
 			{
 				selection.setLink(this.title);
-				viewFrame("0");
+                console.log(this.title + "this is Link");
+				viewFrame(activeViewerNumber);
 			}
 			function onAspectButtonClick()
 			{
 				selection.setAspect(this.title);
-				viewFrame("0");
+                console.log(this.title + "this is Aspect");
+				viewFrame(activeViewerNumber);
 			}
 
 			function visualizeNodeContent(container, elementId, onButtonClick)
@@ -188,7 +198,6 @@
                 var node = "nodeView"+viewerCountNumber;
                 var link = "linkView"+viewerCountNumber;
                 var aspect = "aspectView"+viewerCountNumber;
-                console.log(node);
                 var containers = [node, link, aspect];
 				var emptyValues = ['[node]', '[link]', '[aspect]'];
 				var onButtonClicks = [onLinkButtonClick, onAspectButtonClick, null];
@@ -230,18 +239,18 @@
 			{
 				loadFrame(source.value);
 				source.value = '';
-				viewFrame("0");
+				viewFrame(activeViewerNumber);
 			}
 
 			function onResetFrameSelection()
 			{
 				selection.reset();
-				viewFrame("0");
+				viewFrame(activeViewerNumber);
 			}
 
             function createViewer(container)
             {
-                viewerNumber++;
+                viewerCount++;
                 var newViewer = document.createElement("div");
                 newViewer.className = "wrap";
                 newViewer.appendChild(createViewerColumn("frame"));
@@ -255,19 +264,34 @@
             {
                 var columnDiv = document.createElement("div");
                 columnDiv.className = name + "List";
-                columnDiv.id = name + "View" + viewerNumber;
+                columnDiv.id = name + "View" + viewerCount;
                 columnDiv.innerHTML = "[" + name + "]";
                 return columnDiv;
+            }
+            
+            function newViewerRuning()
+            {
+                activeViewerNumber = document.getElementById("activeViewerNumber").value;
+                onClickLoadFrame(document.getElementById('frameSource'));
             }
 
             $(function () {
                 $("button").button();
                 $("#loadFrame").button( "option", "icons", { primary: null, secondary: "ui-icon-arrowthick-1-e" } ).click( function() {onClickLoadFrame(document.getElementById('frameSource'))});
+                $("#turnOnNewViewer").button( "option", "icons", { primary: null, secondary: "ui-icon-arrowthick-1-e" } ).click( function() {newViewerRuning()});
                 $("#resetSelection").button().click(function(){onResetFrameSelection();});
-                //here we have button which add new viewer. Now it's disabled
                 $("#addViewer").button().click(function(){createViewer()});
                 
-//                $(".resizable").resizable();
+                $('#mainParent').sortable({
+                    connectWith: '#mainParent',
+                    cursor: 'pointer'
+                }).droppable({
+                    activeClass: 'highlight',
+                    drop: function(event, ui) {
+                        var $li = $('.wrap');
+                        $li.appendTo(this);
+                    }
+                });
             });
 		</script>
 	</head>
@@ -289,8 +313,10 @@
 			</button>
 		</div>
         <div>
+            <textarea id="activeViewerNumber"></textarea>
+            <p>Please don't leave this field empty</p>
             <button id="turnOnNewViewer">
-                
+                Load Frame To other viewers
 			</button>
 		</div>
         <div id="mainParent">

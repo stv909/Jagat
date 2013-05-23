@@ -194,6 +194,8 @@ NG.CameraControl = function(initClientWidth, initClientHeight)
 	);
 	camera.position.z = 300;
 
+	this.getCamera = function() { return camera; };
+
 	var mouseX = 0;
 	var mouseY = 0;
 	var mouseDown = false;
@@ -244,7 +246,7 @@ NG.CameraControl = function(initClientWidth, initClientHeight)
 	var cameraXdefault = camera.position.x;
 	var cameraYdefault = camera.position.y;
 
-	this.animUpdate = function()
+	this.update = function()
 	{
 		if (!mouseDown)
 		{
@@ -267,7 +269,19 @@ NG.CameraControl = function(initClientWidth, initClientHeight)
 
 NG.Lights = function()
 {
-	;
+	function create()
+	{
+		var pointLight = new THREE.PointLight(0xFFFFFF);
+		pointLight.position.x = 10;
+		pointLight.position.y = 50;
+		pointLight.position.z = 130;
+		return pointLight;
+	}
+
+	var object3D = create();
+
+	this.getObject3D = function() { return object3D; };
+	this.recreateObject3D = function() { object3D = create(); };
 }
 
 NG.Galaxy = function(initOptions)
@@ -281,15 +295,10 @@ NG.Galaxy = function(initOptions)
 			fontSize: 6.0
 		};
 
-
 	var renderer = null;
-	var camera = null;
 	var scene = null;
-
-	var dragAndZoomCamera = null; // TODO: rename
-
-	var nodes = {};
-	var links = {};
+	var cameraControl = null;
+	var lights = null;
 
 	function initialize()
 	{
@@ -299,25 +308,107 @@ NG.Galaxy = function(initOptions)
 		// set the scene size by container size
 		var WIDTH = parseInt(this.options.container.style.width, 10);
 		var HEIGHT = parseInt(this.options.container.style.height, 10);
-		dragAndZoomCamera = NG.CameraControl(WIDTH, HEIGHT);
 
-		scene.add(dragAndZoomCamera.getCamera()); // TODO: implement .getCamera()
+		cameraControl = NG.CameraControl(WIDTH, HEIGHT);
+		scene.add(cameraControl.getCamera());
 
-		// TODO: new Lights
-		// create a point light
-		var pointLight = new THREE.PointLight(0xFFFFFF);
-		pointLight.position.x = 10;
-		pointLight.position.y = 50;
-		pointLight.position.z = 130;
+		lights = new NG.Lights();
+		scene.add(lights.getObject3D());
 
-		scene.add(pointLight);
-
-		// start the renderer
+		// start and attach the renderer
 		renderer.setSize(WIDTH, HEIGHT);
-
-		// attach the render-supplied DOM element
 		this.options.container.appendChild(renderer.domElement);
 	}
 
 	initialize();
+
+	var nodes = {};
+	var links = {};
+
+	this.addNode = function(desc)
+	{
+		var node = new NG.Node(desc);
+		nodes[node.id] = node;
+		scene.add(node.getObject3D());
+	};
+	this.delNode = function(id)
+	{
+		var node = nodes[id];
+		if (node)
+		{
+			scene.remove(node.getObject3D());
+			delete nodes[id];
+		}
+	};
+	this.addLink = function(desc, shape)
+	{
+		var link = new NG.Link(desc, shape);
+		links[link.id] = link;
+		scene.add(link.getObject3D());
+	};
+	this.delLink = function(id)
+	{
+		var link = links[id];
+		if (link)
+		{
+			scene.remove(link.getObject3D());
+			delete links[id];
+		}
+	};
+
+	this.load = function(jsonTextSource)
+	{
+		var nodeGalaxyDesc;
+		try
+		{
+			nodeGalaxyDesc = JSON.parse(jsonTextSource);
+		}
+		catch (e)
+		{
+			console.log(
+				'Can not parse given content string as JSON. String: ' +
+				jsonTextSource + '; Name: ' + e.name + '; Desc: ' + e.message
+			);
+			nodeGalaxyDesc = {};
+		}
+
+		this.clear();
+		if (nodeGalaxyDesc.nodes)
+		{
+			for (var nodeIndex = 0; nodeIndex < nodeGalaxyDesc.nodes.length; ++nodeIndex)
+			{
+				var node = nodeGalaxyDesc.nodes[nodeIndex];
+				this.addNode(node.desc);
+			}
+		}
+		if (nodeGalaxyDesc.links)
+		{
+			for (var linkIndex = 0; linkIndex < nodeGalaxyDesc.links.length; ++linkIndex)
+			{
+				var link = nodeGalaxyDesc.links[linkIndex];
+				this.addNode(link.desc, link.shape);
+			}
+		}
+	};
+	this.clear = function()
+	{
+		for (var nodeId in nodes)
+		{
+			scene.remove(nodes[nodeId].getObject3D());
+		}
+		nodes = {};
+
+		for (var linkId in links)
+		{
+			scene.remove(links[linkId].getObject3D());
+		}
+		links = {};
+	};
+
+	this.animate = function()
+	{
+		requestAnimationFrame(animate);
+		cameraControl.update();
+		renderer.render(scene, cameraControl.getCamera());
+	};
 };
