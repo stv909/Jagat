@@ -1,7 +1,18 @@
 var NG = NG || {};
 
+NG.Uuid = function()
+{
+	var c = function() { return 0 };
+	function b(a) { return a?(a^c()*16>>a/4).toString(16):([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g,b) }
+	this.empty = b();
+
+	c = function() { return Math.random() };
+	this.generate = b;
+};
+
 NG.Node = function(initDesc, initNodeSize, initFont, initColorScheme)
 {
+	this.id = (new NG.Uuid()).generate();
 	this.desc = initDesc|| {uuid: null, name: '?'};
 	this.size = initNodeSize || {width: 64, height: 16, depth: 4};
 	this.font = initFont || {name: 'helvetiker', size: 6.0};
@@ -66,6 +77,7 @@ NG.Node = function(initDesc, initNodeSize, initFont, initColorScheme)
 
 NG.Link = function(initDesc, initShape, initFont, initColorScheme)
 {
+	this.id = (new NG.Uuid()).generate();
 	this.desc = initDesc|| {uuid: null, name: '?'};
 	this.originVertex = initShape ? initShape.origin : null; // THREE.Vector3
 	this.targetVertex = initShape ? initShape.target : null; // THREE.Vector3
@@ -166,13 +178,146 @@ NG.Link = function(initDesc, initShape, initFont, initColorScheme)
 	this.recreateObject3D = function() { object3D = create(); };
 };
 
+NG.CameraControl = function(initClientWidth, initClientHeight)
+{
+	var clientWidth = initClientWidth;
+	var clientHeight = initClientHeight;
+	var FIELD_OF_VIEW_ANGLE = 45;
+	var ASPECT = clientWidth / clientHeight;
+	var NEAR = 0.1;
+	var FAR = 5000;
+	var camera = new THREE.PerspectiveCamera(
+		FIELD_OF_VIEW_ANGLE,
+		ASPECT,
+		NEAR,
+		FAR
+	);
+	camera.position.z = 300;
+
+	var mouseX = 0;
+	var mouseY = 0;
+	var mouseDown = false;
+
+	document.addEventListener(
+		'mousemove',
+		function(event)
+		{
+			mouseX = ( event.clientX / clientWidth ) * 2 - 1;
+			mouseY = - ( event.clientY / clientHeight ) * 2 + 1;
+			mouseDown = (event.which === 1);
+		},
+		false
+	);
+	document.body.addEventListener(
+		'mousedown',
+		function(event)
+		{
+			if (event.which === 1)
+			{
+				mouseDown = true;
+			}
+		},
+		false
+	);
+	document.body.addEventListener(
+		'mouseup',
+		function(event)
+		{
+			if (event.which === 1)
+			{
+				mouseDown = false;
+			}
+		},
+		false
+	);
+	document.body.addEventListener(
+		'mousewheel',
+		function(event)
+		{
+			camera.position.z += event.wheelDeltaY;
+		},
+		false
+	);
+
+	var mouseXdefault = mouseX;
+	var mouseYdefault = mouseY;
+	var cameraXdefault = camera.position.x;
+	var cameraYdefault = camera.position.y;
+
+	this.animUpdate = function()
+	{
+		if (!mouseDown)
+		{
+			mouseXdefault = mouseX;
+			mouseYdefault = mouseY;
+			cameraXdefault = camera.position.x;
+			cameraYdefault = camera.position.y;
+		}
+		if (mouseDown)
+		{
+			var Zfactor = -camera.position.z;
+
+			camera.position.y = cameraYdefault + (mouseY - mouseYdefault) *
+				(Zfactor * (1 / camera.aspect) * (Math.tan(camera.fov / 2)));
+			camera.position.x = cameraXdefault + (mouseX - mouseXdefault) *
+				(Zfactor * (Math.tan(camera.fov / 2)));
+		}
+	};
+};
+
+NG.Lights = function()
+{
+	;
+}
+
 NG.Galaxy = function(initOptions)
 {
 	this.options = initOptions ||
 		{
+			container: 'nodeGalaxyContainer',
 			nodeSize: {width: 64, height: 16},
 			nodesDistance: 96,
 			fontName: 'helvetiker',
 			fontSize: 6.0
 		};
+
+
+	var renderer = null;
+	var camera = null;
+	var scene = null;
+
+	var dragAndZoomCamera = null; // TODO: rename
+
+	var nodes = {};
+	var links = {};
+
+	function initialize()
+	{
+		renderer = new THREE.WebGLRenderer({ antialias: true });
+		scene = new THREE.Scene();
+
+		// set the scene size by container size
+		var WIDTH = parseInt(this.options.container.style.width, 10);
+		var HEIGHT = parseInt(this.options.container.style.height, 10);
+		dragAndZoomCamera = NG.CameraControl(WIDTH, HEIGHT);
+
+		scene.add(dragAndZoomCamera.getCamera()); // TODO: implement .getCamera()
+
+		// TODO: new Lights
+		// create a point light
+		var pointLight = new THREE.PointLight(0xFFFFFF);
+		pointLight.position.x = 10;
+		pointLight.position.y = 50;
+		pointLight.position.z = 130;
+
+		scene.add(pointLight);
+
+		// start the renderer
+		renderer.setSize(WIDTH, HEIGHT);
+
+		// attach the render-supplied DOM element
+		this.options.container.appendChild(renderer.domElement);
+	}
+
+	initialize();
 };
