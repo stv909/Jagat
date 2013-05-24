@@ -12,7 +12,7 @@ NG.Uuid = function()
 
 NG.Node = function(initDesc, initNodeSize, initFont, initColorScheme)
 {
-	this.desc = initDesc|| {id: null, uuid: null, name: '?'};
+	this.desc = initDesc|| {id: null, uuid: null, name: '?', position: {x: 0, y: 0, z: 0}};
 	if (!this.desc.id)
 	{
 		this.desc.id = (new NG.Uuid()).generate();
@@ -69,6 +69,10 @@ NG.Node = function(initDesc, initNodeSize, initFont, initColorScheme)
 		text.position.z = this.size.depth;
 
 		box.add(text);
+		if (this.desc.position)
+		{
+			box.position.set(this.desc.position.x, this.desc.position.y, this.desc.position.z);
+		}
 		return box;
 	};
 
@@ -579,7 +583,10 @@ NG.Galaxy = function(initOptions)
 		nodeGalaxyDesc.nodes = [];
 		for (var nodeId in nodes)
 		{
-			nodeGalaxyDesc.nodes.push(nodes[nodeId].desc);
+			var desc = nodes[nodeId].desc;
+			var pos = nodes[nodeId].getObject3D().position;
+			desc.position = {x: pos.x, y: pos.y, z: pos.z};
+			nodeGalaxyDesc.nodes.push(desc);
 		}
 
 		nodeGalaxyDesc.links = [];
