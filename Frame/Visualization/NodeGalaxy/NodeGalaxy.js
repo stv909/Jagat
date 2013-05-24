@@ -19,7 +19,7 @@ NG.Node = function(initDesc, initNodeSize, initFont, initColorScheme)
 	}
 	this.size = initNodeSize || {width: 64, height: 16, depth: 4};
 	this.font = initFont || {name: 'helvetiker', size: 6.0};
-	this.colorScheme = initColorScheme || {box: 0xFFFFFF, text: 0x000000};
+	this.colorScheme = initColorScheme || {box: 0xFFFFFF, text: 0x757AD8};
 
 	this.create = function()
 	{
@@ -103,7 +103,7 @@ NG.Link = function(initDesc, initGalaxy, initFont, initColorScheme)
 	}
 	this.ownerGalaxy = initGalaxy || null;
 	this.font = initFont || {name: 'helvetiker', size: 6.0};
-	this.colorScheme = initColorScheme || {arrow: 0x00FF00, text: 0x000000};
+	this.colorScheme = initColorScheme || {arrow: 0x66A968, text: 0xDDC50F};
 
 	this.create = function()
 	{
