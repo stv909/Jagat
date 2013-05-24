@@ -15,27 +15,24 @@
             }
             .wrap {
                 width:1250px;
-                overflow:auto;
+                border: 4px ridge gray;
+                height:300px;
 			}
 			.frameList {
 			   float:left;
 			   width:256px;
-               height:300px;
 			}
 			.nodeList {
 			   float:left;
 			   width:256px;
-               height:300px;
 			}
 			.linkList {
 			   float:left;
 			   width:256px;
-               height:300px;
 			}
 			.aspectList {
 			   float:left;
 			   width:256px;
-               height:300px;
 			}
             .ui-button {
                 font-size:8pt !important;
@@ -127,35 +124,25 @@
     		function onNodeButtonClick()
 			{
 				selection.setNode(this.title);
-                console.log(this.title + "this is Node");
-                //Warning!!! Does not works for Select-button
                 var idd = this.parentNode.parentNode.id
-                console.log(idd);
 				viewFrame(idd.substr(idd.length - 1));
 			}
     		function onSelectButtonClick()
 			{
 				selection.setNode(this.title);
-                console.log(this.title + "this is select");
-                //Warning!!! Does not works for Select-button
                 var idd = this.parentNode.id
-                console.log(idd);
 				viewFrame(idd.substr(idd.length - 1));
 			}
 			function onLinkButtonClick()
 			{
 				selection.setLink(this.title);
-                console.log(this.title + "this is Link");
                 var idd = this.parentNode.parentNode.id
-                console.log(idd);
                 viewFrame(idd.substr(idd.length - 1));
 			}
 			function onAspectButtonClick()
 			{
 				selection.setAspect(this.title);
-                console.log(this.title + "this is Aspect");
                 var idd = this.parentNode.parentNode.id
-                console.log(idd);
                 viewFrame(idd.substr(idd.length - 1));
 			}
 
@@ -227,7 +214,7 @@
 					}
 					else
 					{
-						container.innerHTML = getNodeContent(elementId);//here's wrong elementID
+						container.innerHTML = getNodeContent(elementId);//here's wrong elementID. It produces error for few viewer
 
 						var elementButton = document.createElement("button");
 						elementButton.innerHTML = 'select';
@@ -272,9 +259,9 @@
                 newViewer.appendChild(createViewerColumn("link"));
                 newViewer.appendChild(createViewerColumn("aspect"));
                 var deleteViewer = document.createElement("button");
-                deleteViewer.id = "delete" + viewerCount;
                 deleteViewer.className = "deleteViewer";
-                deleteViewer.innerHTML = 'Delete Viewer' + viewerCount;
+                deleteViewer.id = "delete" + viewerCount;
+                deleteViewer.innerHTML = 'Delete Viewer';
                 newViewer.appendChild(deleteViewer);
                 $("#mainParent").append(newViewer);
                 $("button").button();
@@ -302,13 +289,12 @@
                 $("#resetSelection").button().click(function(){onResetFrameSelection();});
                 $("#addViewer").button().click(function(){createViewer()});
                 
-                $("#addViewer").on("click", ".deleteViewer", function(){
-                    console.log(this.id);
-                    console.log(this.id.substr(this.id.length - 1));
+                $("body").on("click", ".deleteViewer", function(){
                     $("#wrapViewer" + this.id.substr(this.id.length - 1)).remove();
                     viewerCount--;
                 });
                 
+                //this code make viewer draggable. Uses libraries.
                 $('#mainParent').sortable({
                     connectWith: '#mainParent',
                     cursor: 'pointer'
@@ -318,14 +304,8 @@
                         var $li = $('.wrap');
                         $li.appendTo(this);
                     }
+                    //scroll: true;
                 });
-                
-//                $(".deleteViewer").button().click( function() {
-                    //console.log(this.id);
-                    //console.log(this.id.substr(this.id.length - 1));
-                    //$("#wrapViewer" + this.id.substr(this.id.length - 1)).remove();
-                    //viewerCount--;
-                //});
             });
 		</script>
 	</head>
@@ -368,7 +348,7 @@
     		        [aspect]
                 </div>
                 <button class="deleteViewer" id="delete0">
-                    Delete Viewer0
+                    Delete Viewer
                 </button>
             </div>
         </div>

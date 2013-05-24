@@ -210,64 +210,53 @@ NG.Link = function(initDesc, initGalaxy, initFont, initColorScheme)
 	this.recreateObject3D = function() { object3D = this.create(); };
 };
 
-var disconnectCamera = false; // TODO: refactoring to avoid it
-
-NG.CameraControl = function(
-	domElement, initClientWidth, initClientHeight,
-	initMouseDownCallback, initMouseMoveCallback, initMouseUpCallback
-)
+NG.UserControl = function(initGalaxy, initNGCamera, container)
 {
-	var clientWidth = initClientWidth;
-	var clientHeight = initClientHeight;
-	var FIELD_OF_VIEW_ANGLE = 45;
-	var ASPECT = clientWidth / clientHeight;
-	var NEAR = 0.1;
-	var FAR = 5000;
-	var camera = new THREE.PerspectiveCamera(
-		FIELD_OF_VIEW_ANGLE,
-		ASPECT,
-		NEAR,
-		FAR
+	var ownerGalaxy = initGalaxy || null;
+	var ngCamera = initNGCamera || null;
+	var camera = ngCamera.getObject3D();
+	var projector = new THREE.Projector();
+
+	var INTERSECTED = null;
+	var SELECTED = null;
+	var OFFSET = new THREE.Vector3();
+	var PLANE = new THREE.Mesh(
+		new THREE.PlaneGeometry(2000, 2000, 8, 8),
+		new THREE.MeshBasicMaterial(
+			{color: 0x000000, opacity: 0.25, transparent: true, wireframe: true}
+		)
 	);
-	camera.position.z = 300;
 
-	this.getCamera = function() { return camera; };
-
-	var mouseX = 0;
-	var mouseY = 0;
+	var mouse = {x: 0, y:0};
+	var mousePrior = {x: mouse.x, y: mouse.y};
+	var cameraPrior = {x: camera.position.x, y: camera.position.y};
 	var mouseDown = false;
-	var mousedownCallback = initMouseDownCallback || null;
-	var mousemoveCallback = initMouseMoveCallback || null;
-	var mouseupCallback = initMouseUpCallback || null;
+	var disconnectCamera = false;
 
-	document.addEventListener(
-		'mousemove',
-		function(event)
-		{
-			mouseX = ( event.offsetX / clientWidth ) * 2 - 1;
-			mouseY = - ( event.offsetY / clientHeight ) * 2 + 1;
-			mouseDown = (event.which === 1);
-
-			if (mousemoveCallback)
-			{
-				mousemoveCallback({x: mouseX, y: mouseY}, camera);
-			}
-		},
-		false
-	);
-	document.addEventListener(
+	container.addEventListener(
 		'mousedown',
 		function(event)
 		{
+			event.preventDefault();
 			if (event.which === 1)
 			{
 				mouseDown = true;
 			}
-
-			if (mousedownCallback)
+			handleMouseDown();
+		},
+		false
+	);
+	document.addEventListener(
+		'mousemove',
+		function(event)
+		{
+			mouse.x = ( (event.pageX - container.offsetLeft) / ngCamera.screen.width ) * 2 - 1;
+			mouse.y = -( (event.pageY - container.offsetTop) / ngCamera.screen.height ) * 2 + 1;
+			if (event.which !== 1)
 			{
-				mousedownCallback({down: mouseDown, x: mouseX, y: mouseY}, camera);
+				mouseDown = false;
 			}
+			handleMouseMove();
 		},
 		false
 	);
@@ -279,64 +268,65 @@ NG.CameraControl = function(
 			{
 				mouseDown = false;
 			}
-
-			if (mouseupCallback)
-			{
-				mouseupCallback({down: mouseDown, x: mouseX, y: mouseY}, camera);
-			}
+			handleMouseUp();
 		},
 		false
 	);
-	domElement.addEventListener(
+	container.addEventListener(
 		'mousewheel',
 		function(event)
 		{
 			event.preventDefault();
-			camera.position.z += event.wheelDeltaY;
+			if (event.wheelDeltaY > 0)
+			{
+				ngCamera.zoomIn();
+			}
+			else if (event.wheelDeltaY < 0)
+			{
+				ngCamera.zoomOut();
+			}
 		},
 		false
 	);
-
-	var mouseXdefault = mouseX;
-	var mouseYdefault = mouseY;
-	var cameraXdefault = camera.position.x;
-	var cameraYdefault = camera.position.y;
 
 	this.update = function()
 	{
 		if (!mouseDown)
 		{
-			mouseXdefault = mouseX;
-			mouseYdefault = mouseY;
-			cameraXdefault = camera.position.x;
-			cameraYdefault = camera.position.y;
+			mousePrior = {x: mouse.x, y: mouse.y};
+			cameraPrior = {x: camera.position.x, y: camera.position.y};
 		}
 		if (mouseDown && !disconnectCamera)
 		{
 			var Zfactor = -camera.position.z;
 
-			camera.position.y = cameraYdefault + (mouseY - mouseYdefault) *
+			camera.position.y = cameraPrior.y + (mouse.y - mousePrior.y) *
 				(Zfactor * (1 / camera.aspect) * (Math.tan(camera.fov / 2)));
-			camera.position.x = cameraXdefault + (mouseX - mouseXdefault) *
+			camera.position.x = cameraPrior.x + (mouse.x - mousePrior.x) *
 				(Zfactor * (Math.tan(camera.fov / 2)));
 		}
 	};
-};
 
-NG.NodesControl = function(initGalaxy, container)
-{
-	var ownerGalaxy = initGalaxy || null;
-	var projector = new THREE.Projector();
+	function handleMouseDown()
+	{
+		var vector = new THREE.Vector3(mouse.x, mouse.y, 0.5);
+		projector.unprojectVector(vector, camera);
+		var raycaster = new THREE.Raycaster(
+			camera.position,
+			vector.sub(camera.position).normalize()
+		);
+		var intersects = raycaster.intersectObjects(ownerGalaxy.getNodeObjects3D());
+		if (intersects.length > 0)
+		{
+			disconnectCamera = true;
+			SELECTED = intersects[0].object;
+			var intersects = raycaster.intersectObject(PLANE);
+			OFFSET.copy(intersects[0].point).sub(PLANE.position);
+			container.style.cursor = 'move';
+		}
+	}
 
-	var INTERSECTED = null;
-	var SELECTED = null;
-	var OFFSET = new THREE.Vector3();
-	var PLANE = new THREE.Mesh(
-		new THREE.PlaneGeometry( 2000, 2000, 8, 8 ),
-		new THREE.MeshBasicMaterial( { color: 0x000000, opacity: 0.25, transparent: true, wireframe: true } )
-	);
-
-	this.handleMouseMove = function(mouse, camera)
+	function handleMouseMove()
 	{
 		var vector = new THREE.Vector3(mouse.x, mouse.y, 0.5);
 		projector.unprojectVector(vector, camera);
@@ -349,12 +339,8 @@ NG.NodesControl = function(initGalaxy, container)
 			if (intersects.length > 0)
 			{
 				SELECTED.position.copy(intersects[0].point.sub(OFFSET));
-				container.style.cursor = 'move';
 			}
-			else
-			{
-				container.style.cursor = 'auto';
-			}
+			container.style.cursor = 'move';
 		}
 		else
 		{
@@ -384,29 +370,9 @@ NG.NodesControl = function(initGalaxy, container)
 				container.style.cursor = 'auto';
 			}
 		}
-	};
+	}
 
-	this.handleMouseDown = function(mouse, camera)
-	{
-		var vector = new THREE.Vector3(mouse.x, mouse.y, 0.5);
-		projector.unprojectVector(vector, camera);
-		var raycaster = new THREE.Raycaster(camera.position, vector.sub(camera.position).normalize());
-		var intersects = raycaster.intersectObjects(ownerGalaxy.getNodeObjects3D());
-		if (intersects.length > 0)
-		{
-			disconnectCamera = true;
-			SELECTED = intersects[0].object;
-			var intersects = raycaster.intersectObject(PLANE);
-			OFFSET.copy(intersects[0].point).sub(PLANE.position);
-			container.style.cursor = 'move';
-		}
-		else
-		{
-			container.style.cursor = 'auto';
-		}
-	};
-
-	this.handleMouseUp = function(mouse, camera)
+	function handleMouseUp()
 	{
 		disconnectCamera = false;
 		if (INTERSECTED)
@@ -415,6 +381,43 @@ NG.NodesControl = function(initGalaxy, container)
 			SELECTED = null;
 		}
 		container.style.cursor = 'auto';
+	}
+};
+
+NG.Camera = function(initScreen)
+{
+	this.screen = initScreen || {width: 0, height: 0};
+	this.fov = 45;
+	this.nearPlane = 0.1;
+	this.farPlane =5000;
+	this.zoomStep = 5;
+
+	this.create = function()
+	{
+		var aspectRatio = this.screen.width / this.screen.height;
+		var camera = new THREE.PerspectiveCamera(
+			this.fov,
+			aspectRatio,
+			this.nearPlane,
+			this.farPlane
+		);
+		camera.position.z = 300;
+		return camera;
+	};
+
+	var object3D = this.create();
+
+	this.getObject3D = function() { return object3D; };
+	this.recreateObject3D = function() { object3D = this.create(); };
+
+	this.zoomIn = function()
+	{
+		object3D.position.z += this.zoomStep;
+	};
+
+	this.zoomOut = function()
+	{
+		object3D.position.z -= this.zoomStep;
 	};
 };
 
@@ -448,9 +451,9 @@ NG.Galaxy = function(initOptions)
 
 	var renderer = null;
 	var scene = null;
-	var nodesControl = null;
-	var cameraControl = null;
+	var camera = null;
 	var lights = null;
+	var userControl = null;
 
 	this.initialize = function()
 	{
@@ -461,21 +464,15 @@ NG.Galaxy = function(initOptions)
 		var containerElement = document.getElementById(this.options.container);
 		var WIDTH = parseInt(containerElement.style.width, 10);
 		var HEIGHT = parseInt(containerElement.style.height, 10);
-		nodesControl = new NG.NodesControl(this, containerElement);
-		cameraControl = new NG.CameraControl(
-			renderer.domElement, WIDTH, HEIGHT,
-			nodesControl.handleMouseDown,
-			nodesControl.handleMouseMove,
-			nodesControl.handleMouseUp
-		);
-		scene.add(cameraControl.getCamera());
-
+		camera = new NG.Camera({width: WIDTH, height: HEIGHT});
+		scene.add(camera.getObject3D());
 		lights = new NG.Lights();
 		scene.add(lights.getObject3D());
-
 		// start and attach the renderer
 		renderer.setSize(WIDTH, HEIGHT);
 		containerElement.appendChild(renderer.domElement);
+
+		userControl = new NG.UserControl(this, camera, containerElement);
 	};
 
 	this.initialize();
@@ -615,8 +612,8 @@ NG.Galaxy = function(initOptions)
 		function animate()
 		{
 			requestAnimationFrame(animate);
-			cameraControl.update();
-			renderer.render(scene, cameraControl.getCamera());
+			userControl.update();
+			renderer.render(scene, camera.getObject3D());
 		}
 		animate();
 	};
