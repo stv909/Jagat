@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>NodeGalaxy Demo.</title>
+		<script src="ThreeJS/Three.js"></script>
+		<script src="ThreeJS/helvetiker_bold.typeface.js"></script>
+		<script src="ThreeJS/helvetiker_regular.typeface.js"></script>
+		<script src="NodeGalaxy.js"></script>
+		<script>
+			var viewer = null;
+
+			function onSaveView()
+			{
+				if (!viewer)
+					return;
+				var buffer = document.getElementById('viewDataBuffer');
+				buffer.value = viewer.save();
+			}
+
+			function onLoadView()
+			{
+				if (!viewer)
+					return;
+				var buffer = document.getElementById('viewDataBuffer');
+				viewer.load(buffer.value);
+			}
+
+			function onDemoLoad()
+			{
+				viewer = new NG.Galaxy();
+				viewer.animate();
+			}
+		</script>
+	</head>
+	<body onload="onDemoLoad();">
+	<div id="dataExchange">
+		<button id="saveView" onclick="onSaveView()">Save --></button>
+		<textarea id="viewDataBuffer"></textarea>
+		<button id="loadView" onclick="onLoadView()">--> Load</button>
+	</div>
+	<div id="nodeGalaxyContainer" style="width:1024px; height:512px; background: #2c2828;"></div>
+	</body>
+</html>

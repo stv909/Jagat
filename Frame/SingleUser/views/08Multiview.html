@@ -13,9 +13,8 @@
                 font-family: Verdana,Arial,sans-serif;
                 font-size:8pt;
             }
-    		.wrap {
+            .wrap {
                 width:1070px;
-                margin:0 auto;
                 overflow:auto;
 			}
 			.frameList {
@@ -129,20 +128,29 @@
 			{
 				selection.setNode(this.title);
                 console.log(this.title + "this is Node");
+                //Warning!!! Does not works for Select-button
                 var idd = this.parentNode.parentNode.id
+                console.log(idd);
 				viewFrame(idd.substr(idd.length - 1));
+//                viewFrame(activeViewerNumber);
 			}
 			function onLinkButtonClick()
 			{
 				selection.setLink(this.title);
                 console.log(this.title + "this is Link");
-				viewFrame(activeViewerNumber);
+                var idd = this.parentNode.parentNode.id
+                console.log(idd);
+                alert("selection is done");
+                viewFrame(idd.substr(idd.length - 1));
+                alert("viewframe is done");
 			}
 			function onAspectButtonClick()
 			{
 				selection.setAspect(this.title);
                 console.log(this.title + "this is Aspect");
-				viewFrame(activeViewerNumber);
+                var idd = this.parentNode.parentNode.id
+                console.log(idd);
+                viewFrame(idd.substr(idd.length - 1));
 			}
 
 			function visualizeNodeContent(container, elementId, onButtonClick)
@@ -180,7 +188,6 @@
                 $("button").button();
 			}
 
-            //this function works only for first viewer
 			function viewFrame(viewerCountNumber)
 			{
 				$("#frameView"+viewerCountNumber).innerHTML = "[frame]";

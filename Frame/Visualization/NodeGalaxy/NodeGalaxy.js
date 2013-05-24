@@ -12,13 +12,16 @@ NG.Uuid = function()
 
 NG.Node = function(initDesc, initNodeSize, initFont, initColorScheme)
 {
-	this.id = (new NG.Uuid()).generate();
-	this.desc = initDesc|| {uuid: null, name: '?'};
+	this.desc = initDesc|| {id: null, uuid: null, name: '?'};
+	if (!this.desc.id)
+	{
+		this.desc.id = (new NG.Uuid()).generate();
+	}
 	this.size = initNodeSize || {width: 64, height: 16, depth: 4};
 	this.font = initFont || {name: 'helvetiker', size: 6.0};
 	this.colorScheme = initColorScheme || {box: 0xFFFFFF, text: 0x000000};
 
-	function create()
+	this.create = function()
 	{
 		var boxMaterial = new THREE.MeshLambertMaterial(
 			{
@@ -69,23 +72,36 @@ NG.Node = function(initDesc, initNodeSize, initFont, initColorScheme)
 		return box;
 	};
 
-	var object3D = create();
+	var object3D = this.create();
 
 	this.getObject3D = function() { return object3D; };
-	this.recreateObject3D = function() { object3D = create(); };
+	this.recreateObject3D = function() { object3D = this.create(); };
 };
 
-NG.Link = function(initDesc, initShape, initFont, initColorScheme)
+NG.Link = function(initDesc, initGalaxy, initFont, initColorScheme)
 {
-	this.id = (new NG.Uuid()).generate();
-	this.desc = initDesc|| {uuid: null, name: '?'};
-	this.originVertex = initShape ? initShape.origin : null; // THREE.Vector3
-	this.targetVertex = initShape ? initShape.target : null; // THREE.Vector3
-	this.arrowWidth = initShape ? initShape.arrowWidth : 10;
+	var defaultArrowWidth = 10;
+	this.desc = initDesc||
+		{
+			id: null,
+			originNodeId: null,
+			targetNodeId: null,
+			names: ['?'],
+			arrowWidth: defaultArrowWidth
+		};
+	if (!this.desc.id)
+	{
+		this.desc.id = (new NG.Uuid()).generate();
+	}
+	if (!this.desc.arrowWidth)
+	{
+		this.desc.arrowWidth = defaultArrowWidth;
+	}
+	this.ownerGalaxy = initGalaxy || null;
 	this.font = initFont || {name: 'helvetiker', size: 6.0};
 	this.colorScheme = initColorScheme || {arrow: 0x00FF00, text: 0x000000};
 
-	function create()
+	this.create = function()
 	{
 		var arrowMaterial = new THREE.LineBasicMaterial(
 			{
@@ -101,6 +117,40 @@ NG.Link = function(initDesc, initShape, initFont, initColorScheme)
 				color: this.colorScheme.text
 			}
 		);
+
+		var linkName = '';
+		for (var i = 0; i < this.desc.names.length; ++i)
+		{
+			linkName += (i > 0 ? ', ' : '') + this.desc.names[i];
+		}
+		// TODO: implement multiline support instead of comma separation.
+
+		var textGeom = new THREE.TextGeometry(
+			linkName,
+			{
+				size: this.font.size, // <float> // size of the text
+				height: 2.0, // <float> // thickness to extrude text
+				curveSegments: 3, // <int> // number of points on the curves
+
+				font: this.font.name, // <string> // font name
+				weight: 'bold', // <string> // font weight (normal, bold)
+				style: 'normal', // <string> // font style  (normal, italics)
+
+				bevelEnabled: false, // <bool> // turn on bevel
+				bevelThickness: 0.25, // <float> // how deep into text bevel goes
+				bevelSize: 0.25 // <float> // how far from text outline is bevel
+			}
+		);
+		textGeom.dynamic = true;
+		THREE.GeometryUtils.center(textGeom);
+		var text = new THREE.Mesh(textGeom, textMaterial);
+		function centerText(text, startPoint, endPoint)
+		{
+			var center = new THREE.Vector3();
+			center.addVectors(startPoint, endPoint);
+			center.multiplyScalar(0.5);
+			text.position = center;
+		}
 
 		var arrowGeom = new THREE.Geometry();
 		function constructArrow(lineGeometry, startPoint, endPoint, arrowWidth)
@@ -131,9 +181,18 @@ NG.Link = function(initDesc, initShape, initFont, initColorScheme)
 			lineGeometry.verticesNeedUpdate = true;
 		}
 
-		if (this.originVertex && this.targetVertex)
+		if (
+			this.desc.originNodeId && this.desc.targetNodeId &&
+			this.ownerGalaxy
+		)
 		{
-			constructArrow(arrowGeom, this.originVertex, this.targetVertex, this.arrowWidth);
+			var originVertex = this.ownerGalaxy.getNodePosition(this.desc.originNodeId);
+			var targetVertex = this.ownerGalaxy.getNodePosition(this.desc.targetNodeId);
+			if (originVertex && targetVertex)
+			{
+				constructArrow(arrowGeom, originVertex, targetVertex, this.desc.arrowWidth);
+				centerText(text, originVertex, targetVertex);
+			}
 		}
 
 		var arrow = new THREE.Line(
@@ -141,41 +200,14 @@ NG.Link = function(initDesc, initShape, initFont, initColorScheme)
 			arrowMaterial
 		);
 
-		var textGeom = new THREE.TextGeometry(
-			this.desc.name,
-			{
-				size: this.font.size, // <float> // size of the text
-				height: 2.0, // <float> // thickness to extrude text
-				curveSegments: 3, // <int> // number of points on the curves
-
-				font: this.font.name, // <string> // font name
-				weight: 'bold', // <string> // font weight (normal, bold)
-				style: 'normal', // <string> // font style  (normal, italics)
-
-				bevelEnabled: false, // <bool> // turn on bevel
-				bevelThickness: 0.25, // <float> // how deep into text bevel goes
-				bevelSize: 0.25 // <float> // how far from text outline is bevel
-			}
-		);
-		textGeom.dynamic = true;
-		THREE.GeometryUtils.center(textGeom);
-		var text = new THREE.Mesh(textGeom, textMaterial);
-		if (this.originVertex && this.targetVertex)
-		{
-			var center = new THREE.Vector3();
-			center.addVectors(this.originVertex, this.targetVertex);
-			center.multiplyScalar(0.5);
-			text.position = center;
-		}
-
 		arrow.add(text);
 		return arrow;
-	}
+	};
 
-	var object3D = create();
+	var object3D = this.create();
 
 	this.getObject3D = function() { return object3D; };
-	this.recreateObject3D = function() { object3D = create(); };
+	this.recreateObject3D = function() { object3D = this.create(); };
 };
 
 NG.CameraControl = function(initClientWidth, initClientHeight)
@@ -269,19 +301,19 @@ NG.CameraControl = function(initClientWidth, initClientHeight)
 
 NG.Lights = function()
 {
-	function create()
+	this.create = function()
 	{
 		var pointLight = new THREE.PointLight(0xFFFFFF);
 		pointLight.position.x = 10;
 		pointLight.position.y = 50;
 		pointLight.position.z = 130;
 		return pointLight;
-	}
+	};
 
-	var object3D = create();
+	var object3D = this.create();
 
 	this.getObject3D = function() { return object3D; };
-	this.recreateObject3D = function() { object3D = create(); };
+	this.recreateObject3D = function() { object3D = this.create(); };
 }
 
 NG.Galaxy = function(initOptions)
@@ -300,16 +332,17 @@ NG.Galaxy = function(initOptions)
 	var cameraControl = null;
 	var lights = null;
 
-	function initialize()
+	this.initialize = function()
 	{
 		renderer = new THREE.WebGLRenderer({ antialias: true });
 		scene = new THREE.Scene();
 
 		// set the scene size by container size
-		var WIDTH = parseInt(this.options.container.style.width, 10);
-		var HEIGHT = parseInt(this.options.container.style.height, 10);
+		var containerElement = document.getElementById(this.options.container);
+		var WIDTH = parseInt(containerElement.style.width, 10);
+		var HEIGHT = parseInt(containerElement.style.height, 10);
 
-		cameraControl = NG.CameraControl(WIDTH, HEIGHT);
+		cameraControl = new NG.CameraControl(WIDTH, HEIGHT);
 		scene.add(cameraControl.getCamera());
 
 		lights = new NG.Lights();
@@ -317,10 +350,10 @@ NG.Galaxy = function(initOptions)
 
 		// start and attach the renderer
 		renderer.setSize(WIDTH, HEIGHT);
-		this.options.container.appendChild(renderer.domElement);
-	}
+		containerElement.appendChild(renderer.domElement);
+	};
 
-	initialize();
+	this.initialize();
 
 	var nodes = {};
 	var links = {};
@@ -328,7 +361,7 @@ NG.Galaxy = function(initOptions)
 	this.addNode = function(desc)
 	{
 		var node = new NG.Node(desc);
-		nodes[node.id] = node;
+		nodes[node.desc.id] = node;
 		scene.add(node.getObject3D());
 	};
 	this.delNode = function(id)
@@ -340,10 +373,10 @@ NG.Galaxy = function(initOptions)
 			delete nodes[id];
 		}
 	};
-	this.addLink = function(desc, shape)
+	this.addLink = function(desc)
 	{
-		var link = new NG.Link(desc, shape);
-		links[link.id] = link;
+		var link = new NG.Link(desc, this);
+		links[link.desc.id] = link;
 		scene.add(link.getObject3D());
 	};
 	this.delLink = function(id)
@@ -354,6 +387,15 @@ NG.Galaxy = function(initOptions)
 			scene.remove(link.getObject3D());
 			delete links[id];
 		}
+	};
+
+	this.getNodePosition = function(id)
+	{
+		if (nodes[id] && nodes[id].getObject3D())
+		{
+			return nodes[id].getObject3D().position;
+		}
+		return null;
 	};
 
 	this.load = function(jsonTextSource)
@@ -378,7 +420,7 @@ NG.Galaxy = function(initOptions)
 			for (var nodeIndex = 0; nodeIndex < nodeGalaxyDesc.nodes.length; ++nodeIndex)
 			{
 				var node = nodeGalaxyDesc.nodes[nodeIndex];
-				this.addNode(node.desc);
+				this.addNode(node);
 			}
 		}
 		if (nodeGalaxyDesc.links)
@@ -386,9 +428,27 @@ NG.Galaxy = function(initOptions)
 			for (var linkIndex = 0; linkIndex < nodeGalaxyDesc.links.length; ++linkIndex)
 			{
 				var link = nodeGalaxyDesc.links[linkIndex];
-				this.addNode(link.desc, link.shape);
+				this.addLink(link);
 			}
 		}
+	};
+	this.save = function()
+	{
+		var nodeGalaxyDesc = {};
+
+		nodeGalaxyDesc.nodes = [];
+		for (var nodeId in nodes)
+		{
+			nodeGalaxyDesc.nodes.push(nodes[nodeId].desc);
+		}
+
+		nodeGalaxyDesc.links = [];
+		for (var linkId in links)
+		{
+			nodeGalaxyDesc.links.push(links[linkId].desc);
+		}
+
+		return JSON.stringify(nodeGalaxyDesc, null, '\t');
 	};
 	this.clear = function()
 	{
@@ -407,8 +467,12 @@ NG.Galaxy = function(initOptions)
 
 	this.animate = function()
 	{
-		requestAnimationFrame(animate);
-		cameraControl.update();
-		renderer.render(scene, cameraControl.getCamera());
+		function animate()
+		{
+			requestAnimationFrame(animate);
+			cameraControl.update();
+			renderer.render(scene, cameraControl.getCamera());
+		}
+		animate();
 	};
 };
