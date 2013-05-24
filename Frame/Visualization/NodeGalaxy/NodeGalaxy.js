@@ -210,7 +210,12 @@ NG.Link = function(initDesc, initGalaxy, initFont, initColorScheme)
 	this.recreateObject3D = function() { object3D = this.create(); };
 };
 
-NG.CameraControl = function(initClientWidth, initClientHeight)
+var disconnectCamera = false; // TODO: refactoring to avoid it
+
+NG.CameraControl = function(
+	domElement, initClientWidth, initClientHeight,
+	initMouseDownCallback, initMouseMoveCallback, initMouseUpCallback
+)
 {
 	var clientWidth = initClientWidth;
 	var clientHeight = initClientHeight;
@@ -231,18 +236,26 @@ NG.CameraControl = function(initClientWidth, initClientHeight)
 	var mouseX = 0;
 	var mouseY = 0;
 	var mouseDown = false;
+	var mousedownCallback = initMouseDownCallback || null;
+	var mousemoveCallback = initMouseMoveCallback || null;
+	var mouseupCallback = initMouseUpCallback || null;
 
 	document.addEventListener(
 		'mousemove',
 		function(event)
 		{
-			mouseX = ( event.clientX / clientWidth ) * 2 - 1;
-			mouseY = - ( event.clientY / clientHeight ) * 2 + 1;
+			mouseX = ( event.offsetX / clientWidth ) * 2 - 1;
+			mouseY = - ( event.offsetY / clientHeight ) * 2 + 1;
 			mouseDown = (event.which === 1);
+
+			if (mousemoveCallback)
+			{
+				mousemoveCallback({x: mouseX, y: mouseY}, camera);
+			}
 		},
 		false
 	);
-	document.body.addEventListener(
+	document.addEventListener(
 		'mousedown',
 		function(event)
 		{
@@ -250,10 +263,15 @@ NG.CameraControl = function(initClientWidth, initClientHeight)
 			{
 				mouseDown = true;
 			}
+
+			if (mousedownCallback)
+			{
+				mousedownCallback({down: mouseDown, x: mouseX, y: mouseY}, camera);
+			}
 		},
 		false
 	);
-	document.body.addEventListener(
+	document.addEventListener(
 		'mouseup',
 		function(event)
 		{
@@ -261,13 +279,19 @@ NG.CameraControl = function(initClientWidth, initClientHeight)
 			{
 				mouseDown = false;
 			}
+
+			if (mouseupCallback)
+			{
+				mouseupCallback({down: mouseDown, x: mouseX, y: mouseY}, camera);
+			}
 		},
 		false
 	);
-	document.body.addEventListener(
+	domElement.addEventListener(
 		'mousewheel',
 		function(event)
 		{
+			event.preventDefault();
 			camera.position.z += event.wheelDeltaY;
 		},
 		false
@@ -287,7 +311,7 @@ NG.CameraControl = function(initClientWidth, initClientHeight)
 			cameraXdefault = camera.position.x;
 			cameraYdefault = camera.position.y;
 		}
-		if (mouseDown)
+		if (mouseDown && !disconnectCamera)
 		{
 			var Zfactor = -camera.position.z;
 
@@ -296,6 +320,101 @@ NG.CameraControl = function(initClientWidth, initClientHeight)
 			camera.position.x = cameraXdefault + (mouseX - mouseXdefault) *
 				(Zfactor * (Math.tan(camera.fov / 2)));
 		}
+	};
+};
+
+NG.NodesControl = function(initGalaxy, container)
+{
+	var ownerGalaxy = initGalaxy || null;
+	var projector = new THREE.Projector();
+
+	var INTERSECTED = null;
+	var SELECTED = null;
+	var OFFSET = new THREE.Vector3();
+	var PLANE = new THREE.Mesh(
+		new THREE.PlaneGeometry( 2000, 2000, 8, 8 ),
+		new THREE.MeshBasicMaterial( { color: 0x000000, opacity: 0.25, transparent: true, wireframe: true } )
+	);
+
+	this.handleMouseMove = function(mouse, camera)
+	{
+		var vector = new THREE.Vector3(mouse.x, mouse.y, 0.5);
+		projector.unprojectVector(vector, camera);
+		var raycaster = new THREE.Raycaster(camera.position, vector.sub(camera.position).normalize());
+
+		var intersects = null;
+		if (SELECTED)
+		{
+			intersects = raycaster.intersectObject(PLANE);
+			if (intersects.length > 0)
+			{
+				SELECTED.position.copy(intersects[0].point.sub(OFFSET));
+				container.style.cursor = 'move';
+			}
+			else
+			{
+				container.style.cursor = 'auto';
+			}
+		}
+		else
+		{
+			intersects = raycaster.intersectObjects(ownerGalaxy.getNodeObjects3D());
+			if (intersects.length > 0)
+			{
+				if (INTERSECTED != intersects[0].object)
+				{
+					if (INTERSECTED)
+					{
+						INTERSECTED.material.color.setHex(INTERSECTED.currentHex);
+					}
+					INTERSECTED = intersects[0].object;
+					INTERSECTED.currentHex = INTERSECTED.material.color.getHex();
+					PLANE.position.copy(INTERSECTED.position);
+					PLANE.lookAt(camera.position);
+				}
+				container.style.cursor = 'pointer';
+			}
+			else
+			{
+				if (INTERSECTED)
+				{
+					INTERSECTED.material.color.setHex(INTERSECTED.currentHex);
+				}
+				INTERSECTED = null;
+				container.style.cursor = 'auto';
+			}
+		}
+	};
+
+	this.handleMouseDown = function(mouse, camera)
+	{
+		var vector = new THREE.Vector3(mouse.x, mouse.y, 0.5);
+		projector.unprojectVector(vector, camera);
+		var raycaster = new THREE.Raycaster(camera.position, vector.sub(camera.position).normalize());
+		var intersects = raycaster.intersectObjects(ownerGalaxy.getNodeObjects3D());
+		if (intersects.length > 0)
+		{
+			disconnectCamera = true;
+			SELECTED = intersects[0].object;
+			var intersects = raycaster.intersectObject(PLANE);
+			OFFSET.copy(intersects[0].point).sub(PLANE.position);
+			container.style.cursor = 'move';
+		}
+		else
+		{
+			container.style.cursor = 'auto';
+		}
+	};
+
+	this.handleMouseUp = function(mouse, camera)
+	{
+		disconnectCamera = false;
+		if (INTERSECTED)
+		{
+			PLANE.position.copy(INTERSECTED.position);
+			SELECTED = null;
+		}
+		container.style.cursor = 'auto';
 	};
 };
 
@@ -314,7 +433,7 @@ NG.Lights = function()
 
 	this.getObject3D = function() { return object3D; };
 	this.recreateObject3D = function() { object3D = this.create(); };
-}
+};
 
 NG.Galaxy = function(initOptions)
 {
@@ -329,6 +448,7 @@ NG.Galaxy = function(initOptions)
 
 	var renderer = null;
 	var scene = null;
+	var nodesControl = null;
 	var cameraControl = null;
 	var lights = null;
 
@@ -341,8 +461,13 @@ NG.Galaxy = function(initOptions)
 		var containerElement = document.getElementById(this.options.container);
 		var WIDTH = parseInt(containerElement.style.width, 10);
 		var HEIGHT = parseInt(containerElement.style.height, 10);
-
-		cameraControl = new NG.CameraControl(WIDTH, HEIGHT);
+		nodesControl = new NG.NodesControl(this, containerElement);
+		cameraControl = new NG.CameraControl(
+			renderer.domElement, WIDTH, HEIGHT,
+			nodesControl.handleMouseDown,
+			nodesControl.handleMouseMove,
+			nodesControl.handleMouseUp
+		);
 		scene.add(cameraControl.getCamera());
 
 		lights = new NG.Lights();
@@ -358,11 +483,24 @@ NG.Galaxy = function(initOptions)
 	var nodes = {};
 	var links = {};
 
+	var nodeObjects3D = [];
+	var linkObjects3D = [];
+
+	function collectObjects3D(objects, objects3D)
+	{
+		objects3D.length = 0;
+		for (var id in objects)
+		{
+			objects3D.push(objects[id].getObject3D());
+		}
+	}
+
 	this.addNode = function(desc)
 	{
 		var node = new NG.Node(desc);
 		nodes[node.desc.id] = node;
 		scene.add(node.getObject3D());
+		nodeObjects3D.push(node.getObject3D());
 	};
 	this.delNode = function(id)
 	{
@@ -371,6 +509,7 @@ NG.Galaxy = function(initOptions)
 		{
 			scene.remove(node.getObject3D());
 			delete nodes[id];
+			collectObjects3D(nodes, nodeObjects3D);
 		}
 	};
 	this.addLink = function(desc)
@@ -378,6 +517,7 @@ NG.Galaxy = function(initOptions)
 		var link = new NG.Link(desc, this);
 		links[link.desc.id] = link;
 		scene.add(link.getObject3D());
+		linkObjects3D.push(link.getObject3D());
 	};
 	this.delLink = function(id)
 	{
@@ -386,6 +526,7 @@ NG.Galaxy = function(initOptions)
 		{
 			scene.remove(link.getObject3D());
 			delete links[id];
+			collectObjects3D(links, linkObjects3D);
 		}
 	};
 
@@ -397,6 +538,8 @@ NG.Galaxy = function(initOptions)
 		}
 		return null;
 	};
+	this.getNodeObjects3D = function() { return nodeObjects3D; };
+	this.getLinkObjects3D = function() { return linkObjects3D; };
 
 	this.load = function(jsonTextSource)
 	{
@@ -457,12 +600,14 @@ NG.Galaxy = function(initOptions)
 			scene.remove(nodes[nodeId].getObject3D());
 		}
 		nodes = {};
+		nodeObjects3D = [];
 
 		for (var linkId in links)
 		{
 			scene.remove(links[linkId].getObject3D());
 		}
 		links = {};
+		linkObjects3D = [];
 	};
 
 	this.animate = function()

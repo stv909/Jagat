@@ -14,7 +14,7 @@
                 font-size:8pt;
             }
             .wrap {
-                width:1070px;
+                width:1250px;
                 overflow:auto;
 			}
 			.frameList {
@@ -118,13 +118,13 @@
 				frameControl = new FrameControl(frame);
 			}
 
-			function getNodeContent(nodeId)
+    		function getNodeContent(nodeId)
 			{
 				var nodeControl = frameControl.getElement(nodeId);
 				return nodeControl.getContent();
 			}
 
-			function onNodeButtonClick()
+    		function onNodeButtonClick()
 			{
 				selection.setNode(this.title);
                 console.log(this.title + "this is Node");
@@ -132,7 +132,15 @@
                 var idd = this.parentNode.parentNode.id
                 console.log(idd);
 				viewFrame(idd.substr(idd.length - 1));
-//                viewFrame(activeViewerNumber);
+			}
+    		function onSelectButtonClick()
+			{
+				selection.setNode(this.title);
+                console.log(this.title + "this is select");
+                //Warning!!! Does not works for Select-button
+                var idd = this.parentNode.id
+                console.log(idd);
+				viewFrame(idd.substr(idd.length - 1));
 			}
 			function onLinkButtonClick()
 			{
@@ -140,9 +148,7 @@
                 console.log(this.title + "this is Link");
                 var idd = this.parentNode.parentNode.id
                 console.log(idd);
-                alert("selection is done");
                 viewFrame(idd.substr(idd.length - 1));
-                alert("viewframe is done");
 			}
 			function onAspectButtonClick()
 			{
@@ -221,12 +227,12 @@
 					}
 					else
 					{
-						container.innerHTML = getNodeContent(elementId);
+						container.innerHTML = getNodeContent(elementId);//here's wrong elementID
 
 						var elementButton = document.createElement("button");
 						elementButton.innerHTML = 'select';
 						elementButton.title = elementId;
-						elementButton.onclick = onNodeButtonClick;
+						elementButton.onclick = onSelectButtonClick;
 						container.appendChild(elementButton);
 
 						if (visualizeContent[i] !== null)
@@ -255,16 +261,23 @@
 				viewFrame(activeViewerNumber);
 			}
 
-            function createViewer(container)
+            function createViewer()
             {
                 viewerCount++;
                 var newViewer = document.createElement("div");
                 newViewer.className = "wrap";
+                newViewer.id = "wrapViewer" + viewerCount;
                 newViewer.appendChild(createViewerColumn("frame"));
                 newViewer.appendChild(createViewerColumn("node"));
                 newViewer.appendChild(createViewerColumn("link"));
                 newViewer.appendChild(createViewerColumn("aspect"));
+                var deleteViewer = document.createElement("button");
+                deleteViewer.id = "delete" + viewerCount;
+                deleteViewer.className = "deleteViewer";
+                deleteViewer.innerHTML = 'Delete Viewer' + viewerCount;
+                newViewer.appendChild(deleteViewer);
                 $("#mainParent").append(newViewer);
+                $("button").button();
             }
 
             function createViewerColumn(name)
@@ -289,6 +302,13 @@
                 $("#resetSelection").button().click(function(){onResetFrameSelection();});
                 $("#addViewer").button().click(function(){createViewer()});
                 
+                $("#addViewer").on("click", ".deleteViewer", function(){
+                    console.log(this.id);
+                    console.log(this.id.substr(this.id.length - 1));
+                    $("#wrapViewer" + this.id.substr(this.id.length - 1)).remove();
+                    viewerCount--;
+                });
+                
                 $('#mainParent').sortable({
                     connectWith: '#mainParent',
                     cursor: 'pointer'
@@ -299,6 +319,13 @@
                         $li.appendTo(this);
                     }
                 });
+                
+//                $(".deleteViewer").button().click( function() {
+                    //console.log(this.id);
+                    //console.log(this.id.substr(this.id.length - 1));
+                    //$("#wrapViewer" + this.id.substr(this.id.length - 1)).remove();
+                    //viewerCount--;
+                //});
             });
 		</script>
 	</head>
@@ -327,7 +354,7 @@
 			</button>
 		</div>
         <div id="mainParent">
-    		<div class="wrap">
+    		<div class="wrap" id="wrapViewer0">
                 <div class="frameList" id="frameView0">
     	            [frame]
                 </div>
@@ -340,6 +367,9 @@
                 <div class="aspectList" id="aspectView0">
     		        [aspect]
                 </div>
+                <button class="deleteViewer" id="delete0">
+                    Delete Viewer0
+                </button>
             </div>
         </div>
 	</body>
