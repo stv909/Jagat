@@ -105,49 +105,13 @@ NG.Link = function(initDesc, initGalaxy, initFont, initColorScheme)
 	this.font = initFont || {name: 'helvetiker', size: 6.0};
 	this.colorScheme = initColorScheme || {arrow: 0x66A968, text: 0xDDC50F};
 
-	this.create = function()
+	this.arrowGeom = null;
+	this.arrow = null;
+	this.textGeom = null;
+	this.text = null;
+
+	this.update = function()
 	{
-		var arrowMaterial = new THREE.LineBasicMaterial(
-			{
-				color: this.colorScheme.arrow,
-				opacity: 1.0,
-				linewidth: 1.0,
-				vertexColors: false
-			}
-		);
-
-		var textMaterial = new THREE.MeshLambertMaterial(
-			{
-				color: this.colorScheme.text
-			}
-		);
-
-		var linkName = '';
-		for (var i = 0; i < this.desc.names.length; ++i)
-		{
-			linkName += (i > 0 ? ', ' : '') + this.desc.names[i];
-		}
-		// TODO: implement multiline support instead of comma separation.
-
-		var textGeom = new THREE.TextGeometry(
-			linkName,
-			{
-				size: this.font.size, // <float> // size of the text
-				height: 2.0, // <float> // thickness to extrude text
-				curveSegments: 3, // <int> // number of points on the curves
-
-				font: this.font.name, // <string> // font name
-				weight: 'bold', // <string> // font weight (normal, bold)
-				style: 'normal', // <string> // font style  (normal, italics)
-
-				bevelEnabled: false, // <bool> // turn on bevel
-				bevelThickness: 0.25, // <float> // how deep into text bevel goes
-				bevelSize: 0.25 // <float> // how far from text outline is bevel
-			}
-		);
-		textGeom.dynamic = true;
-		THREE.GeometryUtils.center(textGeom);
-		var text = new THREE.Mesh(textGeom, textMaterial);
 		function centerText(text, startPoint, endPoint)
 		{
 			var center = new THREE.Vector3();
@@ -156,7 +120,6 @@ NG.Link = function(initDesc, initGalaxy, initFont, initColorScheme)
 			text.position = center;
 		}
 
-		var arrowGeom = new THREE.Geometry();
 		function constructArrow(lineGeometry, startPoint, endPoint, arrowWidth)
 		{
 			var arrowDirection = new THREE.Vector3();
@@ -194,18 +157,65 @@ NG.Link = function(initDesc, initGalaxy, initFont, initColorScheme)
 			var targetVertex = this.ownerGalaxy.getNodePosition(this.desc.targetNodeId);
 			if (originVertex && targetVertex)
 			{
-				constructArrow(arrowGeom, originVertex, targetVertex, this.desc.arrowWidth);
-				centerText(text, originVertex, targetVertex);
+				constructArrow(this.arrowGeom, originVertex, targetVertex, this.desc.arrowWidth);
+				centerText(this.text, originVertex, targetVertex);
 			}
 		}
+	};
 
-		var arrow = new THREE.Line(
-			arrowGeom,
+	this.create = function()
+	{
+		var arrowMaterial = new THREE.LineBasicMaterial(
+			{
+				color: this.colorScheme.arrow,
+				opacity: 1.0,
+				linewidth: 1.0,
+				vertexColors: false
+			}
+		);
+
+		var textMaterial = new THREE.MeshLambertMaterial(
+			{
+				color: this.colorScheme.text
+			}
+		);
+
+		var linkName = '';
+		for (var i = 0; i < this.desc.names.length; ++i)
+		{
+			linkName += (i > 0 ? ', ' : '') + this.desc.names[i];
+		}
+		// TODO: implement multiline text support instead of comma separation.
+
+		this.textGeom = new THREE.TextGeometry(
+			linkName,
+			{
+				size: this.font.size, // <float> // size of the text
+				height: 2.0, // <float> // thickness to extrude text
+				curveSegments: 3, // <int> // number of points on the curves
+
+				font: this.font.name, // <string> // font name
+				weight: 'bold', // <string> // font weight (normal, bold)
+				style: 'normal', // <string> // font style  (normal, italics)
+
+				bevelEnabled: false, // <bool> // turn on bevel
+				bevelThickness: 0.25, // <float> // how deep into text bevel goes
+				bevelSize: 0.25 // <float> // how far from text outline is bevel
+			}
+		);
+		this.textGeom.dynamic = true;
+		THREE.GeometryUtils.center(this.textGeom);
+		this.text = new THREE.Mesh(this.textGeom, textMaterial);
+
+		this.arrowGeom = new THREE.Geometry();
+		this.arrow = new THREE.Line(
+			this.arrowGeom,
 			arrowMaterial
 		);
 
-		arrow.add(text);
-		return arrow;
+		this.arrow.add(this.text);
+		this.update();
+		return this.arrow;
 	};
 
 	var object3D = this.create();
@@ -623,5 +633,13 @@ NG.Galaxy = function(initOptions)
 			renderer.render(scene, camera.getObject3D());
 		}
 		animate();
+	};
+
+	this.test_UpdateAllLinks = function()
+	{
+		for (var linkId in links)
+		{
+			links[linkId].update();
+		}
 	};
 };
