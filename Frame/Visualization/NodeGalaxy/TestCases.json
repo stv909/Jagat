@@ -46,3 +46,115 @@
 		}
 	]
 }
+-----------------------------------------------------------
+{
+	"nodes": [
+		{
+			"name": "Stellar 7",
+			"id": "76abb7ed-8858-4d38-9001-33ec0e2e7c64",
+			"position": {
+				"x": -87.88810451565948,
+				"y": 60.31536584407946,
+				"z": 6.252776074688882e-13
+			}
+		},
+		{
+			"name": "Galaxy 9",
+			"id": "5f38460f-2287-42a3-b336-3f86a6734e83",
+			"position": {
+				"x": 97.6534494618421,
+				"y": 59.74093378842079,
+				"z": -1.1368683772161603e-12
+			}
+		},
+		{
+			"name": "Dimension 64",
+			"id": "2453e3f8-12d4-4503-aae9-cb07f456fb88",
+			"position": {
+				"x": 6.893184667896353,
+				"y": -151.65006269368672,
+				"z": 1.2562395568238571e-11
+			}
+		},
+		{
+			"name": "Dimension 32",
+			"id": "0ba5608a-3b80-4c5c-98ab-32088ea487d0",
+			"position": {
+				"x": 5.74432055657827,
+				"y": -88.46253657131656,
+				"z": -6.991740519879386e-12
+			}
+		},
+		{
+			"name": "Star Division 2",
+			"id": "51614fa1-2502-4a43-aee0-c0715c6f47d3",
+			"position": {
+				"x": 4.595456445263107,
+				"y": -14.935233447105293,
+				"z": -9.606537787476555e-12
+			}
+		}
+	],
+	"links": [
+		{
+			"originNodeId": "2453e3f8-12d4-4503-aae9-cb07f456fb88",
+			"targetNodeId": "0ba5608a-3b80-4c5c-98ab-32088ea487d0",
+			"names": [
+				"1",
+				"2"
+			],
+			"id": "977fdb85-a8d6-4acd-b6ed-99d3909e5a3d",
+			"arrowWidth": 10
+		},
+		{
+			"originNodeId": "2453e3f8-12d4-4503-aae9-cb07f456fb88",
+			"targetNodeId": "76abb7ed-8858-4d38-9001-33ec0e2e7c64",
+			"names": [
+				"3",
+				"4"
+			],
+			"id": "e3729830-747c-4b25-b038-ef53a2dbca8f",
+			"arrowWidth": 10
+		},
+		{
+			"originNodeId": "5f38460f-2287-42a3-b336-3f86a6734e83",
+			"targetNodeId": "0ba5608a-3b80-4c5c-98ab-32088ea487d0",
+			"names": [
+				"5",
+				"6"
+			],
+			"id": "93b867e8-c848-4927-bad6-bc8ca94c8867",
+			"arrowWidth": 10
+		},
+		{
+			"originNodeId": "0ba5608a-3b80-4c5c-98ab-32088ea487d0",
+			"targetNodeId": "51614fa1-2502-4a43-aee0-c0715c6f47d3",
+			"names": [
+				"7",
+				"8"
+			],
+			"id": "bb47ab61-86a7-4a82-b6af-ad9f64f2f56f",
+			"arrowWidth": 10
+		},
+		{
+			"originNodeId": "51614fa1-2502-4a43-aee0-c0715c6f47d3",
+			"targetNodeId": "76abb7ed-8858-4d38-9001-33ec0e2e7c64",
+			"names": [
+				"9",
+				"10"
+			],
+			"id": "268c754a-2f62-4e6e-b603-c79f657f39b2",
+			"arrowWidth": 10
+		},
+		{
+			"originNodeId": "51614fa1-2502-4a43-aee0-c0715c6f47d3",
+			"targetNodeId": "5f38460f-2287-42a3-b336-3f86a6734e83",
+			"names": [
+				"11",
+				"12"
+			],
+			"id": "97dfd302-0198-4f99-8e41-cb755310ef4b",
+			"arrowWidth": 10
+		}
+	]
+}

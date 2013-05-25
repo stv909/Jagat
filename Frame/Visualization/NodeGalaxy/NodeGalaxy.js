@@ -73,6 +73,7 @@ NG.Node = function(initDesc, initNodeSize, initFont, initColorScheme)
 		{
 			box.position.set(this.desc.position.x, this.desc.position.y, this.desc.position.z);
 		}
+		box.ngObject = this;
 		return box;
 	};
 
@@ -215,6 +216,8 @@ NG.Link = function(initDesc, initGalaxy, initFont, initColorScheme)
 
 		this.arrow.add(this.text);
 		this.update();
+
+		this.arrow.ngObject = this;
 		return this.arrow;
 	};
 
@@ -353,6 +356,19 @@ NG.UserControl = function(initGalaxy, initNGCamera, container)
 			if (intersects.length > 0)
 			{
 				SELECTED.position.copy(intersects[0].point.sub(OFFSET));
+
+				// update all needed stuff after node position change
+				if (SELECTED.ngObject)
+				{
+					var ngLinksToUpdate = ownerGalaxy.getLinksByNode(SELECTED.ngObject);
+					if (ngLinksToUpdate)
+					{
+						for (var i = 0; i < ngLinksToUpdate.length; ++i)
+						{
+							ngLinksToUpdate[i].update();
+						}
+					}
+				}
 			}
 			container.style.cursor = 'move';
 		}
@@ -497,6 +513,8 @@ NG.Galaxy = function(initOptions)
 	var nodeObjects3D = [];
 	var linkObjects3D = [];
 
+	var linksByNode = {};
+
 	function collectObjects3D(objects, objects3D)
 	{
 		objects3D.length = 0;
@@ -525,10 +543,23 @@ NG.Galaxy = function(initOptions)
 	};
 	this.addLink = function(desc)
 	{
+		function addLinksByNodeElement(linksByNode, linkId, nodeId)
+		{
+			if (!nodeId)
+				return;
+			if (!linksByNode[nodeId])
+			{
+				linksByNode[nodeId] = [];
+			}
+			linksByNode[nodeId].push(linkId);
+		}
+
 		var link = new NG.Link(desc, this);
 		links[link.desc.id] = link;
 		scene.add(link.getObject3D());
 		linkObjects3D.push(link.getObject3D());
+		addLinksByNodeElement(linksByNode, link.desc.id, link.desc.originNodeId);
+		addLinksByNodeElement(linksByNode, link.desc.id, link.desc.targetNodeId);
 	};
 	this.delLink = function(id)
 	{
@@ -551,6 +582,22 @@ NG.Galaxy = function(initOptions)
 	};
 	this.getNodeObjects3D = function() { return nodeObjects3D; };
 	this.getLinkObjects3D = function() { return linkObjects3D; };
+	this.getLinksByNode = function(node)
+	{
+		var linkIds = linksByNode[node.desc.id];
+		if (!linkIds)
+			return null;
+		var resultLinks = [];
+		for (var i = 0; i < linkIds.length; ++i)
+		{
+			var link = links[linkIds[i]];
+			if (link)
+			{
+				resultLinks.push(link);
+			}
+		}
+		return resultLinks;
+	};
 
 	this.load = function(jsonTextSource)
 	{
