@@ -700,14 +700,24 @@ NG.Galaxy = function(initOptions)
 		linkObjects3D = [];
 	};
 
+	var stopAnimation = false;
 	this.animate = function()
 	{
 		function animate()
 		{
+			if (stopAnimation)
+			{
+				stopAnimation = false;
+				return;
+			}
 			requestAnimationFrame(animate);
 			userControl.update();
 			renderer.render(scene, camera.getObject3D());
 		}
 		animate();
 	};
+	this.stop = function()
+	{
+		stopAnimation = true;
+	}
 };
