@@ -38,25 +38,79 @@
 							var rootNode = frameControl.getElement(this.nodeId);
 							if (rootNode)
 							{
-								var ngNodeIdByFrameNodeId = {};
-								var ngNodeId = uuid.generate();
+								// add root node
+								var ngRootNodeId = uuid.generate();
 								result.nodes.push(
 									{
-										id: ngNodeId,
+										id: ngRootNodeId,
 										uuid: this.nodeId,
 										name: rootNode.getContent()
 									}
 								);
-								ngNodeIdByFrameNodeId[this.nodeId] = ngNodeId;
-								// TODO: add abstracts
-								// TODO: add concretes
-								// TODO: add links
+								// add linked abstracts
+								var abstracts = rootNode.getMatrix();
+								for (var abstractId in abstracts)
+								{
+									var ngNodeId = uuid.generate();
+									var node = frameControl.getElement(abstractId);
+									result.nodes.push(
+										{
+											id: ngNodeId,
+											uuid: abstractId,
+											name: node.getContent()
+										}
+									);
+									var link = rootNode.getElement(abstractId);
+									var aspects = link.getMatrix();
+									var aspectNames = [];
+									for (var aspectId in aspects)
+									{
+										var aspect = frameControl.getElement(aspectId);
+										aspectNames.push(aspect.getContent());
+									}
+									result.links.push(
+										{
+											originNodeId: ngNodeId,
+											targetNodeId: ngRootNodeId,
+											names: aspectNames
+										}
+									);
+								}
+								// add linked concretes
+								var concretes = frameControl.getConcretes(this.nodeId);
+								for (var concreteId in concretes)
+								{
+									var ngNodeId = uuid.generate();
+									var node = frameControl.getElement(concreteId);
+									result.nodes.push(
+										{
+											id: ngNodeId,
+											uuid: concreteId,
+											name: node.getContent()
+										}
+									);
+									var link = node.getElement(this.nodeId);
+									var aspects = link.getMatrix();
+									var aspectNames = [];
+									for (var aspectId in aspects)
+									{
+										var aspect = frameControl.getElement(aspectId);
+										aspectNames.push(aspect.getContent());
+									}
+									result.links.push(
+										{
+											originNodeId: ngRootNodeId,
+											targetNodeId: ngNodeId,
+											names: aspectNames
+										}
+									);
+								}
 							}
 						}
 						viewer.load(result);
 					}
 
-					// TODO: implement nodes list inside of NodeGalaxy.
+					// TODO: implement nodes list inside of NodeGalaxy render space.
 					var container = document.getElementById('frameNodesList');
 					container.innerHTML = '';
 					var frameControl = new FrameControl(frame);

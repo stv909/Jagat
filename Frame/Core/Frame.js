@@ -95,6 +95,21 @@ function FrameControl(initFrame)
 		return JSON.stringify(frame, null, compact ? null : '\t');
 	};
 
+	var getConcreteNodes = function(nodeId)
+	{
+		var result = {};
+		for (var childId in frame.nodes)
+		{
+			var childNode = this.getElement(childId);
+			var childMatrix = childNode.getMatrix();
+			if (nodeId in childMatrix)
+			{
+				result[childId] = true;
+			}
+		}
+		return result;
+	};
+
 	this.add = addNode;
 	this.remove = removeNode;
 	this.clear = clearNodes;
@@ -102,6 +117,8 @@ function FrameControl(initFrame)
 	this.getElement = getNodeControl;
 	this.getMatrix = getNodesMatrix;
 	this.getCode = stringifyFrame;
+
+	this.getConcretes = getConcreteNodes;
 }
 
 /////////////////////////

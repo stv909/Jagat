@@ -113,7 +113,7 @@ NG.Link = function(initDesc, initGalaxy)
 			id: (new NG.Uuid()).generate(),
 			originNodeId: null,
 			targetNodeId: null,
-			names: ['?'],
+			names: [''],
 			arrow: {width: defaultArrowWidth, length: defaultArrowLength, color: 0x66A968},
 			font: {name: 'helvetiker', size: 6.0, color: 0xDDC50F}
 	};
