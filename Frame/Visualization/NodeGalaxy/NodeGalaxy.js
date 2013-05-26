@@ -196,6 +196,10 @@ NG.Link = function(initDesc, initGalaxy, initFont, initColorScheme)
 		{
 			linkName += (i > 0 ? ', ' : '') + this.desc.names[i];
 		}
+		if (linkName === '')
+		{
+			linkName = '*';
+		}
 		// TODO: implement multiline text support instead of comma separation.
 
 		this.textGeom = new THREE.TextGeometry(
@@ -630,6 +634,7 @@ NG.Galaxy = function(initOptions)
 
 	this.load = function(jsonTextSource)
 	{
+		// TODO: load from JSON object instead of text
 		var nodeGalaxyDesc;
 		try
 		{

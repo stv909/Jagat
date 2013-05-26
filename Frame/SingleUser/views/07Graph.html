@@ -27,9 +27,45 @@
 				function constructNodeGalaxyByFrame()
 				{
 					var frameControl = new FrameControl(frame);
-					// TODO: implement real construction in Graph Way
-					var resultJSON = '{}';
-					viewer.load(resultJSON);
+
+					var nodeMatrix = frameControl.getMatrix();
+					var linkMatrices = {};
+					var view = {nodes: [], links:[]};
+					for (var nodeId in nodeMatrix)
+					{
+						var node = frameControl.getElement(nodeId);
+						linkMatrices[nodeId] = node.getMatrix();
+						view.nodes.push(
+							{
+								id: nodeId, // TODO: generate special NG id
+								uuid: nodeId,
+								name: node.getContent()
+							}
+						);
+					}
+					for (var origNodeId in linkMatrices)
+					{
+						var origNode = frameControl.getElement(origNodeId);
+						for (var linkNodeId in linkMatrices[origNodeId])
+						{
+							var link = origNode.getElement(linkNodeId);
+							var aspects = link.getMatrix();
+							var aspectNames = [];
+							for (var aspectId in aspects)
+							{
+								var aspect = frameControl.getElement(aspectId);
+								aspectNames.push(aspect.getContent());
+							}
+							view.links.push(
+								{
+									originNodeId: linkNodeId, // TODO: use NG id instead of Frame id
+									targetNodeId: origNodeId, // TODO: use NG id instead of Frame id
+									names: aspectNames
+								}
+							);
+						}
+					}
+					viewer.load(JSON.stringify(view));
 				}
 
 				var frameJSON = document.getElementById('viewDataBuffer').value;
