@@ -26,11 +26,49 @@
 			{
 				function constructNodeGalaxyByFrame()
 				{
-					var frameControl = new FrameControl(frame);
 					// TODO: implement real construction in Flow Way:
 					//		view all parents and children on node click, keep trace.
-					var resultJSON = '{}';
-					viewer.load(resultJSON);
+					function onFrameNodeClick()
+					{
+						var uuid = new Uuid();
+						var frameControl = new FrameControl(frame);
+						var result = {nodes: [], links: []};
+						if (this.nodeId)
+						{
+							var rootNode = frameControl.getElement(this.nodeId);
+							if (rootNode)
+							{
+								var ngNodeIdByFrameNodeId = {};
+								var ngNodeId = uuid.generate();
+								result.nodes.push(
+									{
+										id: ngNodeId,
+										uuid: this.nodeId,
+										name: rootNode.getContent()
+									}
+								);
+								ngNodeIdByFrameNodeId[this.nodeId] = ngNodeId;
+								// TODO: add abstracts
+								// TODO: add concretes
+								// TODO: add links
+							}
+						}
+						viewer.load(result);
+					}
+
+					// TODO: implement nodes list inside of NodeGalaxy.
+					var container = document.getElementById('frameNodesList');
+					container.innerHTML = '';
+					var frameControl = new FrameControl(frame);
+					var nodeMatrix = frameControl.getMatrix();
+					for (var nodeId in nodeMatrix)
+					{
+						var button = document.createElement('button');
+						button.nodeId = nodeId;
+						button.innerHTML = frameControl.getElement(nodeId).getContent();
+						button.onclick = onFrameNodeClick;
+						container.appendChild(button);
+					}
 				}
 
 				var frameJSON = document.getElementById('viewDataBuffer').value;
@@ -65,5 +103,6 @@
 			<button id="loadView" onclick="onLoadView()">--> Frame Load</button>
 		</div>
 		<div id="nodeGalaxyContainer" style="width:1024px; height:512px; background: #2c2828;"></div>
+		<div id="frameNodesList"></div>
 	</body>
 </html>
