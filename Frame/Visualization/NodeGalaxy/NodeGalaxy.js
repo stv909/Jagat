@@ -647,23 +647,8 @@ NG.Galaxy = function(initOptions)
 		return resultLinks;
 	};
 
-	this.load = function(jsonTextSource)
+	this.load = function(nodeGalaxyDesc)
 	{
-		// TODO: load from JSON object instead of text
-		var nodeGalaxyDesc;
-		try
-		{
-			nodeGalaxyDesc = JSON.parse(jsonTextSource);
-		}
-		catch (e)
-		{
-			console.log(
-				'Can not parse given content string as JSON. String: ' +
-				jsonTextSource + '; Name: ' + e.name + '; Desc: ' + e.message
-			);
-			nodeGalaxyDesc = {};
-		}
-
 		this.clear();
 		if (nodeGalaxyDesc.nodes)
 		{

@@ -22,7 +22,20 @@
 				if (!viewer)
 					return;
 				var buffer = document.getElementById('viewDataBuffer');
-				viewer.load(buffer.value);
+				var nodeGalaxyDesc;
+				try
+				{
+					nodeGalaxyDesc = JSON.parse(buffer.value);
+				}
+				catch (e)
+				{
+					console.log(
+						'Can not parse given content string as JSON. String: ' +
+						buffer.value + '; Name: ' + e.name + '; Desc: ' + e.message
+					);
+					nodeGalaxyDesc = {};
+				}
+				viewer.load(nodeGalaxyDesc);
 			}
 
 			function onStopView()

@@ -30,18 +30,22 @@
 
 					var nodeMatrix = frameControl.getMatrix();
 					var linkMatrices = {};
-					var view = {nodes: [], links:[]};
+					var ngNodeIdByFrameNodeId = {};
+					var uuid = new Uuid();
+					var viewDesc = {nodes: [], links:[]};
 					for (var nodeId in nodeMatrix)
 					{
 						var node = frameControl.getElement(nodeId);
 						linkMatrices[nodeId] = node.getMatrix();
-						view.nodes.push(
+						var ngNodeId = uuid.generate();
+						viewDesc.nodes.push(
 							{
-								id: nodeId, // TODO: generate special NG id
+								id: ngNodeId,
 								uuid: nodeId,
 								name: node.getContent()
 							}
 						);
+						ngNodeIdByFrameNodeId[nodeId] = ngNodeId;
 					}
 					for (var origNodeId in linkMatrices)
 					{
@@ -56,10 +60,10 @@
 								var aspect = frameControl.getElement(aspectId);
 								aspectNames.push(aspect.getContent());
 							}
-							view.links.push(
+							viewDesc.links.push(
 								{
-									originNodeId: linkNodeId, // TODO: use NG id instead of Frame id
-									targetNodeId: origNodeId, // TODO: use NG id instead of Frame id
+									originNodeId:  ngNodeIdByFrameNodeId[linkNodeId],
+									targetNodeId: ngNodeIdByFrameNodeId[origNodeId],
 									names: aspectNames,
 									arrow: {
 										width: 6, // TODO: remove it after implementing NG default values system
@@ -70,7 +74,7 @@
 							);
 						}
 					}
-					viewer.load(JSON.stringify(view));
+					viewer.load(viewDesc);
 				}
 
 				var frameJSON = document.getElementById('viewDataBuffer').value;
