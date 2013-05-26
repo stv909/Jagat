@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Frame View: 07 Graph.</title>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+		<script src="../../Core/Frame.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../Visualization/NodeGalaxy/ThreeJS/Three.js"></script>
+		<script src="../../Visualization/NodeGalaxy/ThreeJS/helvetiker_bold.typeface.js"></script>
+		<script src="../../Visualization/NodeGalaxy/ThreeJS/helvetiker_regular.typeface.js"></script>
+		<script src="../../Visualization/NodeGalaxy/NodeGalaxy.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript" charset="utf-8">
+			var frame = null;
+			var viewer = null;
+
+			function onSaveView()
+			{
+				if (!viewer)
+					return;
+				var buffer = document.getElementById('viewDataBuffer');
+				buffer.value = viewer.save();
+			}
+
+			function onLoadView()
+			{
+				function constructNodeGalaxyByFrame()
+				{
+					var frameControl = new FrameControl(frame);
+					// TODO: implement real construction in Graph Way
+					var resultJSON = '{}';
+					viewer.load(resultJSON);
+				}
+
+				var frameJSON = document.getElementById('viewDataBuffer').value;
+				var initNodes;
+				try
+				{
+					initNodes = JSON.parse(frameJSON).nodes;
+				}
+				catch (e)
+				{
+					console.log('Can not parse given content string as JSON. String: ' + frameJSON + '; Name: ' + e.name + '; Desc: ' + e.message);
+					initNodes = {};
+				}
+
+				frame = new Frame(initNodes);
+				if (!viewer)
+					return;
+				constructNodeGalaxyByFrame();
+			}
+
+			function onDemoLoad()
+			{
+				viewer = new NG.Galaxy();
+				viewer.animate();
+			}
+		</script>
+	</head>
+	<body onload="onDemoLoad();">
+		<div id="dataExchange">
+			<button id="saveView" onclick="onSaveView()">NG Save --></button>
+			<textarea id="viewDataBuffer"></textarea>
+			<button id="loadView" onclick="onLoadView()">--> Frame Load</button>
+		</div>
+		<div id="nodeGalaxyContainer" style="width:1024px; height:512px; background: #2c2828;"></div>
+	</body>
+</html>
