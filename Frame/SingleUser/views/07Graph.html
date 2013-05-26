@@ -60,7 +60,12 @@
 								{
 									originNodeId: linkNodeId, // TODO: use NG id instead of Frame id
 									targetNodeId: origNodeId, // TODO: use NG id instead of Frame id
-									names: aspectNames
+									names: aspectNames,
+									arrow: {
+										width: 6, // TODO: remove it after implementing NG default values system
+										length: 10, // TODO: remove it after implementing NG default values system
+										color: aspectNames.length === 0 ? 0x494949 : 0x66A968
+									}
 								}
 							);
 						}

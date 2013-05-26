@@ -10,34 +10,47 @@ NG.Uuid = function()
 	this.generate = b;
 };
 
-NG.Node = function(initDesc, initNodeSize, initFont, initColorScheme)
+NG.Node = function(initDesc)
 {
-	this.desc = initDesc|| {id: null, uuid: null, name: '?', position: {x: 0, y: 0, z: 0}};
+	this.desc = initDesc|| {
+		id: null,
+		uuid: null,
+		name: '?',
+		font: {name: 'helvetiker', size: 6.0, color: 0x757AD8},
+		box: {width: 64, height: 16, depth: 4, color: 0xFFFFFF},
+		position: {x: 0, y: 0, z: 0}
+	};
+	// TODO: implement effective mechanism to fill default values.
 	if (!this.desc.id)
 	{
 		this.desc.id = (new NG.Uuid()).generate();
 	}
-	this.size = initNodeSize || {width: 64, height: 16, depth: 4};
-	this.font = initFont || {name: 'helvetiker', size: 6.0};
-	this.colorScheme = initColorScheme || {box: 0xFFFFFF, text: 0x757AD8};
+	if (!this.desc.font)
+	{
+		this.desc.font = {name: 'helvetiker', size: 6.0, color: 0x757AD8};
+	}
+	if (!this.desc.box)
+	{
+		this.desc.box = {width: 64, height: 16, depth: 4, color: 0xFFFFFF};
+	}
 
 	this.create = function()
 	{
 		var boxMaterial = new THREE.MeshLambertMaterial(
 			{
-				color: this.colorScheme.box
+				color: this.desc.box.color
 			}
 		);
 
 		var textMaterial = new THREE.MeshLambertMaterial(
 			{
-				color: this.colorScheme.text
+				color: this.desc.font.color
 			}
 		);
 
 		var box = new THREE.Mesh(
 			new THREE.CubeGeometry(
-				this.size.width, this.size.height, this.size.depth,
+				this.desc.box.width, this.desc.box.height, this.desc.box.depth,
 				1, 1, 1
 			),
 			boxMaterial
@@ -46,11 +59,11 @@ NG.Node = function(initDesc, initNodeSize, initFont, initColorScheme)
 		var textGeom = new THREE.TextGeometry(
 			this.desc.name,
 			{
-				size: this.font.size, // <float> // size of the text
+				size: this.desc.font.size, // <float> // size of the text
 				height: 2.0, // <float> // thickness to extrude text
 				curveSegments: 3, // <int> // number of points on the curves
 
-				font: this.font.name, // <string> // font name
+				font: this.desc.font.name, // <string> // font name
 				weight: 'bold', // <string> // font weight (normal, bold)
 				style: 'normal', // <string> // font style  (normal, italics)
 
@@ -66,7 +79,7 @@ NG.Node = function(initDesc, initNodeSize, initFont, initColorScheme)
 			textGeom,
 			textMaterial
 		);
-		text.position.z = this.size.depth;
+		text.position.z = this.desc.box.depth;
 
 		box.add(text);
 		if (this.desc.position)
@@ -83,7 +96,7 @@ NG.Node = function(initDesc, initNodeSize, initFont, initColorScheme)
 	this.recreateObject3D = function() { object3D = this.create(); };
 };
 
-NG.Link = function(initDesc, initGalaxy, initFont, initColorScheme)
+NG.Link = function(initDesc, initGalaxy)
 {
 	var defaultArrowWidth = 6;
 	var defaultArrowLength = 10;
@@ -93,19 +106,23 @@ NG.Link = function(initDesc, initGalaxy, initFont, initColorScheme)
 			originNodeId: null,
 			targetNodeId: null,
 			names: ['?'],
-			arrow: {width: defaultArrowWidth, length: defaultArrowLength}
+			arrow: {width: defaultArrowWidth, length: defaultArrowLength},
+			font: {name: 'helvetiker', size: 6.0, color: 0xDDC50F}
 		};
+	// TODO: implement effective mechanism to fill default values.
 	if (!this.desc.id)
 	{
 		this.desc.id = (new NG.Uuid()).generate();
 	}
 	if (!this.desc.arrow)
 	{
-		this.desc.arrow = {width: defaultArrowWidth, length: defaultArrowLength};
+		this.desc.arrow = {width: defaultArrowWidth, length: defaultArrowLength, color: 0x66A968};
+	}
+	if (!this.desc.font)
+	{
+		this.desc.font = {name: 'helvetiker', size: 6.0, color: 0xDDC50F};
 	}
 	this.ownerGalaxy = initGalaxy || null;
-	this.font = initFont || {name: 'helvetiker', size: 6.0};
-	this.colorScheme = initColorScheme || {arrow: 0x66A968, text: 0xDDC50F};
 
 	this.arrowGeom = null;
 	this.arrow = null;
@@ -178,7 +195,7 @@ NG.Link = function(initDesc, initGalaxy, initFont, initColorScheme)
 	{
 		var arrowMaterial = new THREE.LineBasicMaterial(
 			{
-				color: this.colorScheme.arrow,
+				color: this.desc.arrow.color,
 				opacity: 1.0,
 				linewidth: 1.0,
 				vertexColors: false
@@ -187,7 +204,7 @@ NG.Link = function(initDesc, initGalaxy, initFont, initColorScheme)
 
 		var textMaterial = new THREE.MeshLambertMaterial(
 			{
-				color: this.colorScheme.text
+				color: this.desc.font.color
 			}
 		);
 
@@ -205,11 +222,11 @@ NG.Link = function(initDesc, initGalaxy, initFont, initColorScheme)
 		this.textGeom = new THREE.TextGeometry(
 			linkName,
 			{
-				size: this.font.size, // <float> // size of the text
+				size: this.desc.font.size, // <float> // size of the text
 				height: 2.0, // <float> // thickness to extrude text
 				curveSegments: 3, // <int> // number of points on the curves
 
-				font: this.font.name, // <string> // font name
+				font: this.desc.font.name, // <string> // font name
 				weight: 'bold', // <string> // font weight (normal, bold)
 				style: 'normal', // <string> // font style  (normal, italics)
 
@@ -469,11 +486,9 @@ NG.Lights = function()
 {
 	this.create = function()
 	{
-		var pointLight = new THREE.PointLight(0xFFFFFF);
-		pointLight.position.x = 10;
-		pointLight.position.y = 50;
-		pointLight.position.z = 130;
-		return pointLight;
+		var directionalLight = new THREE.DirectionalLight( 0xFFFFFF, 0.8 );
+		directionalLight.position.set( 0, 0, 1 );
+		return directionalLight;
 	};
 
 	var object3D = this.create();
@@ -724,5 +739,5 @@ NG.Galaxy = function(initOptions)
 	this.stop = function()
 	{
 		stopAnimation = true;
-	}
+	};
 };
