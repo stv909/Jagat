@@ -85,22 +85,23 @@ NG.Node = function(initDesc, initNodeSize, initFont, initColorScheme)
 
 NG.Link = function(initDesc, initGalaxy, initFont, initColorScheme)
 {
-	var defaultArrowWidth = 10;
+	var defaultArrowWidth = 6;
+	var defaultArrowLength = 10;
 	this.desc = initDesc||
 		{
 			id: null,
 			originNodeId: null,
 			targetNodeId: null,
 			names: ['?'],
-			arrowWidth: defaultArrowWidth
+			arrow: {width: defaultArrowWidth, length: defaultArrowLength}
 		};
 	if (!this.desc.id)
 	{
 		this.desc.id = (new NG.Uuid()).generate();
 	}
-	if (!this.desc.arrowWidth)
+	if (!this.desc.arrow)
 	{
-		this.desc.arrowWidth = defaultArrowWidth;
+		this.desc.arrow = {width: defaultArrowWidth, length: defaultArrowLength};
 	}
 	this.ownerGalaxy = initGalaxy || null;
 	this.font = initFont || {name: 'helvetiker', size: 6.0};
@@ -121,30 +122,32 @@ NG.Link = function(initDesc, initGalaxy, initFont, initColorScheme)
 			text.position = center;
 		}
 
-		function constructArrow(lineGeometry, startPoint, endPoint, arrowWidth)
+		function constructArrow(lineGeometry, startPoint, endPoint, tracePoint, arrowDesc)
 		{
 			var arrowDirection = new THREE.Vector3();
 			arrowDirection.subVectors(endPoint, startPoint);
 			arrowDirection.normalize();
-			var subendPoint = new THREE.Vector3(endPoint.x, endPoint.y, endPoint.z);
+			var subendPoint = new THREE.Vector3(tracePoint.x, tracePoint.y, tracePoint.z);
 			var arrowShift = new THREE.Vector3(arrowDirection.x, arrowDirection.y, arrowDirection.z);
-			arrowShift.multiplyScalar(arrowWidth);
+			arrowShift.multiplyScalar(arrowDesc.length);
 			subendPoint.sub(arrowShift);
 			arrowDirection.applyAxisAngle(new THREE.Vector3(0, 0, 1), THREE.Math.degToRad(90));
 
 			var arrowDotLeft = new THREE.Vector3(arrowDirection.x, arrowDirection.y, arrowDirection.z);
-			arrowDotLeft.multiplyScalar(0.5 * arrowWidth);
+			arrowDotLeft.multiplyScalar(0.5 * arrowDesc.width);
 			arrowDotLeft.add(subendPoint);
 			var arrowDotRight = new THREE.Vector3(arrowDirection.x, arrowDirection.y, arrowDirection.z);
-			arrowDotRight.multiplyScalar(-0.5 * arrowWidth);
+			arrowDotRight.multiplyScalar(-0.5 * arrowDesc.width);
 			arrowDotRight.add(subendPoint);
 
 			lineGeometry.vertices = [];
 			lineGeometry.vertices.push(startPoint);
 			lineGeometry.vertices.push(endPoint);
+
+			lineGeometry.vertices.push(tracePoint);
 			lineGeometry.vertices.push(arrowDotLeft);
 			lineGeometry.vertices.push(arrowDotRight);
-			lineGeometry.vertices.push(endPoint);
+			lineGeometry.vertices.push(tracePoint);
 
 			lineGeometry.verticesNeedUpdate = true;
 		}
@@ -158,7 +161,14 @@ NG.Link = function(initDesc, initGalaxy, initFont, initColorScheme)
 			var targetVertex = this.ownerGalaxy.getNodePosition(this.desc.targetNodeId);
 			if (originVertex && targetVertex)
 			{
-				constructArrow(this.arrowGeom, originVertex, targetVertex, this.desc.arrowWidth);
+				var traceVertex = this.ownerGalaxy.getNodeRayTracePosition(
+					this.desc.targetNodeId, {origin: originVertex, target: targetVertex}
+				);
+				if (!traceVertex)
+				{
+					traceVertex = targetVertex;
+				}
+				constructArrow(this.arrowGeom, originVertex, targetVertex, traceVertex, this.desc.arrow);
 				centerText(this.text, originVertex, targetVertex);
 			}
 		}
@@ -580,6 +590,25 @@ NG.Galaxy = function(initOptions)
 		}
 		return null;
 	};
+	this.getNodeRayTracePosition = function(id, ray)
+	{
+		var node = nodes[id];
+		if (node)
+		{
+			var object3D = node.getObject3D();
+			var direction = new THREE.Vector3();
+			direction.subVectors(ray.target, ray.origin);
+			direction.normalize();
+			var raycaster = new THREE.Raycaster(ray.origin, direction);
+			object3D.updateMatrixWorld();
+			var intersects = raycaster.intersectObject(object3D);
+			if (intersects.length > 0)
+			{
+				return intersects[0].point;
+			}
+		}
+		return null;
+	};
 	this.getNodeObjects3D = function() { return nodeObjects3D; };
 	this.getLinkObjects3D = function() { return linkObjects3D; };
 	this.getLinksByNode = function(node)
@@ -680,13 +709,5 @@ NG.Galaxy = function(initOptions)
 			renderer.render(scene, camera.getObject3D());
 		}
 		animate();
-	};
-
-	this.test_UpdateAllLinks = function()
-	{
-		for (var linkId in links)
-		{
-			links[linkId].update();
-		}
 	};
 };
