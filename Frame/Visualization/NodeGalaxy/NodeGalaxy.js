@@ -10,29 +10,38 @@ NG.Uuid = function()
 	this.generate = b;
 };
 
+function fillObjectProperties(pattern, custom)
+{
+	if (!pattern || typeof pattern !== 'object' || !custom)
+		return;
+	for (var propertyKey in pattern)
+	{
+		var customValue = custom[propertyKey];
+		if (!customValue)
+			continue;
+		var property = pattern[propertyKey];
+		if (property && typeof property === 'object')
+		{
+			fillObjectProperties(property, customValue);
+		}
+		else
+		{
+			pattern[propertyKey] = customValue;
+		}
+	}
+}
+
 NG.Node = function(initDesc)
 {
-	this.desc = initDesc|| {
-		id: null,
+	this.desc = {
+		id: (new NG.Uuid()).generate(),
 		uuid: null,
 		name: '?',
 		font: {name: 'helvetiker', size: 6.0, color: 0x757AD8},
 		box: {width: 64, height: 16, depth: 4, color: 0xFFFFFF},
 		position: {x: 0, y: 0, z: 0}
 	};
-	// TODO: implement effective mechanism to fill default values.
-	if (!this.desc.id)
-	{
-		this.desc.id = (new NG.Uuid()).generate();
-	}
-	if (!this.desc.font)
-	{
-		this.desc.font = {name: 'helvetiker', size: 6.0, color: 0x757AD8};
-	}
-	if (!this.desc.box)
-	{
-		this.desc.box = {width: 64, height: 16, depth: 4, color: 0xFFFFFF};
-	}
+	fillObjectProperties(this.desc, initDesc);
 
 	this.create = function()
 	{
@@ -100,30 +109,16 @@ NG.Link = function(initDesc, initGalaxy)
 {
 	var defaultArrowWidth = 6;
 	var defaultArrowLength = 10;
-	this.desc = initDesc||
-		{
-			id: null,
+	this.desc = {
+			id: (new NG.Uuid()).generate(),
 			originNodeId: null,
 			targetNodeId: null,
 			names: ['?'],
-			arrow: {width: defaultArrowWidth, length: defaultArrowLength},
+			arrow: {width: defaultArrowWidth, length: defaultArrowLength, color: 0x66A968},
 			font: {name: 'helvetiker', size: 6.0, color: 0xDDC50F}
-		};
-	// TODO: implement effective mechanism to fill default values.
-	if (!this.desc.id)
-	{
-		this.desc.id = (new NG.Uuid()).generate();
-	}
-	if (!this.desc.arrow)
-	{
-		this.desc.arrow = {width: defaultArrowWidth, length: defaultArrowLength, color: 0x66A968};
-	}
-	if (!this.desc.font)
-	{
-		this.desc.font = {name: 'helvetiker', size: 6.0, color: 0xDDC50F};
-	}
+	};
+	fillObjectProperties(this.desc, initDesc);
 	this.ownerGalaxy = initGalaxy || null;
-
 	this.arrowGeom = null;
 	this.arrow = null;
 	this.textGeom = null;
