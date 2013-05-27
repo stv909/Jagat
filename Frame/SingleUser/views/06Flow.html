@@ -30,6 +30,44 @@
 					//		view all parents and children on node click, keep trace.
 					function onFrameNodeClick()
 					{
+						function getAspectNames(link)
+						{
+							var aspects = link.getMatrix();
+							var aspectNames = [];
+							for (var aspectId in aspects)
+							{
+								var aspect = frameControl.getElement(aspectId);
+								aspectNames.push(aspect.getContent());
+							}
+							return aspectNames;
+						}
+
+						function generatePositions(nodeIds, type)
+						{
+							var horizontalStep = 140;
+							var verticalStep = 40;
+
+							var positions = {};
+							var posX = 0;
+							var posZ = 0;
+							if (type === 'abstract')
+							{
+								posX = -horizontalStep;
+							}
+							else if (type === 'concrete')
+							{
+								posX = horizontalStep;
+							}
+							var nodeCount = Object.keys(nodeIds).length;
+							var posY = 0.5 * verticalStep * (nodeCount - 1);
+							for (var nodeId in nodeIds)
+							{
+								positions[nodeId] = {x: posX, y: posY, z: posZ};
+								posY -= verticalStep;
+							}
+							return positions;
+						}
+
 						var uuid = new Uuid();
 						var frameControl = new FrameControl(frame);
 						var result = {nodes: [], links: []};
@@ -49,6 +87,7 @@
 								);
 								// add linked abstracts
 								var abstracts = rootNode.getMatrix();
+								var apositions = generatePositions(abstracts, 'abstract');
 								for (var abstractId in abstracts)
 								{
 									var ngNodeId = uuid.generate();
@@ -57,27 +96,22 @@
 										{
 											id: ngNodeId,
 											uuid: abstractId,
-											name: node.getContent()
+											name: node.getContent(),
+											position: apositions[abstractId]
 										}
 									);
 									var link = rootNode.getElement(abstractId);
-									var aspects = link.getMatrix();
-									var aspectNames = [];
-									for (var aspectId in aspects)
-									{
-										var aspect = frameControl.getElement(aspectId);
-										aspectNames.push(aspect.getContent());
-									}
 									result.links.push(
 										{
 											originNodeId: ngNodeId,
 											targetNodeId: ngRootNodeId,
-											names: aspectNames
+											names: getAspectNames(link)
 										}
 									);
 								}
 								// add linked concretes
 								var concretes = frameControl.getConcretes(this.nodeId);
+								var cpositions = generatePositions(concretes, 'concrete');
 								for (var concreteId in concretes)
 								{
 									var ngNodeId = uuid.generate();
@@ -86,22 +120,16 @@
 										{
 											id: ngNodeId,
 											uuid: concreteId,
-											name: node.getContent()
+											name: node.getContent(),
+											position: cpositions[concreteId]
 										}
 									);
 									var link = node.getElement(this.nodeId);
-									var aspects = link.getMatrix();
-									var aspectNames = [];
-									for (var aspectId in aspects)
-									{
-										var aspect = frameControl.getElement(aspectId);
-										aspectNames.push(aspect.getContent());
-									}
 									result.links.push(
 										{
 											originNodeId: ngRootNodeId,
 											targetNodeId: ngNodeId,
-											names: aspectNames
+											names: getAspectNames(link)
 										}
 									);
 								}
