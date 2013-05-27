@@ -1,7 +1,7 @@
 Tactical plans of Jagat implementation.
 
 	1+ Implement demos of union of these technologies: C9, Direct Text Editor, NodeJS, ShareJS, ThreeJS, Frame.
-	2: Implement abstract Frame conception:
+	2. Implement abstract Frame conception:
 		2.1+ Objects conception.
 		2.2+ Objects implementation.
 		2.3+ Module test suit.
@@ -23,8 +23,8 @@ Tactical plans of Jagat implementation.
 !					2.5.2.4.8. Realtime editing for graph config.
 !				2.5.2.5+ FlowSegment.
 !				2.5.2.6. Flow.
-!					2.5.2.6.1. Basic NodeGalaxy implementation.
-!					2.5.2.6.2. Autoposition nodes.
+!					2.5.2.6.1: Basic NodeGalaxy implementation.
+!					2.5.2.6.2: Autoposition nodes.
 !				2.5.2.7. Graph.
 !					2.5.2.7.1+ Basic NodeGalaxy implementation.
 !					2.5.2.7.2. Autoposition nodes.
