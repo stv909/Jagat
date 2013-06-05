@@ -14,6 +14,13 @@ function fillObjectProperties(pattern, custom)
 {
 	if (!pattern || typeof pattern !== 'object' || !custom)
 		return;
+	if (Array.isArray(pattern) && Array.isArray(custom) && pattern.length < custom.length)
+	{
+		for (var i = pattern.length; i < custom.length; ++i)
+		{
+			pattern[i] = null;
+		}
+	}
 	for (var propertyKey in pattern)
 	{
 		var customValue = custom[propertyKey];
@@ -300,7 +307,6 @@ NG.Link = function(initDesc, initGalaxy)
 	this.create = function()
 	{
 		// TODO: implement multiline text support instead of comma separation.
-		// TODO: fix comma separation!
 		var linkName = '';
 		{
 			for (var i = 0; i < this.desc.names.length; ++i)
