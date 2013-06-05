@@ -72,9 +72,7 @@ NG.Node = function(initDesc)
 					pike.applyMatrix(new THREE.Matrix4().makeRotationZ(-0.5 * Math.PI));
 					pike.applyMatrix(new THREE.Matrix4().makeRotationX(0.25 * Math.PI));
 					pike.applyMatrix(new THREE.Matrix4().makeTranslation(
-							0.5 * (bodyWidthPart * desc.width + pikeWidthPart * desc.width),
-							0,
-							0
+							0.5 * desc.width, 0, 0
 						)
 					);
 					THREE.GeometryUtils.merge(geometry, pike);
@@ -153,17 +151,22 @@ NG.Node = function(initDesc)
 
 NG.Link = function(initDesc, initGalaxy)
 {
-	var defaultArrowWidth = 6;
-	var defaultArrowLength = 10;
 	this.desc = {
 			id: (new NG.Uuid()).generate(),
 			originNodeId: null,
 			targetNodeId: null,
 			names: [''],
-			arrow: {width: defaultArrowWidth, length: defaultArrowLength, color: 0x66A968},
+			arrow: {
+				type: 'slim',
+				pikeWidth: 6,
+				pikeLength: 10,
+				depth: 2,
+				color: 0x66A968
+			},
 			font: {name: 'helvetiker', size: 6.0, color: 0xDDC50F}
 	};
 	fillObjectProperties(this.desc, initDesc);
+
 	this.ownerGalaxy = initGalaxy || null;
 	this.arrowGeom = null;
 	this.arrow = null;
@@ -172,42 +175,104 @@ NG.Link = function(initDesc, initGalaxy)
 
 	this.update = function()
 	{
-		function centerText(text, startPoint, endPoint)
+		function centerText(text, startPoint, endPoint, depth)
 		{
 			var center = new THREE.Vector3();
 			center.addVectors(startPoint, endPoint);
 			center.multiplyScalar(0.5);
+			center.add(depth);
 			text.position = center;
 		}
 
 		function constructArrow(lineGeometry, startPoint, endPoint, tracePoint, arrowDesc)
 		{
-			var arrowDirection = new THREE.Vector3();
-			arrowDirection.subVectors(endPoint, startPoint);
-			arrowDirection.normalize();
-			var subendPoint = new THREE.Vector3(tracePoint.x, tracePoint.y, tracePoint.z);
-			var arrowShift = new THREE.Vector3(arrowDirection.x, arrowDirection.y, arrowDirection.z);
-			arrowShift.multiplyScalar(arrowDesc.length);
-			subendPoint.sub(arrowShift);
-			arrowDirection.applyAxisAngle(new THREE.Vector3(0, 0, 1), THREE.Math.degToRad(90));
+			var arrowCreation = {
+				slim: function(lineGeometry, startPoint, endPoint, tracePoint, arrowDesc)
+				{
+					var arrowDirection = new THREE.Vector3();
+					arrowDirection.subVectors(endPoint, startPoint);
+					arrowDirection.normalize();
+					var subendPoint = new THREE.Vector3(tracePoint.x, tracePoint.y, tracePoint.z);
+					var arrowShift = new THREE.Vector3(arrowDirection.x, arrowDirection.y, arrowDirection.z);
+					arrowShift.multiplyScalar(arrowDesc.pikeLength);
+					subendPoint.sub(arrowShift);
+					arrowDirection.applyAxisAngle(new THREE.Vector3(0, 0, 1), THREE.Math.degToRad(90));
 
-			var arrowDotLeft = new THREE.Vector3(arrowDirection.x, arrowDirection.y, arrowDirection.z);
-			arrowDotLeft.multiplyScalar(0.5 * arrowDesc.width);
-			arrowDotLeft.add(subendPoint);
-			var arrowDotRight = new THREE.Vector3(arrowDirection.x, arrowDirection.y, arrowDirection.z);
-			arrowDotRight.multiplyScalar(-0.5 * arrowDesc.width);
-			arrowDotRight.add(subendPoint);
+					var arrowDotLeft = new THREE.Vector3(arrowDirection.x, arrowDirection.y, arrowDirection.z);
+					arrowDotLeft.multiplyScalar(0.5 * arrowDesc.pikeWidth);
+					arrowDotLeft.add(subendPoint);
+					var arrowDotRight = new THREE.Vector3(arrowDirection.x, arrowDirection.y, arrowDirection.z);
+					arrowDotRight.multiplyScalar(-0.5 * arrowDesc.pikeWidth);
+					arrowDotRight.add(subendPoint);
 
-			lineGeometry.vertices = [];
-			lineGeometry.vertices.push(startPoint);
-			lineGeometry.vertices.push(endPoint);
+					lineGeometry.vertices = [];
+					lineGeometry.vertices.push(startPoint);
+					lineGeometry.vertices.push(endPoint);
 
-			lineGeometry.vertices.push(tracePoint);
-			lineGeometry.vertices.push(arrowDotLeft);
-			lineGeometry.vertices.push(arrowDotRight);
-			lineGeometry.vertices.push(tracePoint);
+					lineGeometry.vertices.push(tracePoint);
+					lineGeometry.vertices.push(arrowDotLeft);
+					lineGeometry.vertices.push(arrowDotRight);
+					lineGeometry.vertices.push(tracePoint);
 
-			lineGeometry.verticesNeedUpdate = true;
+					lineGeometry.verticesNeedUpdate = true;
+				},
+				fat: function(lineGeometry, startPoint, endPoint, tracePoint, arrowDesc)
+				{
+					var pikeHeightPart = 0.45;
+					var bodyHeightPart = 1.0 - pikeHeightPart;
+
+					var arrowDirection = new THREE.Vector3();
+					arrowDirection.subVectors(tracePoint, startPoint);
+					var width = arrowDirection.length();
+					var height = arrowDesc.pikeWidth;
+					var depth = arrowDesc.depth;
+
+					var pikeWidth = arrowDesc.pikeLength;
+					var bodyWidth = width - pikeWidth;
+
+					var geometry = new THREE.CubeGeometry(
+						bodyWidth, bodyHeightPart * height, depth,
+						1, 1, 1
+					);
+					var pike = new THREE.CylinderGeometry(
+						0, 0.5 * height, pikeWidth, 16, 1, false
+					);
+					pike.applyMatrix(new THREE.Matrix4().makeRotationZ(-0.5 * Math.PI));
+					pike.applyMatrix(new THREE.Matrix4().makeRotationX(0.25 * Math.PI));
+					pike.applyMatrix(new THREE.Matrix4().makeTranslation(
+							0.5 * width, 0, 0
+						)
+					);
+
+					lineGeometry.vertices = [];
+					lineGeometry.faces = [];
+					THREE.GeometryUtils.merge(lineGeometry, geometry);
+					THREE.GeometryUtils.merge(lineGeometry, pike);
+					lineGeometry.dynamic = true;
+					THREE.GeometryUtils.center(lineGeometry);
+
+					lineGeometry.applyMatrix(new THREE.Matrix4().makeRotationX(0.5 * Math.PI));
+					lineGeometry.applyMatrix(
+						new THREE.Matrix4().lookAt(startPoint, endPoint, new THREE.Vector3(0, 0, 1))
+					);
+					lineGeometry.applyMatrix(new THREE.Matrix4().makeRotationZ(0.5 * Math.PI));
+					var center = new THREE.Vector3();
+					center.addVectors(startPoint, tracePoint);
+					center.multiplyScalar(0.5);
+					lineGeometry.applyMatrix(
+						new THREE.Matrix4().makeTranslation(center.x, center.y, center.z)
+					);
+
+					lineGeometry.verticesNeedUpdate = true;
+					lineGeometry.elementsNeedUpdate = true;
+				}
+			};
+
+			var create = arrowCreation[arrowDesc.type];
+			if (create)
+			{
+				create(lineGeometry, startPoint, endPoint, tracePoint, arrowDesc);
+			}
 		}
 
 		if (
@@ -227,38 +292,32 @@ NG.Link = function(initDesc, initGalaxy)
 					traceVertex = targetVertex;
 				}
 				constructArrow(this.arrowGeom, originVertex, targetVertex, traceVertex, this.desc.arrow);
-				centerText(this.text, originVertex, targetVertex);
+				centerText(this.text, originVertex, targetVertex, new THREE.Vector3(0, 0, this.desc.arrow.depth));
 			}
 		}
 	};
 
 	this.create = function()
 	{
-		var arrowMaterial = new THREE.LineBasicMaterial(
+		// TODO: implement multiline text support instead of comma separation.
+		// TODO: fix comma separation!
+		var linkName = '';
+		{
+			for (var i = 0; i < this.desc.names.length; ++i)
 			{
-				color: this.desc.arrow.color,
-				opacity: 1.0,
-				linewidth: 1.0,
-				vertexColors: false
+				linkName += (i > 0 ? ', ' : '') + this.desc.names[i];
 			}
-		);
+			if (linkName === '')
+			{
+				linkName = '*';
+			}
+		}
 
 		var textMaterial = new THREE.MeshLambertMaterial(
 			{
 				color: this.desc.font.color
 			}
 		);
-
-		var linkName = '';
-		for (var i = 0; i < this.desc.names.length; ++i)
-		{
-			linkName += (i > 0 ? ', ' : '') + this.desc.names[i];
-		}
-		if (linkName === '')
-		{
-			linkName = '*';
-		}
-		// TODO: implement multiline text support instead of comma separation.
 
 		this.textGeom = new THREE.TextGeometry(
 			linkName,
@@ -280,11 +339,44 @@ NG.Link = function(initDesc, initGalaxy)
 		THREE.GeometryUtils.center(this.textGeom);
 		this.text = new THREE.Mesh(this.textGeom, textMaterial);
 
-		this.arrowGeom = new THREE.Geometry();
-		this.arrow = new THREE.Line(
-			this.arrowGeom,
-			arrowMaterial
-		);
+		function createArrow(desc)
+		{
+			var arrowCreation = {
+				slim: function(desc)
+				{
+					return new THREE.Line(
+						new THREE.Geometry(),
+						new THREE.LineBasicMaterial(
+							{
+								color: desc.color,
+								opacity: 1.0,
+								linewidth: 1.0,
+								vertexColors: false
+							}
+						)
+					);
+				},
+				fat: function(desc)
+				{
+					return new THREE.Mesh(
+						new THREE.Geometry(),
+						new THREE.MeshLambertMaterial(
+							{
+								color: desc.color
+							}
+						)
+					);
+				}
+			};
+
+			var create = arrowCreation[desc.type];
+			if (create)
+				return create(desc);
+			return null;
+		}
+
+		this.arrow = createArrow(this.desc.arrow);
+		this.arrowGeom = this.arrow.geometry; // TODO: simplify - don't store geometry separatly - take it from object3D
 
 		this.arrow.add(this.text);
 		this.update();

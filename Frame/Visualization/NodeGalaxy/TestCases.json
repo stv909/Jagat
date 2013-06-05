@@ -238,7 +238,13 @@
 			"names": [
 				"Planet Terror",
 				"required"
-			]
+			],
+			"arrow":
+			{
+				"type": "fat",
+				"pikeWidth": 20,
+				"pikeLength": 28
+			}
 		}
 	]
 }
