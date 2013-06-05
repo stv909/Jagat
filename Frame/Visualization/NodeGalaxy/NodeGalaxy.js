@@ -38,16 +38,68 @@ NG.Node = function(initDesc)
 		uuid: null,
 		name: '?',
 		font: {name: 'helvetiker', size: 6.0, color: 0x757AD8},
-		box: {width: 64, height: 16, depth: 4, color: 0xFFFFFF},
+		shape: {type: 'box', width: 64, height: 16, depth: 4, color: 0xFFFFFF},
 		position: {x: 0, y: 0, z: 0}
 	};
 	fillObjectProperties(this.desc, initDesc);
 
 	this.create = function()
 	{
-		var boxMaterial = new THREE.MeshLambertMaterial(
+		function createShapeGeometry(desc)
+		{
+			var shapeCreation = {
+				box: function(desc)
+				{
+					return new THREE.CubeGeometry(
+						desc.width, desc.height, desc.depth,
+						1, 1, 1
+					);
+				},
+				arrow: function(desc)
+				{
+					var pikeWidthPart = 0.25;
+					var pikeHeightPart = 0.45;
+					var bodyWidthPart = 1.0 - pikeWidthPart;
+					var bodyHeightPart = 1.0 - pikeHeightPart;
+
+					var geometry = new THREE.CubeGeometry(
+						bodyWidthPart * desc.width, bodyHeightPart * desc.height, desc.depth,
+						1, 1, 1
+					);
+					var pike = new THREE.CylinderGeometry(
+						0, 0.5 * desc.height, pikeWidthPart * desc.width, 16, 1, false
+					);
+					pike.applyMatrix(new THREE.Matrix4().makeRotationZ(-0.5 * Math.PI));
+					pike.applyMatrix(new THREE.Matrix4().makeRotationX(0.25 * Math.PI));
+					pike.applyMatrix(new THREE.Matrix4().makeTranslation(
+							0.5 * (bodyWidthPart * desc.width + pikeWidthPart * desc.width),
+							0,
+							0
+						)
+					);
+					THREE.GeometryUtils.merge(geometry, pike);
+					return geometry;
+				},
+				disc: function(desc)
+				{
+					var radius = 0.5 * Math.min(desc.width, desc.height);
+					// TODO: make ellipsoid instead of circle
+					var segments = 32; // TODO: make it dependent from size of the circle/ellipse
+					var geometry = new THREE.CylinderGeometry(radius, radius, desc.depth, segments, 1, false);
+					geometry.applyMatrix(new THREE.Matrix4().makeRotationX(0.5 * Math.PI));
+					return geometry;
+				}
+			};
+
+			var create = shapeCreation[desc.type];
+			if (create)
+				return create(desc);
+			return null;
+		}
+
+		var shapeMaterial = new THREE.MeshLambertMaterial(
 			{
-				color: this.desc.box.color
+				color: this.desc.shape.color
 			}
 		);
 
@@ -57,13 +109,7 @@ NG.Node = function(initDesc)
 			}
 		);
 
-		var box = new THREE.Mesh(
-			new THREE.CubeGeometry(
-				this.desc.box.width, this.desc.box.height, this.desc.box.depth,
-				1, 1, 1
-			),
-			boxMaterial
-		);
+		var shape = new THREE.Mesh(createShapeGeometry(this.desc.shape), shapeMaterial);
 
 		var textGeom = new THREE.TextGeometry(
 			this.desc.name,
@@ -88,15 +134,15 @@ NG.Node = function(initDesc)
 			textGeom,
 			textMaterial
 		);
-		text.position.z = this.desc.box.depth;
+		text.position.z = this.desc.shape.depth;
 
-		box.add(text);
+		shape.add(text);
 		if (this.desc.position)
 		{
-			box.position.set(this.desc.position.x, this.desc.position.y, this.desc.position.z);
+			shape.position.set(this.desc.position.x, this.desc.position.y, this.desc.position.z);
 		}
-		box.ngObject = this;
-		return box;
+		shape.ngObject = this;
+		return shape;
 	};
 
 	var object3D = this.create();

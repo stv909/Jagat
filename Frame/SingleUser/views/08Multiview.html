@@ -17,6 +17,7 @@
                 width:1250px;
                 border: 4px ridge gray;
                 height:300px;
+                overflow:auto;
 			}
 			.frameList {
                 float:left;
@@ -57,6 +58,9 @@
             var viewerCount = 0;
             
             var activeViewerNumber = 0;
+            
+            //array for viewer's identificator
+            var viewerIds = new Array;
 
 			function Selection()
 			{
@@ -123,25 +127,25 @@
     		function onNodeButtonClick()
 			{
 				selection.setNode(this.title);
-                var idd = this.parentNode.parentNode.id
+                var idd = this.parentNode.parentNode.id;
 				viewFrame(idd.substr(idd.length - 1));
 			}
     		function onSelectButtonClick()
 			{
 				selection.setNode(this.title);
-                var idd = this.parentNode.id
+                var idd = this.parentNode.id;
 				viewFrame(idd.substr(idd.length - 1));
 			}
 			function onLinkButtonClick()
 			{
 				selection.setLink(this.title);
-                var idd = this.parentNode.parentNode.id
+                var idd = this.parentNode.parentNode.id;
                 viewFrame(idd.substr(idd.length - 1));
 			}
 			function onAspectButtonClick()
 			{
 				selection.setAspect(this.title);
-                var idd = this.parentNode.parentNode.id
+                var idd = this.parentNode.parentNode.id;
                 viewFrame(idd.substr(idd.length - 1));
 			}
 
@@ -213,7 +217,7 @@
 					}
 					else
 					{
-						container.innerHTML = getNodeContent(elementId);//here's wrong elementID. It produces error for few viewer
+						container.innerHTML = getNodeContent(elementId);//here's wrong elementID. It produces error for few viewer. Doesn't work node's buttons on second, third and fourth columns
 
 						var elementButton = document.createElement("button");
 						elementButton.innerHTML = 'select';
@@ -252,8 +256,11 @@
             {
                 viewerCount++;
                 var newViewer = document.createElement("div");
+                var newViewerCount = document.createElement("div");
+                newViewerCount.innerHTML = "Viewer " + viewerCount;
                 newViewer.className = "wrap";
                 newViewer.id = "wrapViewer" + viewerCount;
+                newViewer.appendChild(newViewerCount);
                 newViewer.appendChild(createViewerColumn("frame"));
                 newViewer.appendChild(createViewerColumn("node"));
                 newViewer.appendChild(createViewerColumn("link"));
@@ -265,6 +272,10 @@
                 newViewer.appendChild(deleteViewer);
                 $("#mainParent").append(newViewer);
                 $("button").button();
+                
+                if (viewerIds[viewerCount]==undefined) viewerIds[viewerCount]=createViewerId();
+                
+                alert(viewerCount + " - id=" + viewerIds[viewerCount]);
             }
             function createViewerColumn(name)
             {
@@ -275,10 +286,28 @@
                 return columnDiv;
             }
             
+            //this function is load frame on current viewer
             function newViewerRuning()
             {
                 activeViewerNumber = document.getElementById("activeViewerNumber").value;
                 onClickLoadFrame(document.getElementById('frameSource'));
+            }
+            
+            function createViewerId()
+            {
+                var n = 100000;
+                var existed = false;
+                var result = Math.floor(Math.random( ) * (n+1));
+                do
+                {
+                    existed = false;
+                    for (var i in viewerIds)
+                    {
+                        if (result == viewerIds) existed = true;
+                    }
+                    if (existed) result = Math.floor(Math.random( ) * (n+1));
+                } while (existed);
+                return result;
             }
 
             $(function () {
@@ -297,7 +326,6 @@
                 $('#mainParent').sortable({
                     connectWith: '#mainParent',
                     cursor: 'pointer',
-                    scroll: "true" //this string turns on scroll, but scroll is on drag-space
                 }).droppable({
                     activeClass: 'highlight',
                     drop: function(event, ui) {
@@ -334,6 +362,9 @@
 		</div>
         <div id="mainParent">
     		<div class="wrap" id="wrapViewer0">
+                <div>
+                    Viewer 0
+                </div>
                 <div class="frameList" id="frameView0">
     	            [frame]
                 </div>
