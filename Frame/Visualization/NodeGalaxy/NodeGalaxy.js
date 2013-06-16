@@ -160,8 +160,8 @@ NG.Link = function(initDesc, initGalaxy)
 {
 	this.desc = {
 			id: (new NG.Uuid()).generate(),
-			originNodeId: null,
-			targetNodeId: null,
+			originNodeId: null, // TODO: rename originNodeId -> originElementId
+			targetNodeId: null, // TODO: rename targetNodeId -> targetElementId
 			names: [''],
 			arrow: {
 				type: 'slim',
@@ -182,11 +182,17 @@ NG.Link = function(initDesc, initGalaxy)
 
 	this.update = function()
 	{
-		function centerText(text, startPoint, endPoint, depth)
+		function getCenterPoint(startPoint, endPoint)
 		{
 			var center = new THREE.Vector3();
 			center.addVectors(startPoint, endPoint);
 			center.multiplyScalar(0.5);
+			return center;
+		}
+
+		function centerText(text, startPoint, endPoint, depth)
+		{
+			var center = getCenterPoint(startPoint, endPoint);
 			center.add(depth);
 			text.position = center;
 		}
@@ -287,17 +293,24 @@ NG.Link = function(initDesc, initGalaxy)
 			this.ownerGalaxy
 		)
 		{
-			var originVertex = this.ownerGalaxy.getNodePosition(this.desc.originNodeId);
-			var targetVertex = this.ownerGalaxy.getNodePosition(this.desc.targetNodeId);
+			var originVertex = this.ownerGalaxy.getElementPosition(this.desc.originNodeId);
+			var targetVertex = this.ownerGalaxy.getElementPosition(this.desc.targetNodeId);
 			if (originVertex && targetVertex)
 			{
-				var traceVertex = this.ownerGalaxy.getNodeRayTracePosition(
+				var traceVertex = this.ownerGalaxy.getElementRayTracePosition(
 					this.desc.targetNodeId, {origin: originVertex, target: targetVertex}
 				);
 				if (!traceVertex)
 				{
 					traceVertex = targetVertex;
 				}
+/*
+				// TODO: resolve positioning problem
+				this.arrow.position = getCenterPoint(originVertex, targetVertex);
+				originVertex.sub(this.arrow.position);
+				targetVertex.sub(this.arrow.position);
+				traceVertex.sub(this.arrow.position);
+*/
 				constructArrow(this.arrowGeom, originVertex, targetVertex, traceVertex, this.desc.arrow);
 				centerText(this.text, originVertex, targetVertex, new THREE.Vector3(0, 0, this.desc.arrow.depth));
 			}
@@ -692,6 +705,35 @@ NG.Galaxy = function(initOptions)
 		}
 	}
 
+	function traceObject3D(object3D, ray)
+	{
+		var direction = new THREE.Vector3();
+		direction.subVectors(ray.target, ray.origin);
+		direction.normalize();
+		var raycaster = new THREE.Raycaster(ray.origin, direction);
+		object3D.updateMatrixWorld();
+		var intersects = raycaster.intersectObject(object3D);
+		if (intersects.length > 0)
+		{
+			return intersects[0].point;
+		}
+		return null;
+	}
+
+	function getObject3DByElementId(id)
+	{
+		var object3D = null;
+		if (nodes[id])
+		{
+			object3D = nodes[id].getObject3D();
+		}
+		else if (links[id])
+		{
+			object3D = links[id].getObject3D();
+		}
+		return object3D;
+	}
+
 	this.addNode = function(desc)
 	{
 		var node = new NG.Node(desc);
@@ -740,32 +782,17 @@ NG.Galaxy = function(initOptions)
 		}
 	};
 
-	this.getNodePosition = function(id)
+	this.getElementPosition = function(id)
 	{
-		if (nodes[id] && nodes[id].getObject3D())
-		{
-			return nodes[id].getObject3D().position;
-		}
-		return null;
+		var object3D = getObject3DByElementId(id);
+		// TODO: return center of the link line for links
+		return object3D ? object3D.position : null;
 	};
-	this.getNodeRayTracePosition = function(id, ray)
+	this.getElementRayTracePosition = function(id, ray)
 	{
-		var node = nodes[id];
-		if (node)
-		{
-			var object3D = node.getObject3D();
-			var direction = new THREE.Vector3();
-			direction.subVectors(ray.target, ray.origin);
-			direction.normalize();
-			var raycaster = new THREE.Raycaster(ray.origin, direction);
-			object3D.updateMatrixWorld();
-			var intersects = raycaster.intersectObject(object3D);
-			if (intersects.length > 0)
-			{
-				return intersects[0].point;
-			}
-		}
-		return null;
+		var object3D = getObject3DByElementId(id);
+		// TODO: return center of the link line for slim arrows
+		return object3D ? traceObject3D(object3D, ray) : null;
 	};
 	this.getNodeObjects3D = function() { return nodeObjects3D; };
 	this.getLinkObjects3D = function() { return linkObjects3D; };
