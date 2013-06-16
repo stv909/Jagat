@@ -50,7 +50,6 @@ function createMultilineTextObject3D(textlines, textcolor)
 
 	var textLinesDistanceMultiplier = 0.4;
 	var textGeomEmpty = true;
-	var testOffset = 0; ///
 	for (var lineIndex = 0; lineIndex < textlines.length; ++lineIndex)
 	{
 		var string = textlines[lineIndex].string;
@@ -70,8 +69,6 @@ function createMultilineTextObject3D(textlines, textcolor)
 				0
 			)
 		);
-		testOffset -= 16;///
-
 		THREE.GeometryUtils.merge(textGeom, stringGeom);
 		textGeomEmpty = false;
 	}
