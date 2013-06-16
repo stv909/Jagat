@@ -299,11 +299,11 @@ NG.Link = function(initDesc, initGalaxy)
 			this.ownerGalaxy
 		)
 		{
-			var originVertex = this.ownerGalaxy.getElementPosition(this.desc.originNodeId);
-			var targetVertex = this.ownerGalaxy.getElementPosition(this.desc.targetNodeId);
+			var originVertex = this.ownerGalaxy.getNodePosition(this.desc.originNodeId);
+			var targetVertex = this.ownerGalaxy.getNodePosition(this.desc.targetNodeId);
 			if (originVertex && targetVertex)
 			{
-				var traceVertex = this.ownerGalaxy.getElementRayTracePosition(
+				var traceVertex = this.ownerGalaxy.getNodeRayTracePosition(
 					this.desc.targetNodeId, {origin: originVertex, target: targetVertex}
 				);
 				if (!traceVertex)
@@ -737,20 +737,6 @@ NG.Galaxy = function(initOptions)
 		return null;
 	}
 
-	function getObject3DByElementId(id)
-	{
-		var object3D = null;
-		if (nodes[id])
-		{
-			object3D = nodes[id].getObject3D();
-		}
-		else if (links[id])
-		{
-			object3D = links[id].getObject3D();
-		}
-		return object3D;
-	}
-
 	this.addNode = function(desc)
 	{
 		var node = new NG.Node(desc);
@@ -799,15 +785,29 @@ NG.Galaxy = function(initOptions)
 		}
 	};
 
-	this.getElementPosition = function(id)
+	this.getNodePosition = function(id)
 	{
-		var object3D = getObject3DByElementId(id);
-		return object3D ? object3D.position : null;
+		if (nodes[id] && nodes[id].getObject3D())
+			return nodes[id].getObject3D().position;
+		return null;
 	};
-	this.getElementRayTracePosition = function(id, ray)
+	this.getLinkPosition = function(id)
 	{
-		var object3D = getObject3DByElementId(id);
-		return object3D ? traceObject3D(object3D, ray) : null;
+		if (links[id] && links[id].getObject3D())
+			return links[id].getObject3D().position;
+		return null;
+	};
+	this.getNodeRayTracePosition = function(id, ray)
+	{
+		if (nodes[id] && nodes[id].getObject3D())
+			return traceObject3D(nodes[id].getObject3D(), ray);
+		return null;
+	};
+	this.getLinkRayTracePosition = function(id, ray)
+	{
+		if (links[id] && links[id].getObject3D())
+			return traceObject3D(links[id].getObject3D(), ray);
+		return null;
 	};
 	this.getNodeObjects3D = function() { return nodeObjects3D; };
 	this.getLinkObjects3D = function() { return linkObjects3D; };
