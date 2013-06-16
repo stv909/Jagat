@@ -38,13 +38,50 @@ function fillObjectProperties(pattern, custom)
 	}
 }
 
+function createMultilineTextObject3D(textlines, textcolor)
+{
+	var textMaterial = new THREE.MeshLambertMaterial(
+		{
+			color: textcolor
+		}
+	);
+	var textGeom = new THREE.Geometry();
+
+	var textLinesDistanceMultiplier = 0.25;
+	for (var lineIndex = 0; lineIndex < textlines.length; ++lineIndex)
+	{
+		var string = textlines[lineIndex].string;
+		if (!string || !string.length)
+			continue;
+		var stringGeom = new THREE.TextGeometry(string, textlines[lineIndex].format);
+		stringGeom.dynamic = true;
+		THREE.GeometryUtils.center(stringGeom);
+		textGeom.computeBoundingBox();
+
+// TODO: implement multiline merge.
+/*
+		textDescriptionGeom.computeBoundingBox();
+		textDescription.position.y += (1.0 + textLinesDistanceMultiplier) * (textGeom.boundingBox.min.y - textGeom.boundingBox.max.y);
+*/
+		textGeom = stringGeom; // TEST
+		break; // TEST
+	}
+
+	var text = new THREE.Mesh(
+		textGeom,
+		textMaterial
+	);
+	return text;
+}
+
 NG.Node = function(initDesc)
 {
 	this.desc = {
 		id: (new NG.Uuid()).generate(),
 		uuid: null,
-		name: '?',
-		font: {name: 'helvetiker', size: 6.0, color: 0x757AD8},
+		name: '',
+		descriptions: [],
+		font: {name: 'helvetiker', size: 6.0, subsize: 4.0, color: 0x757AD8},
 		shape: {type: 'box', width: 64, height: 16, depth: 4, color: 0xFFFFFF},
 		position: {x: 0, y: 0, z: 0}
 	};
@@ -52,6 +89,8 @@ NG.Node = function(initDesc)
 
 	this.create = function()
 	{
+		var nameDescriptionsDistanceMultiplier = 0.25;
+
 		function createShapeGeometry(desc)
 		{
 			var shapeCreation = {
@@ -107,41 +146,52 @@ NG.Node = function(initDesc)
 				color: this.desc.shape.color
 			}
 		);
-
-		var textMaterial = new THREE.MeshLambertMaterial(
-			{
-				color: this.desc.font.color
-			}
-		);
-
 		var shape = new THREE.Mesh(createShapeGeometry(this.desc.shape), shapeMaterial);
 
-		var textGeom = new THREE.TextGeometry(
-			this.desc.name,
+		var multilineDesc = [];
+		multilineDesc.push(
 			{
-				size: this.desc.font.size, // <float> // size of the text
-				height: 2.0, // <float> // thickness to extrude text
-				curveSegments: 3, // <int> // number of points on the curves
+				string: this.desc.name,
+				format: {
+					size: this.desc.font.size, // <float> // size of the text
+					height: 2.0, // <float> // thickness to extrude text
+					curveSegments: 3, // <int> // number of points on the curves
 
-				font: this.desc.font.name, // <string> // font name
-				weight: 'bold', // <string> // font weight (normal, bold)
-				style: 'normal', // <string> // font style  (normal, italics)
+					font: this.desc.font.name, // <string> // font name
+					weight: 'bold', // <string> // font weight (normal, bold)
+					style: 'normal', // <string> // font style  (normal, italics)
 
-				bevelEnabled: false, // <bool> // turn on bevel
-				bevelThickness: 0.25, // <float> // how deep into text bevel goes
-				bevelSize: 0.25 // <float> // how far from text outline is bevel
+					bevelEnabled: false, // <bool> // turn on bevel
+					bevelThickness: 0.25, // <float> // how deep into text bevel goes
+					bevelSize: 0.25 // <float> // how far from text outline is bevel
+				}
 			}
 		);
-		textGeom.dynamic = true;
-		THREE.GeometryUtils.center(textGeom);
+		for (var i = 0; i < this.desc.descriptions.length; ++i)
+		{
+			multilineDesc.push(
+				{
+					string: this.desc.descriptions[i],
+					format: {
+						size: this.desc.font.subsize, // <float> // size of the text
+						height: 2.0, // <float> // thickness to extrude text
+						curveSegments: 3, // <int> // number of points on the curves
 
-		var text = new THREE.Mesh(
-			textGeom,
-			textMaterial
-		);
+						font: this.desc.font.name, // <string> // font name
+						weight: 'bold', // <string> // font weight (normal, bold)
+						style: 'normal', // <string> // font style  (normal, italics)
+
+						bevelEnabled: false, // <bool> // turn on bevel
+						bevelThickness: 0.25, // <float> // how deep into text bevel goes
+						bevelSize: 0.25 // <float> // how far from text outline is bevel
+					}
+				}
+			);
+		}
+		var text = createMultilineTextObject3D(multilineDesc, this.desc.font.color);
 		text.position.z = this.desc.shape.depth;
-
 		shape.add(text);
+
 		if (this.desc.position)
 		{
 			shape.position.set(this.desc.position.x, this.desc.position.y, this.desc.position.z);
@@ -162,7 +212,7 @@ NG.Link = function(initDesc, initGalaxy)
 			id: (new NG.Uuid()).generate(),
 			originNodeId: null,
 			targetNodeId: null,
-			names: [''],
+			names: [],
 			arrow: {
 				type: 'slim',
 				pikeWidth: 6,
@@ -177,7 +227,6 @@ NG.Link = function(initDesc, initGalaxy)
 	this.ownerGalaxy = initGalaxy || null;
 	this.arrowGeom = null;
 	this.arrow = null;
-	this.textGeom = null;
 	this.text = null;
 
 	this.update = function()
@@ -311,7 +360,7 @@ NG.Link = function(initDesc, initGalaxy)
 					traceVertex = targetVertex;
 				}
 
-				var arrowPosition = getCenterPoint(originVertex, targetVertex);
+				var arrowPosition = getCenterPoint(originVertex, traceVertex);
 				var localOriginVertex = new THREE.Vector3();
 				var localTargetVertex = new THREE.Vector3();
 				var localTraceVertex = new THREE.Vector3();
@@ -327,7 +376,7 @@ NG.Link = function(initDesc, initGalaxy)
 				);
 				centerText(
 					this.text,
-					localOriginVertex, localTargetVertex,
+					localOriginVertex, localTraceVertex,
 					new THREE.Vector3(0, 0, this.desc.arrow.depth)
 				);
 			}
@@ -336,45 +385,6 @@ NG.Link = function(initDesc, initGalaxy)
 
 	this.create = function()
 	{
-		// TODO: implement multiline text support instead of comma separation.
-		var linkName = '';
-		{
-			for (var i = 0; i < this.desc.names.length; ++i)
-			{
-				linkName += (i > 0 ? ', ' : '') + this.desc.names[i];
-			}
-			if (linkName === '')
-			{
-				linkName = '*';
-			}
-		}
-
-		var textMaterial = new THREE.MeshLambertMaterial(
-			{
-				color: this.desc.font.color
-			}
-		);
-
-		this.textGeom = new THREE.TextGeometry(
-			linkName,
-			{
-				size: this.desc.font.size, // <float> // size of the text
-				height: 2.0, // <float> // thickness to extrude text
-				curveSegments: 3, // <int> // number of points on the curves
-
-				font: this.desc.font.name, // <string> // font name
-				weight: 'bold', // <string> // font weight (normal, bold)
-				style: 'normal', // <string> // font style  (normal, italics)
-
-				bevelEnabled: false, // <bool> // turn on bevel
-				bevelThickness: 0.25, // <float> // how deep into text bevel goes
-				bevelSize: 0.25 // <float> // how far from text outline is bevel
-			}
-		);
-		this.textGeom.dynamic = true;
-		THREE.GeometryUtils.center(this.textGeom);
-		this.text = new THREE.Mesh(this.textGeom, textMaterial);
-
 		function createArrow(desc)
 		{
 			var arrowCreation = {
@@ -414,9 +424,32 @@ NG.Link = function(initDesc, initGalaxy)
 		this.arrow = createArrow(this.desc.arrow);
 		this.arrowGeom = this.arrow.geometry; // TODO: simplify - don't store geometry separatly - take it from object3D
 
-		this.arrow.add(this.text);
-		this.update();
+		var multilineDesc = [];
+		for (var i = 0; i < this.desc.names.length; ++i)
+		{
+			multilineDesc.push(
+				{
+					string: this.desc.names[i],
+					format: {
+						size: this.desc.font.size, // <float> // size of the text
+						height: 2.0, // <float> // thickness to extrude text
+						curveSegments: 3, // <int> // number of points on the curves
 
+						font: this.desc.font.name, // <string> // font name
+						weight: 'bold', // <string> // font weight (normal, bold)
+						style: 'normal', // <string> // font style  (normal, italics)
+
+						bevelEnabled: false, // <bool> // turn on bevel
+						bevelThickness: 0.25, // <float> // how deep into text bevel goes
+						bevelSize: 0.25 // <float> // how far from text outline is bevel
+					}
+				}
+			);
+		}
+		this.text = createMultilineTextObject3D(multilineDesc, this.desc.font.color);
+		this.arrow.add(this.text);
+
+		this.update();
 		this.arrow.ngObject = this;
 		return this.arrow;
 	};
