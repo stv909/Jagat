@@ -363,3 +363,861 @@
 }
 -----------------------------------------------------------
 -----------------------------------------------------------
+{
+	"nodes": [
+		{
+			"id": "6eaa56d1-62dc-42b7-96c2-78b88c9b96a6",
+			"uuid": "f6106b41-dd7f-4984-b82e-9a6428bda663",
+			"name": "State 0",
+			"font": {
+				"name": "helvetiker",
+				"size": 6,
+				"color": 7699160
+			},
+			"shape": {
+				"type": "box",
+				"width": 64,
+				"height": 16,
+				"depth": 4,
+				"color": 16777215
+			},
+			"position": {
+				"x": -77.66289051884941,
+				"y": 72.80895986141581,
+				"z": -2.2794210963184014e-11
+			}
+		},
+		{
+			"id": "b29c3bcd-381e-4abb-80c0-305d08b973af",
+			"uuid": "1730c62b-4310-4a81-8c8a-42abdc6eab4c",
+			"name": "State 2",
+			"font": {
+				"name": "helvetiker",
+				"size": 6,
+				"color": 7699160
+			},
+			"shape": {
+				"type": "box",
+				"width": 64,
+				"height": 16,
+				"depth": 4,
+				"color": 16777215
+			},
+			"position": {
+				"x": 202.89430148047205,
+				"y": 73.77974599289868,
+				"z": -2.8535396268125623e-11
+			}
+		},
+		{
+			"id": "00411a28-f28c-4470-bc06-95442afc2e0e",
+			"uuid": "dea1cbb8-e30e-445e-ac73-e680898fcf91",
+			"name": "State 4",
+			"font": {
+				"name": "helvetiker",
+				"size": 6,
+				"color": 7699160
+			},
+			"shape": {
+				"type": "box",
+				"width": 64,
+				"height": 16,
+				"depth": 4,
+				"color": 16777215
+			},
+			"position": {
+				"x": 57.76177482338626,
+				"y": -104.35950913468879,
+				"z": -1.5347723092418164e-11
+			}
+		},
+		{
+			"id": "54f45077-aee7-4eda-9823-42bc70f7edc6",
+			"uuid": "8fa6b8bb-81e2-4f11-a84b-97e4ded1b38f",
+			"name": "Transition 1",
+			"font": {
+				"name": "helvetiker",
+				"size": 6,
+				"color": 7699160
+			},
+			"shape": {
+				"type": "disc",
+				"width": 24,
+				"height": 24,
+				"depth": 4,
+				"color": 16777215
+			},
+			"position": {
+				"x": 77.17749745309399,
+				"y": 114.06737044953935,
+				"z": -1.8758328224066645e-12
+			}
+		},
+		{
+			"id": "ad959144-d67c-4ede-9e8a-108fe88529c1",
+			"uuid": "b55f30c7-e173-4a46-8476-b68b8fdc1dbe",
+			"name": "Transition 3",
+			"font": {
+				"name": "helvetiker",
+				"size": 6,
+				"color": 7699160
+			},
+			"shape": {
+				"type": "disc",
+				"width": 24,
+				"height": 24,
+				"depth": 4,
+				"color": 16777215
+			},
+			"position": {
+				"x": 52.90784416595274,
+				"y": 78.63367665032068,
+				"z": 8.526512829121202e-12
+			}
+		},
+		{
+			"id": "f38a97b4-8f4f-444a-bb65-ef19627c468e",
+			"uuid": "1bec25d7-8579-4c84-a3ad-2c72de675cda",
+			"name": "Transition 5",
+			"font": {
+				"name": "helvetiker",
+				"size": 6,
+				"color": 7699160
+			},
+			"shape": {
+				"type": "disc",
+				"width": 24,
+				"height": 24,
+				"depth": 4,
+				"color": 16777215
+			},
+			"position": {
+				"x": 208.23362520361292,
+				"y": -71.8381737299175,
+				"z": 2.4556356947869062e-11
+			}
+		},
+		{
+			"id": "45a9d750-4a27-4895-b2b2-39db6cbeab85",
+			"uuid": "5ba9e2b5-7bad-4839-8c97-ee8ebdd81b2d",
+			"name": "Transition 6",
+			"font": {
+				"name": "helvetiker",
+				"size": 6,
+				"color": 7699160
+			},
+			"shape": {
+				"type": "disc",
+				"width": 24,
+				"height": 24,
+				"depth": 4,
+				"color": 16777215
+			},
+			"position": {
+				"x": -78.14828358457433,
+				"y": -74.26513905863246,
+				"z": 5.229594535194337e-12
+			}
+		},
+		{
+			"id": "69612f7a-fe6f-413c-b7e3-8e9e8e3581a3",
+			"uuid": "6f7d8168-d5dd-4565-b441-31e6f2f100b7",
+			"name": "Animation: stand_freely_thanks_worship_reserved",
+			"font": {
+				"name": "helvetiker",
+				"size": 6,
+				"color": 7699160
+			},
+			"shape": {
+				"type": "disc",
+				"width": 64,
+				"height": 16,
+				"depth": 4,
+				"color": 16777215
+			},
+			"position": {
+				"x": -178.1392551275764,
+				"y": -18.444936498221992,
+				"z": -3.751665644813329e-12
+			}
+		},
+		{
+			"id": "c063eaea-7902-4c79-8715-29619cac3c26",
+			"uuid": "0cdc9efc-eecc-43c7-8910-4f6c6700e9e3",
+			"name": "Animation: stand_freely_act_beat",
+			"font": {
+				"name": "helvetiker",
+				"size": 6,
+				"color": 7699160
+			},
+			"shape": {
+				"type": "disc",
+				"width": 64,
+				"height": 16,
+				"depth": 4,
+				"color": 16777215
+			},
+			"position": {
+				"x": -179.11004125909517,
+				"y": 39.31683832516583,
+				"z": -6.298250809777528e-11
+			}
+		},
+		{
+			"id": "e671b797-0c29-4a9e-9fa4-b5302c870aec",
+			"uuid": "3a762c76-bc81-42ca-a48f-ebe8e796d326",
+			"name": "Blend",
+			"font": {
+				"name": "helvetiker",
+				"size": 6,
+				"color": 7699160
+			},
+			"shape": {
+				"type": "disc",
+				"width": 64,
+				"height": 16,
+				"depth": 4,
+				"color": 16777215
+			},
+			"position": {
+				"x": -41.258410588127944,
+				"y": 19.901115695451246,
+				"z": 1.3812950783176348e-11
+			}
+		},
+		{
+			"id": "54d2a109-32c1-463d-b437-eef7281d37c7",
+			"uuid": "3aebc60f-6fbe-47f7-a7c7-407598f7cced",
+			"name": "Animation: stand_freely_jump",
+			"font": {
+				"name": "helvetiker",
+				"size": 6,
+				"color": 7699160
+			},
+			"shape": {
+				"type": "disc",
+				"width": 64,
+				"height": 16,
+				"depth": 4,
+				"color": 16777215
+			},
+			"position": {
+				"x": 168.91678687847278,
+				"y": 19.901115695453797,
+				"z": -3.524291969370097e-12
+			}
+		},
+		{
+			"id": "0b478f5d-562c-4063-9df5-6be133132df3",
+			"uuid": "d1955799-7203-4e02-b18e-21d3fc05b984",
+			"name": "Transition",
+			"font": {
+				"name": "helvetiker",
+				"size": 6,
+				"color": 7699160
+			},
+			"shape": {
+				"type": "disc",
+				"width": 64,
+				"height": 16,
+				"depth": 4,
+				"color": 16777215
+			},
+			"position": {
+				"x": 78.63367665033093,
+				"y": -5.824716788913944,
+				"z": -2.063416104647331e-11
+			}
+		},
+		{
+			"id": "53b46066-02e9-4ec7-ba67-fb43a7c80cc2",
+			"uuid": "a0d852c3-0558-4ea5-abda-0b33cf2582e8",
+			"name": "Transition",
+			"font": {
+				"name": "helvetiker",
+				"size": 6,
+				"color": 7699160
+			},
+			"shape": {
+				"type": "disc",
+				"width": 64,
+				"height": 16,
+				"depth": 4,
+				"color": 16777215
+			},
+			"position": {
+				"x": 35.919086864961706,
+				"y": 41.743803653874885,
+				"z": -1.1027623258996755e-11
+			}
+		},
+		{
+			"id": "4222c191-db09-40d4-9d4c-33de103d5900",
+			"uuid": "a3feb998-2d73-4094-a926-e5486f7bb164",
+			"name": "Animation: stand_freely_mirth_ballet_pas",
+			"font": {
+				"name": "helvetiker",
+				"size": 6,
+				"color": 7699160
+			},
+			"shape": {
+				"type": "disc",
+				"width": 64,
+				"height": 16,
+				"depth": 4,
+				"color": 16777215
+			},
+			"position": {
+				"x": 58.7325609548708,
+				"y": -62.13031241507046,
+				"z": -1.2278178473934531e-11
+			}
+		},
+		{
+			"id": "b85293e2-6a07-443c-9a6e-b818f521e9a2",
+			"uuid": "5c0667a9-2fe2-454e-9e92-c165d8ee07bd",
+			"name": "Transition",
+			"font": {
+				"name": "helvetiker",
+				"size": 6,
+				"color": 7699160
+			},
+			"shape": {
+				"type": "disc",
+				"width": 64,
+				"height": 16,
+				"depth": 4,
+				"color": 16777215
+			},
+			"position": {
+				"x": 169.88757300995616,
+				"y": -42.22919671961795,
+				"z": -9.663381206337363e-12
+			}
+		},
+		{
+			"id": "c6918a93-4b87-4be5-8f0b-343012e7e0d2",
+			"uuid": "2441b3fe-943a-4a81-9fa9-7ea0970237e0",
+			"name": "Transition",
+			"font": {
+				"name": "helvetiker",
+				"size": 6,
+				"color": 7699160
+			},
+			"shape": {
+				"type": "disc",
+				"width": 64,
+				"height": 16,
+				"depth": 4,
+				"color": 16777215
+			},
+			"position": {
+				"x": -42.22919671961771,
+				"y": -45.1415551140715,
+				"z": -1.3642420526593924e-11
+			}
+		}
+	],
+	"links": [
+		{
+			"id": "73ca9242-a73f-45ad-8c41-b5faebc4858e",
+			"originNodeId": "6eaa56d1-62dc-42b7-96c2-78b88c9b96a6",
+			"targetNodeId": "54f45077-aee7-4eda-9823-42bc70f7edc6",
+			"names": [
+				""
+			],
+			"arrow": {
+				"type": "fat",
+				"pikeWidth": 24,
+				"pikeLength": 1,
+				"depth": 2,
+				"color": 16777215
+			},
+			"font": {
+				"name": "helvetiker",
+				"size": 6,
+				"color": 14533903
+			}
+		},
+		{
+			"id": "71ee5bf8-c69e-462e-ab10-44462af0c37c",
+			"originNodeId": "54f45077-aee7-4eda-9823-42bc70f7edc6",
+			"targetNodeId": "b29c3bcd-381e-4abb-80c0-305d08b973af",
+			"names": [
+				""
+			],
+			"arrow": {
+				"type": "fat",
+				"pikeWidth": 24,
+				"pikeLength": 36,
+				"depth": 2,
+				"color": 16777215
+			},
+			"font": {
+				"name": "helvetiker",
+				"size": 6,
+				"color": 14533903
+			}
+		},
+		{
+			"id": "442ad65e-5bee-448b-a297-57b2ffd7f704",
+			"originNodeId": "b29c3bcd-381e-4abb-80c0-305d08b973af",
+			"targetNodeId": "ad959144-d67c-4ede-9e8a-108fe88529c1",
+			"names": [
+				""
+			],
+			"arrow": {
+				"type": "fat",
+				"pikeWidth": 24,
+				"pikeLength": 1,
+				"depth": 2,
+				"color": 16777215
+			},
+			"font": {
+				"name": "helvetiker",
+				"size": 6,
+				"color": 14533903
+			}
+		},
+		{
+			"id": "cd3b35bc-bec7-44e9-be50-2388801c087f",
+			"originNodeId": "ad959144-d67c-4ede-9e8a-108fe88529c1",
+			"targetNodeId": "6eaa56d1-62dc-42b7-96c2-78b88c9b96a6",
+			"names": [
+				""
+			],
+			"arrow": {
+				"type": "fat",
+				"pikeWidth": 24,
+				"pikeLength": 36,
+				"depth": 2,
+				"color": 16777215
+			},
+			"font": {
+				"name": "helvetiker",
+				"size": 6,
+				"color": 14533903
+			}
+		},
+		{
+			"id": "b285bbde-c944-43d8-8e2c-b658c823727d",
+			"originNodeId": "b29c3bcd-381e-4abb-80c0-305d08b973af",
+			"targetNodeId": "f38a97b4-8f4f-444a-bb65-ef19627c468e",
+			"names": [
+				""
+			],
+			"arrow": {
+				"type": "fat",
+				"pikeWidth": 24,
+				"pikeLength": 1,
+				"depth": 2,
+				"color": 16777215
+			},
+			"font": {
+				"name": "helvetiker",
+				"size": 6,
+				"color": 14533903
+			}
+		},
+		{
+			"id": "3389c819-86f6-43df-ac30-6118281e5992",
+			"originNodeId": "f38a97b4-8f4f-444a-bb65-ef19627c468e",
+			"targetNodeId": "00411a28-f28c-4470-bc06-95442afc2e0e",
+			"names": [
+				""
+			],
+			"arrow": {
+				"type": "fat",
+				"pikeWidth": 24,
+				"pikeLength": 36,
+				"depth": 2,
+				"color": 16777215
+			},
+			"font": {
+				"name": "helvetiker",
+				"size": 6,
+				"color": 14533903
+			}
+		},
+		{
+			"id": "52afbeb1-67ed-41e9-99e3-7862c0f51525",
+			"originNodeId": "00411a28-f28c-4470-bc06-95442afc2e0e",
+			"targetNodeId": "45a9d750-4a27-4895-b2b2-39db6cbeab85",
+			"names": [
+				""
+			],
+			"arrow": {
+				"type": "fat",
+				"pikeWidth": 24,
+				"pikeLength": 1,
+				"depth": 2,
+				"color": 16777215
+			},
+			"font": {
+				"name": "helvetiker",
+				"size": 6,
+				"color": 14533903
+			}
+		},
+		{
+			"id": "f73b61f1-42e0-4abb-9a15-0cccdb2775e8",
+			"originNodeId": "45a9d750-4a27-4895-b2b2-39db6cbeab85",
+			"targetNodeId": "6eaa56d1-62dc-42b7-96c2-78b88c9b96a6",
+			"names": [
+				""
+			],
+			"arrow": {
+				"type": "fat",
+				"pikeWidth": 24,
+				"pikeLength": 36,
+				"depth": 2,
+				"color": 16777215
+			},
+			"font": {
+				"name": "helvetiker",
+				"size": 6,
+				"color": 14533903
+			}
+		},
+		{
+			"id": "4134fc97-d2df-42e4-8e79-b62e7e1e5eff",
+			"originNodeId": "69612f7a-fe6f-413c-b7e3-8e9e8e3581a3",
+			"targetNodeId": "e671b797-0c29-4a9e-9fa4-b5302c870aec",
+			"names": [
+				"From"
+			],
+			"arrow": {
+				"type": "slim",
+				"pikeWidth": 6,
+				"pikeLength": 10,
+				"depth": 2,
+				"color": 6728040
+			},
+			"font": {
+				"name": "helvetiker",
+				"size": 6,
+				"color": 14533903
+			}
+		},
+		{
+			"id": "c1e6db98-c643-43da-8101-e2848a36b5eb",
+			"originNodeId": "c063eaea-7902-4c79-8715-29619cac3c26",
+			"targetNodeId": "e671b797-0c29-4a9e-9fa4-b5302c870aec",
+			"names": [
+				"To"
+			],
+			"arrow": {
+				"type": "slim",
+				"pikeWidth": 6,
+				"pikeLength": 10,
+				"depth": 2,
+				"color": 6728040
+			},
+			"font": {
+				"name": "helvetiker",
+				"size": 6,
+				"color": 14533903
+			}
+		},
+		{
+			"id": "5fe119e2-b03d-4887-abdd-ce5966e15c4a",
+			"originNodeId": "e671b797-0c29-4a9e-9fa4-b5302c870aec",
+			"targetNodeId": "0b478f5d-562c-4063-9df5-6be133132df3",
+			"names": [
+				"From"
+			],
+			"arrow": {
+				"type": "slim",
+				"pikeWidth": 6,
+				"pikeLength": 10,
+				"depth": 2,
+				"color": 6728040
+			},
+			"font": {
+				"name": "helvetiker",
+				"size": 6,
+				"color": 14533903
+			}
+		},
+		{
+			"id": "c9d32c8c-0cb8-4f6e-a4fd-ca31eccfebbe",
+			"originNodeId": "54d2a109-32c1-463d-b437-eef7281d37c7",
+			"targetNodeId": "0b478f5d-562c-4063-9df5-6be133132df3",
+			"names": [
+				"To"
+			],
+			"arrow": {
+				"type": "slim",
+				"pikeWidth": 6,
+				"pikeLength": 10,
+				"depth": 2,
+				"color": 6728040
+			},
+			"font": {
+				"name": "helvetiker",
+				"size": 6,
+				"color": 14533903
+			}
+		},
+		{
+			"id": "f2006a64-501d-40d1-ad1d-358932d236e2",
+			"originNodeId": "54d2a109-32c1-463d-b437-eef7281d37c7",
+			"targetNodeId": "53b46066-02e9-4ec7-ba67-fb43a7c80cc2",
+			"names": [
+				"From"
+			],
+			"arrow": {
+				"type": "slim",
+				"pikeWidth": 6,
+				"pikeLength": 10,
+				"depth": 2,
+				"color": 6728040
+			},
+			"font": {
+				"name": "helvetiker",
+				"size": 6,
+				"color": 14533903
+			}
+		},
+		{
+			"id": "ac3ff2da-6722-4918-bad6-036b93c8b2ff",
+			"originNodeId": "e671b797-0c29-4a9e-9fa4-b5302c870aec",
+			"targetNodeId": "53b46066-02e9-4ec7-ba67-fb43a7c80cc2",
+			"names": [
+				"To"
+			],
+			"arrow": {
+				"type": "slim",
+				"pikeWidth": 6,
+				"pikeLength": 10,
+				"depth": 2,
+				"color": 6728040
+			},
+			"font": {
+				"name": "helvetiker",
+				"size": 6,
+				"color": 14533903
+			}
+		},
+		{
+			"id": "677bb2c5-8c41-4b66-98a1-3bf9555280e4",
+			"originNodeId": "54d2a109-32c1-463d-b437-eef7281d37c7",
+			"targetNodeId": "b85293e2-6a07-443c-9a6e-b818f521e9a2",
+			"names": [
+				"From"
+			],
+			"arrow": {
+				"type": "slim",
+				"pikeWidth": 6,
+				"pikeLength": 10,
+				"depth": 2,
+				"color": 6728040
+			},
+			"font": {
+				"name": "helvetiker",
+				"size": 6,
+				"color": 14533903
+			}
+		},
+		{
+			"id": "189bf8c3-909d-4ca2-92b1-5d52659b83e7",
+			"originNodeId": "4222c191-db09-40d4-9d4c-33de103d5900",
+			"targetNodeId": "b85293e2-6a07-443c-9a6e-b818f521e9a2",
+			"names": [
+				"To"
+			],
+			"arrow": {
+				"type": "slim",
+				"pikeWidth": 6,
+				"pikeLength": 10,
+				"depth": 2,
+				"color": 6728040
+			},
+			"font": {
+				"name": "helvetiker",
+				"size": 6,
+				"color": 14533903
+			}
+		},
+		{
+			"id": "516c15ec-5668-4644-b073-e858d22a826e",
+			"originNodeId": "4222c191-db09-40d4-9d4c-33de103d5900",
+			"targetNodeId": "c6918a93-4b87-4be5-8f0b-343012e7e0d2",
+			"names": [
+				"From"
+			],
+			"arrow": {
+				"type": "slim",
+				"pikeWidth": 6,
+				"pikeLength": 10,
+				"depth": 2,
+				"color": 6728040
+			},
+			"font": {
+				"name": "helvetiker",
+				"size": 6,
+				"color": 14533903
+			}
+		},
+		{
+			"id": "fde252f7-7bb7-4c00-940d-48fccb19828d",
+			"originNodeId": "e671b797-0c29-4a9e-9fa4-b5302c870aec",
+			"targetNodeId": "c6918a93-4b87-4be5-8f0b-343012e7e0d2",
+			"names": [
+				"To"
+			],
+			"arrow": {
+				"type": "slim",
+				"pikeWidth": 6,
+				"pikeLength": 10,
+				"depth": 2,
+				"color": 6728040
+			},
+			"font": {
+				"name": "helvetiker",
+				"size": 6,
+				"color": 14533903
+			}
+		},
+		{
+			"id": "243dc7c5-d737-48da-af72-770a06118d58",
+			"originNodeId": "6eaa56d1-62dc-42b7-96c2-78b88c9b96a6",
+			"targetNodeId": "e671b797-0c29-4a9e-9fa4-b5302c870aec",
+			"names": [
+				""
+			],
+			"arrow": {
+				"type": "slim",
+				"pikeWidth": 6,
+				"pikeLength": 10,
+				"depth": 2,
+				"color": 4802889
+			},
+			"font": {
+				"name": "helvetiker",
+				"size": 6,
+				"color": 14533903
+			}
+		},
+		{
+			"id": "77d15207-d4e8-47ff-b0c8-86458c3f065d",
+			"originNodeId": "54f45077-aee7-4eda-9823-42bc70f7edc6",
+			"targetNodeId": "0b478f5d-562c-4063-9df5-6be133132df3",
+			"names": [
+				""
+			],
+			"arrow": {
+				"type": "slim",
+				"pikeWidth": 6,
+				"pikeLength": 10,
+				"depth": 2,
+				"color": 4802889
+			},
+			"font": {
+				"name": "helvetiker",
+				"size": 6,
+				"color": 14533903
+			}
+		},
+		{
+			"id": "e79be24c-3343-46dd-8902-91e75de86042",
+			"originNodeId": "b29c3bcd-381e-4abb-80c0-305d08b973af",
+			"targetNodeId": "54d2a109-32c1-463d-b437-eef7281d37c7",
+			"names": [
+				""
+			],
+			"arrow": {
+				"type": "slim",
+				"pikeWidth": 6,
+				"pikeLength": 10,
+				"depth": 2,
+				"color": 4802889
+			},
+			"font": {
+				"name": "helvetiker",
+				"size": 6,
+				"color": 14533903
+			}
+		},
+		{
+			"id": "e74880f8-da6a-427e-8066-28210adf7e7c",
+			"originNodeId": "ad959144-d67c-4ede-9e8a-108fe88529c1",
+			"targetNodeId": "53b46066-02e9-4ec7-ba67-fb43a7c80cc2",
+			"names": [
+				""
+			],
+			"arrow": {
+				"type": "slim",
+				"pikeWidth": 6,
+				"pikeLength": 10,
+				"depth": 2,
+				"color": 4802889
+			},
+			"font": {
+				"name": "helvetiker",
+				"size": 6,
+				"color": 14533903
+			}
+		},
+		{
+			"id": "24cad386-8a4a-4965-80ea-e0f901b3a839",
+			"originNodeId": "00411a28-f28c-4470-bc06-95442afc2e0e",
+			"targetNodeId": "4222c191-db09-40d4-9d4c-33de103d5900",
+			"names": [
+				""
+			],
+			"arrow": {
+				"type": "slim",
+				"pikeWidth": 6,
+				"pikeLength": 10,
+				"depth": 2,
+				"color": 4802889
+			},
+			"font": {
+				"name": "helvetiker",
+				"size": 6,
+				"color": 14533903
+			}
+		},
+		{
+			"id": "9f640fa8-4055-402c-bb08-1a89ab369c9e",
+			"originNodeId": "f38a97b4-8f4f-444a-bb65-ef19627c468e",
+			"targetNodeId": "b85293e2-6a07-443c-9a6e-b818f521e9a2",
+			"names": [
+				""
+			],
+			"arrow": {
+				"type": "slim",
+				"pikeWidth": 6,
+				"pikeLength": 10,
+				"depth": 2,
+				"color": 4802889
+			},
+			"font": {
+				"name": "helvetiker",
+				"size": 6,
+				"color": 14533903
+			}
+		},
+		{
+			"id": "2dde2248-67db-4c8a-b176-003c5309f5a7",
+			"originNodeId": "45a9d750-4a27-4895-b2b2-39db6cbeab85",
+			"targetNodeId": "c6918a93-4b87-4be5-8f0b-343012e7e0d2",
+			"names": [
+				""
+			],
+			"arrow": {
+				"type": "slim",
+				"pikeWidth": 6,
+				"pikeLength": 10,
+				"depth": 2,
+				"color": 4802889
+			},
+			"font": {
+				"name": "helvetiker",
+				"size": 6,
+				"color": 14533903
+			}
+		}
+	]
+}
