@@ -46,8 +46,11 @@ function createMultilineTextObject3D(textlines, textcolor)
 		}
 	);
 	var textGeom = new THREE.Geometry();
+	textGeom.dynamic = true;
 
-	var textLinesDistanceMultiplier = 0.25;
+	var textLinesDistanceMultiplier = 0.4;
+	var textGeomEmpty = true;
+	var testOffset = 0; ///
 	for (var lineIndex = 0; lineIndex < textlines.length; ++lineIndex)
 	{
 		var string = textlines[lineIndex].string;
@@ -56,15 +59,21 @@ function createMultilineTextObject3D(textlines, textcolor)
 		var stringGeom = new THREE.TextGeometry(string, textlines[lineIndex].format);
 		stringGeom.dynamic = true;
 		THREE.GeometryUtils.center(stringGeom);
-		textGeom.computeBoundingBox();
 
-// TODO: implement multiline merge.
-/*
-		textDescriptionGeom.computeBoundingBox();
-		textDescription.position.y += (1.0 + textLinesDistanceMultiplier) * (textGeom.boundingBox.min.y - textGeom.boundingBox.max.y);
-*/
-		textGeom = stringGeom; // TEST
-		break; // TEST
+		stringGeom.computeBoundingBox();
+		textGeom.computeBoundingBox();
+		stringGeom.applyMatrix(new THREE.Matrix4().makeTranslation(
+				0,
+				textGeomEmpty ? 0 :
+					(textGeom.boundingBox.min.y - stringGeom.boundingBox.max.y) -
+					textLinesDistanceMultiplier * (stringGeom.boundingBox.max.y - stringGeom.boundingBox.min.y),
+				0
+			)
+		);
+		testOffset -= 16;///
+
+		THREE.GeometryUtils.merge(textGeom, stringGeom);
+		textGeomEmpty = false;
 	}
 
 	var text = new THREE.Mesh(
