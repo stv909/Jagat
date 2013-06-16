@@ -24,7 +24,7 @@ function fillObjectProperties(pattern, custom)
 	for (var propertyKey in pattern)
 	{
 		var customValue = custom[propertyKey];
-		if (!customValue)
+		if (customValue === undefined)
 			continue;
 		var property = pattern[propertyKey];
 		if (property && typeof property === 'object')
@@ -160,8 +160,8 @@ NG.Link = function(initDesc, initGalaxy)
 {
 	this.desc = {
 			id: (new NG.Uuid()).generate(),
-			originNodeId: null, // TODO: rename originNodeId -> originElementId
-			targetNodeId: null, // TODO: rename targetNodeId -> targetElementId
+			originNodeId: null,
+			targetNodeId: null,
 			names: [''],
 			arrow: {
 				type: 'slim',
@@ -202,6 +202,13 @@ NG.Link = function(initDesc, initGalaxy)
 			var arrowCreation = {
 				slim: function(lineGeometry, startPoint, endPoint, tracePoint, arrowDesc)
 				{
+					lineGeometry.vertices = [];
+					lineGeometry.vertices.push(startPoint);
+					lineGeometry.vertices.push(endPoint);
+					lineGeometry.verticesNeedUpdate = true;
+					if (arrowDesc.pikeLength == 0)
+						return;
+
 					var arrowDirection = new THREE.Vector3();
 					arrowDirection.subVectors(endPoint, startPoint);
 					arrowDirection.normalize();
@@ -218,16 +225,10 @@ NG.Link = function(initDesc, initGalaxy)
 					arrowDotRight.multiplyScalar(-0.5 * arrowDesc.pikeWidth);
 					arrowDotRight.add(subendPoint);
 
-					lineGeometry.vertices = [];
-					lineGeometry.vertices.push(startPoint);
-					lineGeometry.vertices.push(endPoint);
-
 					lineGeometry.vertices.push(tracePoint);
 					lineGeometry.vertices.push(arrowDotLeft);
 					lineGeometry.vertices.push(arrowDotRight);
 					lineGeometry.vertices.push(tracePoint);
-
-					lineGeometry.verticesNeedUpdate = true;
 				},
 				fat: function(lineGeometry, startPoint, endPoint, tracePoint, arrowDesc)
 				{
@@ -247,20 +248,25 @@ NG.Link = function(initDesc, initGalaxy)
 						bodyWidth, bodyHeightPart * height, depth,
 						1, 1, 1
 					);
-					var pike = new THREE.CylinderGeometry(
-						0, 0.5 * height, pikeWidth, 16, 1, false
-					);
-					pike.applyMatrix(new THREE.Matrix4().makeRotationZ(-0.5 * Math.PI));
-					pike.applyMatrix(new THREE.Matrix4().makeRotationX(0.25 * Math.PI));
-					pike.applyMatrix(new THREE.Matrix4().makeTranslation(
-							0.5 * width, 0, 0
-						)
-					);
 
 					lineGeometry.vertices = [];
 					lineGeometry.faces = [];
 					THREE.GeometryUtils.merge(lineGeometry, geometry);
-					THREE.GeometryUtils.merge(lineGeometry, pike);
+
+					if (arrowDesc.pikeLength != 0)
+					{
+						var pike = new THREE.CylinderGeometry(
+							0, 0.5 * height, pikeWidth, 16, 1, false
+						);
+						pike.applyMatrix(new THREE.Matrix4().makeRotationZ(-0.5 * Math.PI));
+						pike.applyMatrix(new THREE.Matrix4().makeRotationX(0.25 * Math.PI));
+						pike.applyMatrix(new THREE.Matrix4().makeTranslation(
+								0.5 * width, 0, 0
+							)
+						);
+						THREE.GeometryUtils.merge(lineGeometry, pike);
+					}
+
 					lineGeometry.dynamic = true;
 					THREE.GeometryUtils.center(lineGeometry);
 
@@ -796,13 +802,11 @@ NG.Galaxy = function(initOptions)
 	this.getElementPosition = function(id)
 	{
 		var object3D = getObject3DByElementId(id);
-		// TODO: return center of the link line for links
 		return object3D ? object3D.position : null;
 	};
 	this.getElementRayTracePosition = function(id, ray)
 	{
 		var object3D = getObject3DByElementId(id);
-		// TODO: return center of the link line for slim arrows
 		return object3D ? traceObject3D(object3D, ray) : null;
 	};
 	this.getNodeObjects3D = function() { return nodeObjects3D; };

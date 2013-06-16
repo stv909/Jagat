@@ -252,6 +252,121 @@
 {
 	"nodes": [
 		{
+			"id": "fa0355ee-4b71-4e7e-a703-0347bbb32c60",
+			"name": "Super Nova",
+			"position": {
+				"x": 161.83164701011071,
+				"y": -4.774539260593521,
+				"z": 0.0
+			}
+		},
+		{
+			"id": "9fe79a73-a011-48ca-a57b-f64304ad8399",
+			"name": "Star",
+			"position": {
+				"x": -158.721349066648,
+				"y": -5.572847750255666,
+				"z": 0.0
+			}
+		},
+		{
+			"id": "9fe79a73-a011-48ca-a57b-f64304ad8400",
+			"name": "Straight",
+			"shape":
+			{
+				"type": "disc",
+				"color": 6728040
+			},
+			"font": {
+				"color": 14533903
+			},
+			"position": {
+				"x": 53.86028528587647,
+				"y": 70.34229883427611,
+				"z": 0.0
+			}
+		},
+		{
+			"id": "9fe79a73-a011-48ca-a57b-f64304ad8401",
+			"name": "Reverse",
+			"shape":
+			{
+				"type": "disc",
+				"color": 6728040
+			},
+			"font": {
+				"color": 14533903
+			},
+			"position": {
+				"x": -60.3081105483244,
+				"y": -86.99185656009554,
+				"z": 0.0
+			}
+		}
+	],
+	"links": [
+		{
+			"id": "e60a0640-3f36-4286-8dee-c164e914971c",
+			"originNodeId": "9fe79a73-a011-48ca-a57b-f64304ad8399",
+			"targetNodeId": "9fe79a73-a011-48ca-a57b-f64304ad8400",
+			"names": [
+				""
+			],
+			"arrow":
+			{
+				"type": "fat",
+				"pikeWidth": 20,
+				"pikeLength": 0
+			}
+		},
+		{
+			"id": "e60a0640-3f36-4286-8dee-c164e914971d",
+			"originNodeId": "9fe79a73-a011-48ca-a57b-f64304ad8400",
+			"targetNodeId": "fa0355ee-4b71-4e7e-a703-0347bbb32c60",
+			"names": [
+				""
+			],
+			"arrow":
+			{
+				"type": "fat",
+				"pikeWidth": 20,
+				"pikeLength": 28
+			}
+		},
+		{
+			"id": "e60a0640-3f36-4286-8dee-c164e914971e",
+			"originNodeId": "fa0355ee-4b71-4e7e-a703-0347bbb32c60",
+			"targetNodeId": "9fe79a73-a011-48ca-a57b-f64304ad8401",
+			"names": [
+				""
+			],
+			"arrow":
+			{
+				"type": "slim",
+				"pikeLength": 0
+			}
+		},
+		{
+			"id": "e60a0640-3f36-4286-8dee-c164e914971f",
+			"originNodeId": "9fe79a73-a011-48ca-a57b-f64304ad8401",
+			"targetNodeId": "9fe79a73-a011-48ca-a57b-f64304ad8399",
+			"names": [
+				""
+			],
+			"arrow":
+			{
+				"type": "slim",
+				"pikeLength": 16
+			}
+		}
+	]
+}
+-----------------------------------------------------------
+
+-----------------------------------------------------------
+{
+	"nodes": [
+		{
 			"id": "45e96cfd-b814-4783-8eca-9c0638498478",
 			"name": "Top",
 			"position": {
