@@ -252,6 +252,150 @@
 {
 	"nodes": [
 		{
+			"id": "45e96cfd-b814-4783-8eca-9c0638498478",
+			"name": "Top",
+			"position": {
+				"x": -1.5702994460298214e-12,
+				"y": 57.76177482338884,
+				"z": -1.574562702444382e-11
+			}
+		},
+		{
+			"id": "4f9d234d-d791-47b5-a2e2-b5cd1b772cc5",
+			"name": "Hi Left",
+			"position": {
+				"x": -84.94378650497956,
+				"y": 4.368537591686298,
+				"z": -1.5518253349000588e-11
+			}
+		},
+		{
+			"id": "a4e47702-27b5-4189-b9b6-9da68c879163",
+			"name": "Mid Left",
+			"position": {
+				"x": -93.19546862260086,
+				"y": -46.11234124555567,
+				"z": 1.0231815394945443e-12
+			}
+		},
+		{
+			"id": "05389d66-3557-4ac6-b0c9-3924a5071fc6",
+			"name": "Low Left",
+			"position": {
+				"x": -85.9145726364644,
+				"y": -84.45839343923066,
+				"z": -1.1709744285326451e-11
+			}
+		},
+		{
+			"id": "9530cb20-cdd3-43c5-9b00-fb3d4e80f687",
+			"name": "Hi Right",
+			"position": {
+				"x": 94.16625475408863,
+				"y": 11.649433577825171,
+				"z": -1.2448708730516955e-11
+			}
+		},
+		{
+			"id": "278f7009-3cf8-4f69-b6e9-8305591b5ee6",
+			"name": "Mid Right",
+			"position": {
+				"x": 100.96175767449022,
+				"y": -42.22919671961438,
+				"z": -1.460875864722766e-11
+			}
+		},
+		{
+			"id": "04db9bd4-e30d-4080-a40c-c27f6dceb023",
+			"name": "Low Right",
+			"position": {
+				"x": 104.84490220042609,
+				"y": -78.63367665032358,
+				"z": 6.536993168992922e-12
+			}
+		},
+		{
+			"id": "3d7f3356-b3c6-4cd8-af06-a8d9dbe422c0",
+			"name": "Bottom",
+			"position": {
+				"x": 7.766289051883639,
+				"y": -137.85163067093063,
+				"z": 1.0629719326971099e-11
+			}
+		}
+	],
+	"links": [
+		{
+			"id": "082c952f-936b-441b-ba98-f1fbfc34a890",
+			"originNodeId": "4f9d234d-d791-47b5-a2e2-b5cd1b772cc5",
+			"targetNodeId": "9530cb20-cdd3-43c5-9b00-fb3d4e80f687",
+			"arrow":
+			{
+				"type": "slim"
+			}
+		},
+		{
+			"id": "5a1f88f3-6af3-4fcc-a6ff-bb6f8deb4c38",
+			"originNodeId": "a4e47702-27b5-4189-b9b6-9da68c879163",
+			"targetNodeId": "278f7009-3cf8-4f69-b6e9-8305591b5ee6",
+			"arrow":
+			{
+				"type": "fat",
+				"pikeWidth": 14,
+				"pikeLength": 20
+			}
+		},
+		{
+			"id": "62fa7d1d-311d-4d96-aef0-6290642bc210",
+			"originNodeId": "05389d66-3557-4ac6-b0c9-3924a5071fc6",
+			"targetNodeId": "04db9bd4-e30d-4080-a40c-c27f6dceb023",
+			"arrow":
+			{
+				"type": "slim"
+			}
+		},
+		{
+			"id": "9a77c9e2-0106-4fab-98b8-cc87db4549d0",
+			"originNodeId": "45e96cfd-b814-4783-8eca-9c0638498478",
+			"targetNodeId": "082c952f-936b-441b-ba98-f1fbfc34a890",
+			"arrow":
+			{
+				"type": "slim"
+			}
+		},
+		{
+			"id": "d93b35ed-8ed2-4715-b222-755f5661371b",
+			"originNodeId": "082c952f-936b-441b-ba98-f1fbfc34a890",
+			"targetNodeId": "5a1f88f3-6af3-4fcc-a6ff-bb6f8deb4c38",
+			"arrow":
+			{
+				"type": "slim"
+			}
+		},
+		{
+			"id": "4ae01c0f-0f66-4935-b5e1-3690b5f066e5",
+			"originNodeId": "5a1f88f3-6af3-4fcc-a6ff-bb6f8deb4c38",
+			"targetNodeId": "62fa7d1d-311d-4d96-aef0-6290642bc210",
+			"arrow":
+			{
+				"type": "slim"
+			}
+		},
+		{
+			"id": "f1d3bf84-611c-4323-8e7e-cf9f7b489a14",
+			"originNodeId": "62fa7d1d-311d-4d96-aef0-6290642bc210",
+			"targetNodeId": "3d7f3356-b3c6-4cd8-af06-a8d9dbe422c0",
+			"arrow":
+			{
+				"type": "slim"
+			}
+		}
+	]
+}
+-----------------------------------------------------------
+{
+	"nodes": [
+		{
 			"id": "f33f1834-1883-4a9b-877f-ee0fa6d5cf99",
 			"uuid": "f6106b41-dd7f-4984-b82e-9a6428bda663",
 			"name": "State 0",
