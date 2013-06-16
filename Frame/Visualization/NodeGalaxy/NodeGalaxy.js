@@ -304,15 +304,26 @@ NG.Link = function(initDesc, initGalaxy)
 				{
 					traceVertex = targetVertex;
 				}
-/*
-				// TODO: resolve positioning problem
-				this.arrow.position = getCenterPoint(originVertex, targetVertex);
-				originVertex.sub(this.arrow.position);
-				targetVertex.sub(this.arrow.position);
-				traceVertex.sub(this.arrow.position);
-*/
-				constructArrow(this.arrowGeom, originVertex, targetVertex, traceVertex, this.desc.arrow);
-				centerText(this.text, originVertex, targetVertex, new THREE.Vector3(0, 0, this.desc.arrow.depth));
+
+				var arrowPosition = getCenterPoint(originVertex, targetVertex);
+				var localOriginVertex = new THREE.Vector3();
+				var localTargetVertex = new THREE.Vector3();
+				var localTraceVertex = new THREE.Vector3();
+				localOriginVertex.subVectors(originVertex, arrowPosition);
+				localTargetVertex.subVectors(targetVertex, arrowPosition);
+				localTraceVertex.subVectors(traceVertex, arrowPosition);
+				this.arrow.position = arrowPosition;
+
+				constructArrow(
+					this.arrowGeom,
+					localOriginVertex, localTargetVertex, localTraceVertex,
+					this.desc.arrow
+				);
+				centerText(
+					this.text,
+					localOriginVertex, localTargetVertex,
+					new THREE.Vector3(0, 0, this.desc.arrow.depth)
+				);
 			}
 		}
 	};
