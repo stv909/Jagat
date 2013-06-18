@@ -1,1296 +1,1310 @@
 {
-	"nodes": [
-		{
-			"name": "Stellar 7"
-		},
-		{
-			"name": "Galaxy 9"
-		},
-		{
-			"name": "Star Division 2"
-		}
-	]
+	"NodeGalaxy": {
+		"nodes": [
+			{
+				"name": "Stellar 7"
+			},
+			{
+				"name": "Galaxy 9"
+			},
+			{
+				"name": "Star Division 2"
+			}
+		]
+	}
 }
 -----------------------------------------------------------
 {
-	"nodes": [
-		{
-			"id": "fa0355ee-4b71-4e7e-a703-0347bbb32c60",
-			"name": "Super Nova",
-			"position": {
-				"x": -109.69883285785932,
-				"y": 8.251682117626183,
-				"z": -2.7853275241795927e-12
+	"NodeGalaxy": {
+		"nodes": [
+			{
+				"id": "fa0355ee-4b71-4e7e-a703-0347bbb32c60",
+				"name": "Super Nova",
+				"position": {
+					"x": -109.69883285785932,
+					"y": 8.251682117626183,
+					"z": -2.7853275241795927e-12
+				}
+			},
+			{
+				"id": "9fe79a73-a011-48ca-a57b-f64304ad8399",
+				"name": "Star",
+				"position": {
+					"x": 147.55949198578315,
+					"y": -36.404479930703765,
+					"z": 3.808509063674137e-12
+				}
 			}
-		},
-		{
-			"id": "9fe79a73-a011-48ca-a57b-f64304ad8399",
-			"name": "Star",
-			"position": {
-				"x": 147.55949198578315,
-				"y": -36.404479930703765,
-				"z": 3.808509063674137e-12
+		],
+		"links": [
+			{
+				"id": "e60a0640-3f36-4286-8dee-c164e914971f",
+				"originNodeId": "fa0355ee-4b71-4e7e-a703-0347bbb32c60",
+				"targetNodeId": "9fe79a73-a011-48ca-a57b-f64304ad8399",
+				"names": [
+					"Star Trek",
+					"optional"
+				]
 			}
-		}
-	],
-	"links": [
-		{
-			"id": "e60a0640-3f36-4286-8dee-c164e914971f",
-			"originNodeId": "fa0355ee-4b71-4e7e-a703-0347bbb32c60",
-			"targetNodeId": "9fe79a73-a011-48ca-a57b-f64304ad8399",
-			"names": [
-				"Star Trek",
-				"optional"
-			]
-		}
-	]
+		]
+	}
 }
 -----------------------------------------------------------
 {
-	"nodes": [
-		{
-			"name": "Stellar 7",
-			"id": "76abb7ed-8858-4d38-9001-33ec0e2e7c64",
-			"position": {
-				"x": -87.88810451565948,
-				"y": 60.31536584407946,
-				"z": 6.252776074688882e-13
-			}
-		},
-		{
-			"name": "Galaxy 9",
-			"id": "5f38460f-2287-42a3-b336-3f86a6734e83",
-			"position": {
-				"x": 97.6534494618421,
-				"y": 59.74093378842079,
-				"z": -1.1368683772161603e-12
-			}
-		},
-		{
-			"name": "Dimension 64",
-			"id": "2453e3f8-12d4-4503-aae9-cb07f456fb88",
-			"position": {
-				"x": 6.893184667896353,
-				"y": -151.65006269368672,
-				"z": 1.2562395568238571e-11
-			}
-		},
-		{
-			"name": "Dimension 32",
-			"id": "0ba5608a-3b80-4c5c-98ab-32088ea487d0",
-			"position": {
-				"x": 5.74432055657827,
-				"y": -88.46253657131656,
-				"z": -6.991740519879386e-12
-			}
-		},
-		{
-			"name": "Star Division 2",
-			"id": "51614fa1-2502-4a43-aee0-c0715c6f47d3",
-			"position": {
-				"x": 4.595456445263107,
-				"y": -14.935233447105293,
-				"z": -9.606537787476555e-12
-			}
-		}
-	],
-	"links": [
-		{
-			"originNodeId": "2453e3f8-12d4-4503-aae9-cb07f456fb88",
-			"targetNodeId": "0ba5608a-3b80-4c5c-98ab-32088ea487d0",
-			"names": [
-				"1",
-				"2"
-			],
-			"id": "977fdb85-a8d6-4acd-b6ed-99d3909e5a3d"
-		},
-		{
-			"originNodeId": "2453e3f8-12d4-4503-aae9-cb07f456fb88",
-			"targetNodeId": "76abb7ed-8858-4d38-9001-33ec0e2e7c64",
-			"names": [
-				"3",
-				"4"
-			],
-			"id": "e3729830-747c-4b25-b038-ef53a2dbca8f"
-		},
-		{
-			"originNodeId": "5f38460f-2287-42a3-b336-3f86a6734e83",
-			"targetNodeId": "0ba5608a-3b80-4c5c-98ab-32088ea487d0",
-			"names": [
-				"5",
-				"6"
-			],
-			"id": "93b867e8-c848-4927-bad6-bc8ca94c8867"
-		},
-		{
-			"originNodeId": "0ba5608a-3b80-4c5c-98ab-32088ea487d0",
-			"targetNodeId": "51614fa1-2502-4a43-aee0-c0715c6f47d3",
-			"names": [
-				"7",
-				"8"
-			],
-			"id": "bb47ab61-86a7-4a82-b6af-ad9f64f2f56f"
-		},
-		{
-			"originNodeId": "51614fa1-2502-4a43-aee0-c0715c6f47d3",
-			"targetNodeId": "76abb7ed-8858-4d38-9001-33ec0e2e7c64",
-			"names": [
-				"9",
-				"10"
-			],
-			"id": "268c754a-2f62-4e6e-b603-c79f657f39b2"
-		},
-		{
-			"originNodeId": "51614fa1-2502-4a43-aee0-c0715c6f47d3",
-			"targetNodeId": "5f38460f-2287-42a3-b336-3f86a6734e83",
-			"names": [
-				"11",
-				"12"
-			],
-			"id": "97dfd302-0198-4f99-8e41-cb755310ef4b"
-		}
-	]
-}
------------------------------------------------------------
------------------------------------------------------------
-{
-	"nodes": [
-		{
-			"name": "Stellar 7",
-			"shape":
+	"NodeGalaxy": {
+		"nodes": [
 			{
-				"type": "box"
-			}
-		},
-		{
-			"name": "Galaxy 9",
-			"shape":
-			{
-				"type": "arrow"
-			}
-		},
-		{
-			"name": "Star Division 2",
-			"shape":
-			{
-				"type": "disc"
-			}
-		}
-	]
-}
------------------------------------------------------------
-{
-	"nodes": [
-		{
-			"id": "fa0355ee-4b71-4e7e-a703-0347bbb32c60",
-			"name": "Super Nova",
-			"shape":
-			{
-				"type": "arrow"
+				"name": "Stellar 7",
+				"id": "76abb7ed-8858-4d38-9001-33ec0e2e7c64",
+				"position": {
+					"x": -87.88810451565948,
+					"y": 60.31536584407946,
+					"z": 6.252776074688882e-13
+				}
 			},
-			"position": {
-				"x": -118.43590804122675,
-				"y": 38.83144525941588,
-				"z": 0.0
-			}
-		},
-		{
-			"id": "9fe79a73-a011-48ca-a57b-f64304ad8399",
-			"name": "Star",
-			"shape":
 			{
-				"type": "disc"
+				"name": "Galaxy 9",
+				"id": "5f38460f-2287-42a3-b336-3f86a6734e83",
+				"position": {
+					"x": 97.6534494618421,
+					"y": 59.74093378842079,
+					"z": -1.1368683772161603e-12
+				}
 			},
-			"position": {
-				"x": 12.13482664355951,
-				"y": -36.889872996445746,
-				"z": 0.0
-			}
-		},
-		{
-			"id": "9fe79a73-a011-48ca-a57b-f64304ad8400",
-			"name": "Planet",
-			"shape":
 			{
-				"type": "disc"
+				"name": "Dimension 64",
+				"id": "2453e3f8-12d4-4503-aae9-cb07f456fb88",
+				"position": {
+					"x": 6.893184667896353,
+					"y": -151.65006269368672,
+					"z": 1.2562395568238571e-11
+				}
 			},
-			"position": {
-				"x": 116.49433577825305,
-				"y": 48.53930657427121,
-				"z": 0.0
-			}
-		}
-	],
-	"links": [
-		{
-			"id": "e60a0640-3f36-4286-8dee-c164e914971d",
-			"originNodeId": "9fe79a73-a011-48ca-a57b-f64304ad8399",
-			"targetNodeId": "fa0355ee-4b71-4e7e-a703-0347bbb32c60",
-			"names": [
-				"Star Trek",
-				"optional"
-			]
-		},
-		{
-			"id": "e60a0640-3f36-4286-8dee-c164e914971f",
-			"originNodeId": "9fe79a73-a011-48ca-a57b-f64304ad8400",
-			"targetNodeId": "9fe79a73-a011-48ca-a57b-f64304ad8399",
-			"names": [
-				"Planet Terror",
-				"required"
-			],
-			"arrow":
 			{
-				"type": "fat",
-				"pikeWidth": 20,
-				"pikeLength": 28
-			}
-		}
-	]
-}
------------------------------------------------------------
-{
-	"nodes": [
-		{
-			"id": "fa0355ee-4b71-4e7e-a703-0347bbb32c60",
-			"name": "Super Nova",
-			"position": {
-				"x": 161.83164701011071,
-				"y": -4.774539260593521,
-				"z": 0.0
-			}
-		},
-		{
-			"id": "9fe79a73-a011-48ca-a57b-f64304ad8399",
-			"name": "Star",
-			"position": {
-				"x": -158.721349066648,
-				"y": -5.572847750255666,
-				"z": 0.0
-			}
-		},
-		{
-			"id": "9fe79a73-a011-48ca-a57b-f64304ad8400",
-			"name": "Straight",
-			"shape":
-			{
-				"type": "disc",
-				"color": 6728040
+				"name": "Dimension 32",
+				"id": "0ba5608a-3b80-4c5c-98ab-32088ea487d0",
+				"position": {
+					"x": 5.74432055657827,
+					"y": -88.46253657131656,
+					"z": -6.991740519879386e-12
+				}
 			},
-			"font": {
-				"color": 14533903
+			{
+				"name": "Star Division 2",
+				"id": "51614fa1-2502-4a43-aee0-c0715c6f47d3",
+				"position": {
+					"x": 4.595456445263107,
+					"y": -14.935233447105293,
+					"z": -9.606537787476555e-12
+				}
+			}
+		],
+		"links": [
+			{
+				"originNodeId": "2453e3f8-12d4-4503-aae9-cb07f456fb88",
+				"targetNodeId": "0ba5608a-3b80-4c5c-98ab-32088ea487d0",
+				"names": [
+					"1",
+					"2"
+				],
+				"id": "977fdb85-a8d6-4acd-b6ed-99d3909e5a3d"
 			},
-			"position": {
-				"x": 53.86028528587647,
-				"y": 70.34229883427611,
-				"z": 0.0
-			}
-		},
-		{
-			"id": "9fe79a73-a011-48ca-a57b-f64304ad8401",
-			"name": "Reverse",
-			"shape":
 			{
-				"type": "disc",
-				"color": 6728040
+				"originNodeId": "2453e3f8-12d4-4503-aae9-cb07f456fb88",
+				"targetNodeId": "76abb7ed-8858-4d38-9001-33ec0e2e7c64",
+				"names": [
+					"3",
+					"4"
+				],
+				"id": "e3729830-747c-4b25-b038-ef53a2dbca8f"
 			},
-			"font": {
-				"color": 14533903
+			{
+				"originNodeId": "5f38460f-2287-42a3-b336-3f86a6734e83",
+				"targetNodeId": "0ba5608a-3b80-4c5c-98ab-32088ea487d0",
+				"names": [
+					"5",
+					"6"
+				],
+				"id": "93b867e8-c848-4927-bad6-bc8ca94c8867"
 			},
-			"position": {
-				"x": -60.3081105483244,
-				"y": -86.99185656009554,
-				"z": 0.0
-			}
-		}
-	],
-	"links": [
-		{
-			"id": "e60a0640-3f36-4286-8dee-c164e914971c",
-			"originNodeId": "9fe79a73-a011-48ca-a57b-f64304ad8399",
-			"targetNodeId": "9fe79a73-a011-48ca-a57b-f64304ad8400",
-			"names": [
-				""
-			],
-			"arrow":
 			{
-				"type": "fat",
-				"pikeWidth": 20,
-				"pikeLength": 0
-			}
-		},
-		{
-			"id": "e60a0640-3f36-4286-8dee-c164e914971d",
-			"originNodeId": "9fe79a73-a011-48ca-a57b-f64304ad8400",
-			"targetNodeId": "fa0355ee-4b71-4e7e-a703-0347bbb32c60",
-			"names": [
-				""
-			],
-			"arrow":
+				"originNodeId": "0ba5608a-3b80-4c5c-98ab-32088ea487d0",
+				"targetNodeId": "51614fa1-2502-4a43-aee0-c0715c6f47d3",
+				"names": [
+					"7",
+					"8"
+				],
+				"id": "bb47ab61-86a7-4a82-b6af-ad9f64f2f56f"
+			},
 			{
-				"type": "fat",
-				"pikeWidth": 20,
-				"pikeLength": 28
-			}
-		},
-		{
-			"id": "e60a0640-3f36-4286-8dee-c164e914971e",
-			"originNodeId": "fa0355ee-4b71-4e7e-a703-0347bbb32c60",
-			"targetNodeId": "9fe79a73-a011-48ca-a57b-f64304ad8401",
-			"names": [
-				""
-			],
-			"arrow":
+				"originNodeId": "51614fa1-2502-4a43-aee0-c0715c6f47d3",
+				"targetNodeId": "76abb7ed-8858-4d38-9001-33ec0e2e7c64",
+				"names": [
+					"9",
+					"10"
+				],
+				"id": "268c754a-2f62-4e6e-b603-c79f657f39b2"
+			},
 			{
-				"type": "slim",
-				"pikeLength": 0
+				"originNodeId": "51614fa1-2502-4a43-aee0-c0715c6f47d3",
+				"targetNodeId": "5f38460f-2287-42a3-b336-3f86a6734e83",
+				"names": [
+					"11",
+					"12"
+				],
+				"id": "97dfd302-0198-4f99-8e41-cb755310ef4b"
 			}
-		},
-		{
-			"id": "e60a0640-3f36-4286-8dee-c164e914971f",
-			"originNodeId": "9fe79a73-a011-48ca-a57b-f64304ad8401",
-			"targetNodeId": "9fe79a73-a011-48ca-a57b-f64304ad8399",
-			"names": [
-				""
-			],
-			"arrow":
-			{
-				"type": "slim",
-				"pikeLength": 16
-			}
-		}
-	]
+		]
+	}
 }
 -----------------------------------------------------------
 -----------------------------------------------------------
 {
-	"nodes": [
-		{
-			"id": "b6dec368-949a-4f0b-a570-dc2382ecf97d",
-			"uuid": "f6106b41-dd7f-4984-b82e-9a6428bda663",
-			"name": "State 0",
-			"descriptions": [
-				""
-			],
-			"font": {
-				"name": "helvetiker",
-				"size": 6,
-				"subsize": 4,
-				"color": 7699160
+	"NodeGalaxy": {
+		"nodes": [
+			{
+				"name": "Stellar 7",
+				"shape":
+				{
+					"type": "box"
+				}
 			},
-			"shape": {
-				"type": "box",
-				"width": 64,
-				"height": 16,
-				"depth": 4,
-				"color": 16777215
+			{
+				"name": "Galaxy 9",
+				"shape":
+				{
+					"type": "arrow"
+				}
 			},
-			"position": {
-				"x": -94.16625475408883,
-				"y": 85.42917957072,
-				"z": 3.524291969370097e-12
+			{
+				"name": "Star Division 2",
+				"shape":
+				{
+					"type": "disc"
+				}
 			}
-		},
-		{
-			"id": "671ce3b4-a173-447e-9036-16cee3ebe77b",
-			"uuid": "1730c62b-4310-4a81-8c8a-42abdc6eab4c",
-			"name": "State 2",
-			"descriptions": [
-				""
-			],
-			"font": {
-				"name": "helvetiker",
-				"size": 6,
-				"subsize": 4,
-				"color": 7699160
+		]
+	}
+}
+-----------------------------------------------------------
+{
+	"NodeGalaxy": {
+		"nodes": [
+			{
+				"id": "fa0355ee-4b71-4e7e-a703-0347bbb32c60",
+				"name": "Super Nova",
+				"shape":
+				{
+					"type": "arrow"
+				},
+				"position": {
+					"x": -118.43590804122675,
+					"y": 38.83144525941588,
+					"z": 0.0
+				}
 			},
-			"shape": {
-				"type": "box",
-				"width": 64,
-				"height": 16,
-				"depth": 4,
-				"color": 16777215
+			{
+				"id": "9fe79a73-a011-48ca-a57b-f64304ad8399",
+				"name": "Star",
+				"shape":
+				{
+					"type": "disc"
+				},
+				"position": {
+					"x": 12.13482664355951,
+					"y": -36.889872996445746,
+					"z": 0.0
+				}
 			},
-			"position": {
-				"x": 173.77071753588876,
-				"y": 94.16625475408533,
-				"z": 1.4438228390645236e-11
+			{
+				"id": "9fe79a73-a011-48ca-a57b-f64304ad8400",
+				"name": "Planet",
+				"shape":
+				{
+					"type": "disc"
+				},
+				"position": {
+					"x": 116.49433577825305,
+					"y": 48.53930657427121,
+					"z": 0.0
+				}
 			}
-		},
-		{
-			"id": "139b00ab-ebc2-4d9f-a32d-6eb235b8b2c2",
-			"uuid": "dea1cbb8-e30e-445e-ac73-e680898fcf91",
-			"name": "State 4",
-			"descriptions": [
-				""
-			],
-			"font": {
-				"name": "helvetiker",
-				"size": 6,
-				"subsize": 4,
-				"color": 7699160
+		],
+		"links": [
+			{
+				"id": "e60a0640-3f36-4286-8dee-c164e914971d",
+				"originNodeId": "9fe79a73-a011-48ca-a57b-f64304ad8399",
+				"targetNodeId": "fa0355ee-4b71-4e7e-a703-0347bbb32c60",
+				"names": [
+					"Star Trek",
+					"optional"
+				]
 			},
-			"shape": {
-				"type": "box",
-				"width": 64,
-				"height": 16,
-				"depth": 4,
-				"color": 16777215
-			},
-			"position": {
-				"x": 37.37526606219025,
-				"y": -106.78647446339976,
-				"z": -3.637978807091713e-12
+			{
+				"id": "e60a0640-3f36-4286-8dee-c164e914971f",
+				"originNodeId": "9fe79a73-a011-48ca-a57b-f64304ad8400",
+				"targetNodeId": "9fe79a73-a011-48ca-a57b-f64304ad8399",
+				"names": [
+					"Planet Terror",
+					"required"
+				],
+				"arrow":
+				{
+					"type": "fat",
+					"pikeWidth": 20,
+					"pikeLength": 28
+				}
 			}
-		},
-		{
-			"id": "2019e61b-a13e-4bd8-a3f4-b2e9fe52f3cb",
-			"uuid": "8fa6b8bb-81e2-4f11-a84b-97e4ded1b38f",
-			"name": "Transition 1",
-			"descriptions": [
-				""
-			],
-			"font": {
-				"name": "helvetiker",
-				"size": 6,
-				"subsize": 4,
-				"color": 7699160
+		]
+	}
+}
+-----------------------------------------------------------
+{
+	"NodeGalaxy": {
+		"nodes": [
+			{
+				"id": "fa0355ee-4b71-4e7e-a703-0347bbb32c60",
+				"name": "Super Nova",
+				"position": {
+					"x": 161.83164701011071,
+					"y": -4.774539260593521,
+					"z": 0.0
+				}
 			},
-			"shape": {
-				"type": "disc",
-				"width": 24,
-				"height": 24,
-				"depth": 4,
-				"color": 16777215
+			{
+				"id": "9fe79a73-a011-48ca-a57b-f64304ad8399",
+				"name": "Star",
+				"position": {
+					"x": -158.721349066648,
+					"y": -5.572847750255666,
+					"z": 0.0
+				}
 			},
-			"position": {
-				"x": -15.532578103767701,
-				"y": 107.75726059488733,
-				"z": -8.469669410260394e-12
+			{
+				"id": "9fe79a73-a011-48ca-a57b-f64304ad8400",
+				"name": "Straight",
+				"shape":
+				{
+					"type": "disc",
+					"color": 6728040
+				},
+				"font": {
+					"color": 14533903
+				},
+				"position": {
+					"x": 53.86028528587647,
+					"y": 70.34229883427611,
+					"z": 0.0
+				}
+			},
+			{
+				"id": "9fe79a73-a011-48ca-a57b-f64304ad8401",
+				"name": "Reverse",
+				"shape":
+				{
+					"type": "disc",
+					"color": 6728040
+				},
+				"font": {
+					"color": 14533903
+				},
+				"position": {
+					"x": -60.3081105483244,
+					"y": -86.99185656009554,
+					"z": 0.0
+				}
 			}
-		},
-		{
-			"id": "2f6476ac-1b97-4743-9634-265009608a7e",
-			"uuid": "b55f30c7-e173-4a46-8476-b68b8fdc1dbe",
-			"name": "Transition 3",
-			"descriptions": [
-				""
-			],
-			"font": {
-				"name": "helvetiker",
-				"size": 6,
-				"subsize": 4,
-				"color": 7699160
+		],
+		"links": [
+			{
+				"id": "e60a0640-3f36-4286-8dee-c164e914971c",
+				"originNodeId": "9fe79a73-a011-48ca-a57b-f64304ad8399",
+				"targetNodeId": "9fe79a73-a011-48ca-a57b-f64304ad8400",
+				"names": [
+					""
+				],
+				"arrow":
+				{
+					"type": "fat",
+					"pikeWidth": 20,
+					"pikeLength": 0
+				}
 			},
-			"shape": {
-				"type": "disc",
-				"width": 24,
-				"height": 24,
-				"depth": 4,
-				"color": 16777215
+			{
+				"id": "e60a0640-3f36-4286-8dee-c164e914971d",
+				"originNodeId": "9fe79a73-a011-48ca-a57b-f64304ad8400",
+				"targetNodeId": "fa0355ee-4b71-4e7e-a703-0347bbb32c60",
+				"names": [
+					""
+				],
+				"arrow":
+				{
+					"type": "fat",
+					"pikeWidth": 20,
+					"pikeLength": 28
+				}
 			},
-			"position": {
-				"x": 86.3999657022022,
-				"y": 68.92581533546425,
-				"z": 9.208633855450898e-12
+			{
+				"id": "e60a0640-3f36-4286-8dee-c164e914971e",
+				"originNodeId": "fa0355ee-4b71-4e7e-a703-0347bbb32c60",
+				"targetNodeId": "9fe79a73-a011-48ca-a57b-f64304ad8401",
+				"names": [
+					""
+				],
+				"arrow":
+				{
+					"type": "slim",
+					"pikeLength": 0
+				}
+			},
+			{
+				"id": "e60a0640-3f36-4286-8dee-c164e914971f",
+				"originNodeId": "9fe79a73-a011-48ca-a57b-f64304ad8401",
+				"targetNodeId": "9fe79a73-a011-48ca-a57b-f64304ad8399",
+				"names": [
+					""
+				],
+				"arrow":
+				{
+					"type": "slim",
+					"pikeLength": 16
+				}
 			}
-		},
-		{
-			"id": "26b7335f-8867-410c-9d7f-18e18e93c82b",
-			"uuid": "1bec25d7-8579-4c84-a3ad-2c72de675cda",
-			"name": "Transition 5",
-			"descriptions": [
-				""
-			],
-			"font": {
-				"name": "helvetiker",
-				"size": 6,
-				"subsize": 4,
-				"color": 7699160
+		]
+	}
+}
+-----------------------------------------------------------
+-----------------------------------------------------------
+{
+	"NodeGalaxy": {
+		"nodes": [
+			{
+				"id": "b6dec368-949a-4f0b-a570-dc2382ecf97d",
+				"uuid": "f6106b41-dd7f-4984-b82e-9a6428bda663",
+				"name": "State 0",
+				"descriptions": [
+					""
+				],
+				"font": {
+					"name": "helvetiker",
+					"size": 6,
+					"subsize": 4,
+					"color": 7699160
+				},
+				"shape": {
+					"type": "box",
+					"width": 64,
+					"height": 16,
+					"depth": 4,
+					"color": 16777215
+				},
+				"position": {
+					"x": -94.16625475408883,
+					"y": 85.42917957072,
+					"z": 3.524291969370097e-12
+				}
 			},
-			"shape": {
-				"type": "disc",
-				"width": 24,
-				"height": 24,
-				"depth": 4,
-				"color": 16777215
+			{
+				"id": "671ce3b4-a173-447e-9036-16cee3ebe77b",
+				"uuid": "1730c62b-4310-4a81-8c8a-42abdc6eab4c",
+				"name": "State 2",
+				"descriptions": [
+					""
+				],
+				"font": {
+					"name": "helvetiker",
+					"size": 6,
+					"subsize": 4,
+					"color": 7699160
+				},
+				"shape": {
+					"type": "box",
+					"width": 64,
+					"height": 16,
+					"depth": 4,
+					"color": 16777215
+				},
+				"position": {
+					"x": 173.77071753588876,
+					"y": 94.16625475408533,
+					"z": 1.4438228390645236e-11
+				}
 			},
-			"position": {
-				"x": 232.98867155651828,
-				"y": -44.17076898259032,
-				"z": -1.0061285138363019e-11
+			{
+				"id": "139b00ab-ebc2-4d9f-a32d-6eb235b8b2c2",
+				"uuid": "dea1cbb8-e30e-445e-ac73-e680898fcf91",
+				"name": "State 4",
+				"descriptions": [
+					""
+				],
+				"font": {
+					"name": "helvetiker",
+					"size": 6,
+					"subsize": 4,
+					"color": 7699160
+				},
+				"shape": {
+					"type": "box",
+					"width": 64,
+					"height": 16,
+					"depth": 4,
+					"color": 16777215
+				},
+				"position": {
+					"x": 37.37526606219025,
+					"y": -106.78647446339976,
+					"z": -3.637978807091713e-12
+				}
+			},
+			{
+				"id": "2019e61b-a13e-4bd8-a3f4-b2e9fe52f3cb",
+				"uuid": "8fa6b8bb-81e2-4f11-a84b-97e4ded1b38f",
+				"name": "Transition 1",
+				"descriptions": [
+					""
+				],
+				"font": {
+					"name": "helvetiker",
+					"size": 6,
+					"subsize": 4,
+					"color": 7699160
+				},
+				"shape": {
+					"type": "disc",
+					"width": 24,
+					"height": 24,
+					"depth": 4,
+					"color": 16777215
+				},
+				"position": {
+					"x": -15.532578103767701,
+					"y": 107.75726059488733,
+					"z": -8.469669410260394e-12
+				}
+			},
+			{
+				"id": "2f6476ac-1b97-4743-9634-265009608a7e",
+				"uuid": "b55f30c7-e173-4a46-8476-b68b8fdc1dbe",
+				"name": "Transition 3",
+				"descriptions": [
+					""
+				],
+				"font": {
+					"name": "helvetiker",
+					"size": 6,
+					"subsize": 4,
+					"color": 7699160
+				},
+				"shape": {
+					"type": "disc",
+					"width": 24,
+					"height": 24,
+					"depth": 4,
+					"color": 16777215
+				},
+				"position": {
+					"x": 86.3999657022022,
+					"y": 68.92581533546425,
+					"z": 9.208633855450898e-12
+				}
+			},
+			{
+				"id": "26b7335f-8867-410c-9d7f-18e18e93c82b",
+				"uuid": "1bec25d7-8579-4c84-a3ad-2c72de675cda",
+				"name": "Transition 5",
+				"descriptions": [
+					""
+				],
+				"font": {
+					"name": "helvetiker",
+					"size": 6,
+					"subsize": 4,
+					"color": 7699160
+				},
+				"shape": {
+					"type": "disc",
+					"width": 24,
+					"height": 24,
+					"depth": 4,
+					"color": 16777215
+				},
+				"position": {
+					"x": 232.98867155651828,
+					"y": -44.17076898259032,
+					"z": -1.0061285138363019e-11
+				}
+			},
+			{
+				"id": "ad8079e5-d85e-48e3-b90d-3f3b0734553b",
+				"uuid": "5ba9e2b5-7bad-4839-8c97-ee8ebdd81b2d",
+				"name": "Transition 6",
+				"descriptions": [
+					""
+				],
+				"font": {
+					"name": "helvetiker",
+					"size": 6,
+					"subsize": 4,
+					"color": 7699160
+				},
+				"shape": {
+					"type": "disc",
+					"width": 24,
+					"height": 24,
+					"depth": 4,
+					"color": 16777215
+				},
+				"position": {
+					"x": -79.11906971606541,
+					"y": -106.30108139765701,
+					"z": -1.1823431123048067e-11
+				}
+			},
+			{
+				"id": "e18a1028-b722-43ef-9014-f029c02385ad",
+				"uuid": "6f7d8168-d5dd-4565-b441-31e6f2f100b7",
+				"name": "Animation",
+				"descriptions": [
+					"ResourceId: stand_freely_thanks_worship_reserved",
+					"Speed: 1",
+					"NeedFade: False"
+				],
+				"font": {
+					"name": "helvetiker",
+					"size": 6,
+					"subsize": 4,
+					"color": 7699160
+				},
+				"shape": {
+					"type": "disc",
+					"width": 64,
+					"height": 16,
+					"depth": 4,
+					"color": 16777215
+				},
+				"position": {
+					"x": -174.74150366738658,
+					"y": 73.77974599289554,
+					"z": -8.86757334228605e-12
+				}
+			},
+			{
+				"id": "afebf0a2-cea9-4843-8765-eb6b8195fd71",
+				"uuid": "0cdc9efc-eecc-43c7-8910-4f6c6700e9e3",
+				"name": "Animation",
+				"descriptions": [
+					"ResourceId: stand_freely_act_beat",
+					"Speed: 1",
+					"NeedFade: False"
+				],
+				"font": {
+					"name": "helvetiker",
+					"size": 6,
+					"subsize": 4,
+					"color": 7699160
+				},
+				"shape": {
+					"type": "disc",
+					"width": 64,
+					"height": 16,
+					"depth": 4,
+					"color": 16777215
+				},
+				"position": {
+					"x": -176.19768286460675,
+					"y": 10.67864744633882,
+					"z": 0
+				}
+			},
+			{
+				"id": "2eebe329-be50-4004-bf06-92b9ead3223a",
+				"uuid": "3a762c76-bc81-42ca-a48f-ebe8e796d326",
+				"name": "Blend",
+				"descriptions": [
+					"Parameter: ThankBeat"
+				],
+				"font": {
+					"name": "helvetiker",
+					"size": 6,
+					"subsize": 4,
+					"color": 7699160
+				},
+				"shape": {
+					"type": "disc",
+					"width": 64,
+					"height": 16,
+					"depth": 4,
+					"color": 16777215
+				},
+				"position": {
+					"x": -43.68537591684213,
+					"y": 32.521335404759796,
+					"z": 1.4779288903810084e-11
+				}
+			},
+			{
+				"id": "7d84c9ef-545f-4b2a-8b44-283105143e3d",
+				"uuid": "3aebc60f-6fbe-47f7-a7c7-407598f7cced",
+				"name": "Animation",
+				"descriptions": [
+					"ResourceId: stand_freely_jump",
+					"Speed: 1",
+					"NeedFade: False"
+				],
+				"font": {
+					"name": "helvetiker",
+					"size": 6,
+					"subsize": 4,
+					"color": 7699160
+				},
+				"shape": {
+					"type": "disc",
+					"width": 64,
+					"height": 16,
+					"depth": 4,
+					"color": 16777215
+				},
+				"position": {
+					"x": 156.78196023490017,
+					"y": 58.24716788912771,
+					"z": -1.5063505998114124e-11
+				}
+			},
+			{
+				"id": "ed7a055f-fa70-45fe-ae27-a3e873180f5f",
+				"uuid": "d1955799-7203-4e02-b18e-21d3fc05b984",
+				"name": "Transition",
+				"descriptions": [
+					"TransitionTime: 0.3"
+				],
+				"font": {
+					"name": "helvetiker",
+					"size": 6,
+					"subsize": 4,
+					"color": 7699160
+				},
+				"shape": {
+					"type": "disc",
+					"width": 64,
+					"height": 16,
+					"depth": 4,
+					"color": 16777215
+				},
+				"position": {
+					"x": 59.703347086352835,
+					"y": -17.474150366738662,
+					"z": 3.0524915928253904e-11
+				}
+			},
+			{
+				"id": "77df573b-ea69-4362-9419-0c97364b388a",
+				"uuid": "a0d852c3-0558-4ea5-abda-0b33cf2582e8",
+				"name": "Transition",
+				"descriptions": [
+					"TransitionTime: 0.3"
+				],
+				"font": {
+					"name": "helvetiker",
+					"size": 6,
+					"subsize": 4,
+					"color": 7699160
+				},
+				"shape": {
+					"type": "disc",
+					"width": 64,
+					"height": 16,
+					"depth": 4,
+					"color": 16777215
+				},
+				"position": {
+					"x": 64.07188467803923,
+					"y": 27.667404747335247,
+					"z": -5.115907697472721e-13
+				}
+			},
+			{
+				"id": "320faf4b-f36e-4272-9ea2-56a6c71a230a",
+				"uuid": "a3feb998-2d73-4094-a926-e5486f7bb164",
+				"name": "Animation",
+				"descriptions": [
+					"ResourceId: stand_freely_mirth_ballet_pas",
+					"Speed: 1",
+					"NeedFade: False"
+				],
+				"font": {
+					"name": "helvetiker",
+					"size": 6,
+					"subsize": 4,
+					"color": 7699160
+				},
+				"shape": {
+					"type": "disc",
+					"width": 64,
+					"height": 16,
+					"depth": 4,
+					"color": 16777215
+				},
+				"position": {
+					"x": 36.8898729964475,
+					"y": -71.83817372992306,
+					"z": -5.115907697472721e-12
+				}
+			},
+			{
+				"id": "a1a30fdc-6e35-40eb-bef8-d78341a9ba1d",
+				"uuid": "5c0667a9-2fe2-454e-9e92-c165d8ee07bd",
+				"name": "Transition",
+				"descriptions": [
+					"TransitionTime: 0.3"
+				],
+				"font": {
+					"name": "helvetiker",
+					"size": 6,
+					"subsize": 4,
+					"color": 7699160
+				},
+				"shape": {
+					"type": "disc",
+					"width": 64,
+					"height": 16,
+					"depth": 4,
+					"color": 16777215
+				},
+				"position": {
+					"x": 173.2853244701487,
+					"y": -26.696618615849136,
+					"z": -3.410605131648481e-13
+				}
+			},
+			{
+				"id": "13fd88b2-d3d9-4c22-81f6-b22b575ff361",
+				"uuid": "2441b3fe-943a-4a81-9fa9-7ea0970237e0",
+				"name": "Transition",
+				"descriptions": [
+					"TransitionTime: 0.3"
+				],
+				"font": {
+					"name": "helvetiker",
+					"size": 6,
+					"subsize": 4,
+					"color": 7699160
+				},
+				"shape": {
+					"type": "disc",
+					"width": 64,
+					"height": 16,
+					"depth": 4,
+					"color": 16777215
+				},
+				"position": {
+					"x": -34.46290766773297,
+					"y": -51.937058034471036,
+					"z": 9.663381206337363e-13
+				}
 			}
-		},
-		{
-			"id": "ad8079e5-d85e-48e3-b90d-3f3b0734553b",
-			"uuid": "5ba9e2b5-7bad-4839-8c97-ee8ebdd81b2d",
-			"name": "Transition 6",
-			"descriptions": [
-				""
-			],
-			"font": {
-				"name": "helvetiker",
-				"size": 6,
-				"subsize": 4,
-				"color": 7699160
+		],
+		"links": [
+			{
+				"id": "74a8f54f-e257-4edb-8e01-37be12387c26",
+				"originNodeId": "b6dec368-949a-4f0b-a570-dc2382ecf97d",
+				"targetNodeId": "2019e61b-a13e-4bd8-a3f4-b2e9fe52f3cb",
+				"names": [
+					""
+				],
+				"arrow": {
+					"type": "fat",
+					"pikeWidth": 24,
+					"pikeLength": 1,
+					"depth": 2,
+					"color": 16777215
+				},
+				"font": {
+					"name": "helvetiker",
+					"size": 4,
+					"color": 14533903
+				}
 			},
-			"shape": {
-				"type": "disc",
-				"width": 24,
-				"height": 24,
-				"depth": 4,
-				"color": 16777215
+			{
+				"id": "7fc4b51e-5dca-4b6b-b03a-8fb903848645",
+				"originNodeId": "2019e61b-a13e-4bd8-a3f4-b2e9fe52f3cb",
+				"targetNodeId": "671ce3b4-a173-447e-9036-16cee3ebe77b",
+				"names": [
+					"FadeOutOrDoneCondition"
+				],
+				"arrow": {
+					"type": "fat",
+					"pikeWidth": 24,
+					"pikeLength": 36,
+					"depth": 2,
+					"color": 16777215
+				},
+				"font": {
+					"name": "helvetiker",
+					"size": 4,
+					"color": 14533903
+				}
 			},
-			"position": {
-				"x": -79.11906971606541,
-				"y": -106.30108139765701,
-				"z": -1.1823431123048067e-11
+			{
+				"id": "255061be-286e-4269-a56a-d4ea75d7036a",
+				"originNodeId": "671ce3b4-a173-447e-9036-16cee3ebe77b",
+				"targetNodeId": "2f6476ac-1b97-4743-9634-265009608a7e",
+				"names": [
+					""
+				],
+				"arrow": {
+					"type": "fat",
+					"pikeWidth": 24,
+					"pikeLength": 1,
+					"depth": 2,
+					"color": 16777215
+				},
+				"font": {
+					"name": "helvetiker",
+					"size": 4,
+					"color": 14533903
+				}
+			},
+			{
+				"id": "b143e19e-10ed-4ab0-9c28-03b7b7e2aa47",
+				"originNodeId": "2f6476ac-1b97-4743-9634-265009608a7e",
+				"targetNodeId": "b6dec368-949a-4f0b-a570-dc2382ecf97d",
+				"names": [
+					"FadeOutOrDoneCondition"
+				],
+				"arrow": {
+					"type": "fat",
+					"pikeWidth": 24,
+					"pikeLength": 36,
+					"depth": 2,
+					"color": 16777215
+				},
+				"font": {
+					"name": "helvetiker",
+					"size": 4,
+					"color": 14533903
+				}
+			},
+			{
+				"id": "fed0ad3d-3c8e-47a6-904f-8ffc1b4e65b8",
+				"originNodeId": "671ce3b4-a173-447e-9036-16cee3ebe77b",
+				"targetNodeId": "26b7335f-8867-410c-9d7f-18e18e93c82b",
+				"names": [
+					""
+				],
+				"arrow": {
+					"type": "fat",
+					"pikeWidth": 24,
+					"pikeLength": 1,
+					"depth": 2,
+					"color": 16777215
+				},
+				"font": {
+					"name": "helvetiker",
+					"size": 4,
+					"color": 14533903
+				}
+			},
+			{
+				"id": "08dfd3c0-f1b6-42a9-9363-84f32cefd6f8",
+				"originNodeId": "26b7335f-8867-410c-9d7f-18e18e93c82b",
+				"targetNodeId": "139b00ab-ebc2-4d9f-a32d-6eb235b8b2c2",
+				"names": [
+					"SignalCondition: PasSignal",
+					"FadeOutOrDoneCondition"
+				],
+				"arrow": {
+					"type": "fat",
+					"pikeWidth": 24,
+					"pikeLength": 36,
+					"depth": 2,
+					"color": 16777215
+				},
+				"font": {
+					"name": "helvetiker",
+					"size": 4,
+					"color": 14533903
+				}
+			},
+			{
+				"id": "e257b7a6-5ea2-448d-b883-bcf9d9d06f70",
+				"originNodeId": "139b00ab-ebc2-4d9f-a32d-6eb235b8b2c2",
+				"targetNodeId": "ad8079e5-d85e-48e3-b90d-3f3b0734553b",
+				"names": [
+					""
+				],
+				"arrow": {
+					"type": "fat",
+					"pikeWidth": 24,
+					"pikeLength": 1,
+					"depth": 2,
+					"color": 16777215
+				},
+				"font": {
+					"name": "helvetiker",
+					"size": 4,
+					"color": 14533903
+				}
+			},
+			{
+				"id": "df0346db-52db-4d4e-94df-6cc95536523e",
+				"originNodeId": "ad8079e5-d85e-48e3-b90d-3f3b0734553b",
+				"targetNodeId": "b6dec368-949a-4f0b-a570-dc2382ecf97d",
+				"names": [
+					"FadeOutOrDoneCondition"
+				],
+				"arrow": {
+					"type": "fat",
+					"pikeWidth": 24,
+					"pikeLength": 36,
+					"depth": 2,
+					"color": 16777215
+				},
+				"font": {
+					"name": "helvetiker",
+					"size": 4,
+					"color": 14533903
+				}
+			},
+			{
+				"id": "c55493e9-eae4-443f-9a83-27065790f711",
+				"originNodeId": "e18a1028-b722-43ef-9014-f029c02385ad",
+				"targetNodeId": "2eebe329-be50-4004-bf06-92b9ead3223a",
+				"names": [
+					"From"
+				],
+				"arrow": {
+					"type": "slim",
+					"pikeWidth": 6,
+					"pikeLength": 10,
+					"depth": 2,
+					"color": 6728040
+				},
+				"font": {
+					"name": "helvetiker",
+					"size": 6,
+					"color": 14533903
+				}
+			},
+			{
+				"id": "0d1bf6ff-7b5b-4889-8b62-940360b38ff8",
+				"originNodeId": "afebf0a2-cea9-4843-8765-eb6b8195fd71",
+				"targetNodeId": "2eebe329-be50-4004-bf06-92b9ead3223a",
+				"names": [
+					"To"
+				],
+				"arrow": {
+					"type": "slim",
+					"pikeWidth": 6,
+					"pikeLength": 10,
+					"depth": 2,
+					"color": 6728040
+				},
+				"font": {
+					"name": "helvetiker",
+					"size": 6,
+					"color": 14533903
+				}
+			},
+			{
+				"id": "99f0e7f0-5ac7-4d6a-b0c2-519e3e5c38ec",
+				"originNodeId": "2eebe329-be50-4004-bf06-92b9ead3223a",
+				"targetNodeId": "ed7a055f-fa70-45fe-ae27-a3e873180f5f",
+				"names": [
+					"From"
+				],
+				"arrow": {
+					"type": "slim",
+					"pikeWidth": 6,
+					"pikeLength": 10,
+					"depth": 2,
+					"color": 6728040
+				},
+				"font": {
+					"name": "helvetiker",
+					"size": 6,
+					"color": 14533903
+				}
+			},
+			{
+				"id": "2cbc3f76-f118-4c8a-82c8-9b7dab166024",
+				"originNodeId": "7d84c9ef-545f-4b2a-8b44-283105143e3d",
+				"targetNodeId": "ed7a055f-fa70-45fe-ae27-a3e873180f5f",
+				"names": [
+					"To"
+				],
+				"arrow": {
+					"type": "slim",
+					"pikeWidth": 6,
+					"pikeLength": 10,
+					"depth": 2,
+					"color": 6728040
+				},
+				"font": {
+					"name": "helvetiker",
+					"size": 6,
+					"color": 14533903
+				}
+			},
+			{
+				"id": "59393029-e7ab-441c-93e6-abb3a4731e4d",
+				"originNodeId": "7d84c9ef-545f-4b2a-8b44-283105143e3d",
+				"targetNodeId": "77df573b-ea69-4362-9419-0c97364b388a",
+				"names": [
+					"From"
+				],
+				"arrow": {
+					"type": "slim",
+					"pikeWidth": 6,
+					"pikeLength": 10,
+					"depth": 2,
+					"color": 6728040
+				},
+				"font": {
+					"name": "helvetiker",
+					"size": 6,
+					"color": 14533903
+				}
+			},
+			{
+				"id": "78f73a31-38c1-4611-b2cd-82cb96cdb43b",
+				"originNodeId": "2eebe329-be50-4004-bf06-92b9ead3223a",
+				"targetNodeId": "77df573b-ea69-4362-9419-0c97364b388a",
+				"names": [
+					"To"
+				],
+				"arrow": {
+					"type": "slim",
+					"pikeWidth": 6,
+					"pikeLength": 10,
+					"depth": 2,
+					"color": 6728040
+				},
+				"font": {
+					"name": "helvetiker",
+					"size": 6,
+					"color": 14533903
+				}
+			},
+			{
+				"id": "82dd554f-f204-44bf-afb6-e25b43ae0c47",
+				"originNodeId": "7d84c9ef-545f-4b2a-8b44-283105143e3d",
+				"targetNodeId": "a1a30fdc-6e35-40eb-bef8-d78341a9ba1d",
+				"names": [
+					"From"
+				],
+				"arrow": {
+					"type": "slim",
+					"pikeWidth": 6,
+					"pikeLength": 10,
+					"depth": 2,
+					"color": 6728040
+				},
+				"font": {
+					"name": "helvetiker",
+					"size": 6,
+					"color": 14533903
+				}
+			},
+			{
+				"id": "489f1d8a-cc3f-4086-9c76-dac7363a1bcc",
+				"originNodeId": "320faf4b-f36e-4272-9ea2-56a6c71a230a",
+				"targetNodeId": "a1a30fdc-6e35-40eb-bef8-d78341a9ba1d",
+				"names": [
+					"To"
+				],
+				"arrow": {
+					"type": "slim",
+					"pikeWidth": 6,
+					"pikeLength": 10,
+					"depth": 2,
+					"color": 6728040
+				},
+				"font": {
+					"name": "helvetiker",
+					"size": 6,
+					"color": 14533903
+				}
+			},
+			{
+				"id": "08a2cb9b-6129-4ffa-bfa9-176d482b2826",
+				"originNodeId": "320faf4b-f36e-4272-9ea2-56a6c71a230a",
+				"targetNodeId": "13fd88b2-d3d9-4c22-81f6-b22b575ff361",
+				"names": [
+					"From"
+				],
+				"arrow": {
+					"type": "slim",
+					"pikeWidth": 6,
+					"pikeLength": 10,
+					"depth": 2,
+					"color": 6728040
+				},
+				"font": {
+					"name": "helvetiker",
+					"size": 6,
+					"color": 14533903
+				}
+			},
+			{
+				"id": "756f3f46-2789-4c54-a08f-02306d774f72",
+				"originNodeId": "2eebe329-be50-4004-bf06-92b9ead3223a",
+				"targetNodeId": "13fd88b2-d3d9-4c22-81f6-b22b575ff361",
+				"names": [
+					"To"
+				],
+				"arrow": {
+					"type": "slim",
+					"pikeWidth": 6,
+					"pikeLength": 10,
+					"depth": 2,
+					"color": 6728040
+				},
+				"font": {
+					"name": "helvetiker",
+					"size": 6,
+					"color": 14533903
+				}
+			},
+			{
+				"id": "f2ed9354-08b1-4d53-8997-976aa9250dd5",
+				"originNodeId": "b6dec368-949a-4f0b-a570-dc2382ecf97d",
+				"targetNodeId": "2eebe329-be50-4004-bf06-92b9ead3223a",
+				"names": [
+					""
+				],
+				"arrow": {
+					"type": "slim",
+					"pikeWidth": 6,
+					"pikeLength": 10,
+					"depth": 2,
+					"color": 4802889
+				},
+				"font": {
+					"name": "helvetiker",
+					"size": 6,
+					"color": 14533903
+				}
+			},
+			{
+				"id": "f1fbef37-2401-4e8e-9aa9-0d8405e0273e",
+				"originNodeId": "2019e61b-a13e-4bd8-a3f4-b2e9fe52f3cb",
+				"targetNodeId": "ed7a055f-fa70-45fe-ae27-a3e873180f5f",
+				"names": [
+					""
+				],
+				"arrow": {
+					"type": "slim",
+					"pikeWidth": 6,
+					"pikeLength": 10,
+					"depth": 2,
+					"color": 4802889
+				},
+				"font": {
+					"name": "helvetiker",
+					"size": 6,
+					"color": 14533903
+				}
+			},
+			{
+				"id": "fdafb4a1-2760-4dc2-87f9-f05b3d7b250e",
+				"originNodeId": "671ce3b4-a173-447e-9036-16cee3ebe77b",
+				"targetNodeId": "7d84c9ef-545f-4b2a-8b44-283105143e3d",
+				"names": [
+					""
+				],
+				"arrow": {
+					"type": "slim",
+					"pikeWidth": 6,
+					"pikeLength": 10,
+					"depth": 2,
+					"color": 4802889
+				},
+				"font": {
+					"name": "helvetiker",
+					"size": 6,
+					"color": 14533903
+				}
+			},
+			{
+				"id": "902b6079-e284-4d18-a063-147e9eb66616",
+				"originNodeId": "2f6476ac-1b97-4743-9634-265009608a7e",
+				"targetNodeId": "77df573b-ea69-4362-9419-0c97364b388a",
+				"names": [
+					""
+				],
+				"arrow": {
+					"type": "slim",
+					"pikeWidth": 6,
+					"pikeLength": 10,
+					"depth": 2,
+					"color": 4802889
+				},
+				"font": {
+					"name": "helvetiker",
+					"size": 6,
+					"color": 14533903
+				}
+			},
+			{
+				"id": "42b15cf9-00ae-4527-ad7c-95e6c99928b7",
+				"originNodeId": "139b00ab-ebc2-4d9f-a32d-6eb235b8b2c2",
+				"targetNodeId": "320faf4b-f36e-4272-9ea2-56a6c71a230a",
+				"names": [
+					""
+				],
+				"arrow": {
+					"type": "slim",
+					"pikeWidth": 6,
+					"pikeLength": 10,
+					"depth": 2,
+					"color": 4802889
+				},
+				"font": {
+					"name": "helvetiker",
+					"size": 6,
+					"color": 14533903
+				}
+			},
+			{
+				"id": "578fa9ad-36c1-473a-81f5-7e013c54f1f3",
+				"originNodeId": "26b7335f-8867-410c-9d7f-18e18e93c82b",
+				"targetNodeId": "a1a30fdc-6e35-40eb-bef8-d78341a9ba1d",
+				"names": [
+					""
+				],
+				"arrow": {
+					"type": "slim",
+					"pikeWidth": 6,
+					"pikeLength": 10,
+					"depth": 2,
+					"color": 4802889
+				},
+				"font": {
+					"name": "helvetiker",
+					"size": 6,
+					"color": 14533903
+				}
+			},
+			{
+				"id": "5f23d782-45a2-4747-bf9e-0c29c43f1d15",
+				"originNodeId": "ad8079e5-d85e-48e3-b90d-3f3b0734553b",
+				"targetNodeId": "13fd88b2-d3d9-4c22-81f6-b22b575ff361",
+				"names": [
+					""
+				],
+				"arrow": {
+					"type": "slim",
+					"pikeWidth": 6,
+					"pikeLength": 10,
+					"depth": 2,
+					"color": 4802889
+				},
+				"font": {
+					"name": "helvetiker",
+					"size": 6,
+					"color": 14533903
+				}
 			}
-		},
-		{
-			"id": "e18a1028-b722-43ef-9014-f029c02385ad",
-			"uuid": "6f7d8168-d5dd-4565-b441-31e6f2f100b7",
-			"name": "Animation",
-			"descriptions": [
-				"ResourceId: stand_freely_thanks_worship_reserved",
-				"Speed: 1",
-				"NeedFade: False"
-			],
-			"font": {
-				"name": "helvetiker",
-				"size": 6,
-				"subsize": 4,
-				"color": 7699160
-			},
-			"shape": {
-				"type": "disc",
-				"width": 64,
-				"height": 16,
-				"depth": 4,
-				"color": 16777215
-			},
-			"position": {
-				"x": -174.74150366738658,
-				"y": 73.77974599289554,
-				"z": -8.86757334228605e-12
-			}
-		},
-		{
-			"id": "afebf0a2-cea9-4843-8765-eb6b8195fd71",
-			"uuid": "0cdc9efc-eecc-43c7-8910-4f6c6700e9e3",
-			"name": "Animation",
-			"descriptions": [
-				"ResourceId: stand_freely_act_beat",
-				"Speed: 1",
-				"NeedFade: False"
-			],
-			"font": {
-				"name": "helvetiker",
-				"size": 6,
-				"subsize": 4,
-				"color": 7699160
-			},
-			"shape": {
-				"type": "disc",
-				"width": 64,
-				"height": 16,
-				"depth": 4,
-				"color": 16777215
-			},
-			"position": {
-				"x": -176.19768286460675,
-				"y": 10.67864744633882,
-				"z": 0
-			}
-		},
-		{
-			"id": "2eebe329-be50-4004-bf06-92b9ead3223a",
-			"uuid": "3a762c76-bc81-42ca-a48f-ebe8e796d326",
-			"name": "Blend",
-			"descriptions": [
-				"Parameter: ThankBeat"
-			],
-			"font": {
-				"name": "helvetiker",
-				"size": 6,
-				"subsize": 4,
-				"color": 7699160
-			},
-			"shape": {
-				"type": "disc",
-				"width": 64,
-				"height": 16,
-				"depth": 4,
-				"color": 16777215
-			},
-			"position": {
-				"x": -43.68537591684213,
-				"y": 32.521335404759796,
-				"z": 1.4779288903810084e-11
-			}
-		},
-		{
-			"id": "7d84c9ef-545f-4b2a-8b44-283105143e3d",
-			"uuid": "3aebc60f-6fbe-47f7-a7c7-407598f7cced",
-			"name": "Animation",
-			"descriptions": [
-				"ResourceId: stand_freely_jump",
-				"Speed: 1",
-				"NeedFade: False"
-			],
-			"font": {
-				"name": "helvetiker",
-				"size": 6,
-				"subsize": 4,
-				"color": 7699160
-			},
-			"shape": {
-				"type": "disc",
-				"width": 64,
-				"height": 16,
-				"depth": 4,
-				"color": 16777215
-			},
-			"position": {
-				"x": 156.78196023490017,
-				"y": 58.24716788912771,
-				"z": -1.5063505998114124e-11
-			}
-		},
-		{
-			"id": "ed7a055f-fa70-45fe-ae27-a3e873180f5f",
-			"uuid": "d1955799-7203-4e02-b18e-21d3fc05b984",
-			"name": "Transition",
-			"descriptions": [
-				"TransitionTime: 0.3"
-			],
-			"font": {
-				"name": "helvetiker",
-				"size": 6,
-				"subsize": 4,
-				"color": 7699160
-			},
-			"shape": {
-				"type": "disc",
-				"width": 64,
-				"height": 16,
-				"depth": 4,
-				"color": 16777215
-			},
-			"position": {
-				"x": 59.703347086352835,
-				"y": -17.474150366738662,
-				"z": 3.0524915928253904e-11
-			}
-		},
-		{
-			"id": "77df573b-ea69-4362-9419-0c97364b388a",
-			"uuid": "a0d852c3-0558-4ea5-abda-0b33cf2582e8",
-			"name": "Transition",
-			"descriptions": [
-				"TransitionTime: 0.3"
-			],
-			"font": {
-				"name": "helvetiker",
-				"size": 6,
-				"subsize": 4,
-				"color": 7699160
-			},
-			"shape": {
-				"type": "disc",
-				"width": 64,
-				"height": 16,
-				"depth": 4,
-				"color": 16777215
-			},
-			"position": {
-				"x": 64.07188467803923,
-				"y": 27.667404747335247,
-				"z": -5.115907697472721e-13
-			}
-		},
-		{
-			"id": "320faf4b-f36e-4272-9ea2-56a6c71a230a",
-			"uuid": "a3feb998-2d73-4094-a926-e5486f7bb164",
-			"name": "Animation",
-			"descriptions": [
-				"ResourceId: stand_freely_mirth_ballet_pas",
-				"Speed: 1",
-				"NeedFade: False"
-			],
-			"font": {
-				"name": "helvetiker",
-				"size": 6,
-				"subsize": 4,
-				"color": 7699160
-			},
-			"shape": {
-				"type": "disc",
-				"width": 64,
-				"height": 16,
-				"depth": 4,
-				"color": 16777215
-			},
-			"position": {
-				"x": 36.8898729964475,
-				"y": -71.83817372992306,
-				"z": -5.115907697472721e-12
-			}
-		},
-		{
-			"id": "a1a30fdc-6e35-40eb-bef8-d78341a9ba1d",
-			"uuid": "5c0667a9-2fe2-454e-9e92-c165d8ee07bd",
-			"name": "Transition",
-			"descriptions": [
-				"TransitionTime: 0.3"
-			],
-			"font": {
-				"name": "helvetiker",
-				"size": 6,
-				"subsize": 4,
-				"color": 7699160
-			},
-			"shape": {
-				"type": "disc",
-				"width": 64,
-				"height": 16,
-				"depth": 4,
-				"color": 16777215
-			},
-			"position": {
-				"x": 173.2853244701487,
-				"y": -26.696618615849136,
-				"z": -3.410605131648481e-13
-			}
-		},
-		{
-			"id": "13fd88b2-d3d9-4c22-81f6-b22b575ff361",
-			"uuid": "2441b3fe-943a-4a81-9fa9-7ea0970237e0",
-			"name": "Transition",
-			"descriptions": [
-				"TransitionTime: 0.3"
-			],
-			"font": {
-				"name": "helvetiker",
-				"size": 6,
-				"subsize": 4,
-				"color": 7699160
-			},
-			"shape": {
-				"type": "disc",
-				"width": 64,
-				"height": 16,
-				"depth": 4,
-				"color": 16777215
-			},
-			"position": {
-				"x": -34.46290766773297,
-				"y": -51.937058034471036,
-				"z": 9.663381206337363e-13
-			}
-		}
-	],
-	"links": [
-		{
-			"id": "74a8f54f-e257-4edb-8e01-37be12387c26",
-			"originNodeId": "b6dec368-949a-4f0b-a570-dc2382ecf97d",
-			"targetNodeId": "2019e61b-a13e-4bd8-a3f4-b2e9fe52f3cb",
-			"names": [
-				""
-			],
-			"arrow": {
-				"type": "fat",
-				"pikeWidth": 24,
-				"pikeLength": 1,
-				"depth": 2,
-				"color": 16777215
-			},
-			"font": {
-				"name": "helvetiker",
-				"size": 4,
-				"color": 14533903
-			}
-		},
-		{
-			"id": "7fc4b51e-5dca-4b6b-b03a-8fb903848645",
-			"originNodeId": "2019e61b-a13e-4bd8-a3f4-b2e9fe52f3cb",
-			"targetNodeId": "671ce3b4-a173-447e-9036-16cee3ebe77b",
-			"names": [
-				"FadeOutOrDoneCondition"
-			],
-			"arrow": {
-				"type": "fat",
-				"pikeWidth": 24,
-				"pikeLength": 36,
-				"depth": 2,
-				"color": 16777215
-			},
-			"font": {
-				"name": "helvetiker",
-				"size": 4,
-				"color": 14533903
-			}
-		},
-		{
-			"id": "255061be-286e-4269-a56a-d4ea75d7036a",
-			"originNodeId": "671ce3b4-a173-447e-9036-16cee3ebe77b",
-			"targetNodeId": "2f6476ac-1b97-4743-9634-265009608a7e",
-			"names": [
-				""
-			],
-			"arrow": {
-				"type": "fat",
-				"pikeWidth": 24,
-				"pikeLength": 1,
-				"depth": 2,
-				"color": 16777215
-			},
-			"font": {
-				"name": "helvetiker",
-				"size": 4,
-				"color": 14533903
-			}
-		},
-		{
-			"id": "b143e19e-10ed-4ab0-9c28-03b7b7e2aa47",
-			"originNodeId": "2f6476ac-1b97-4743-9634-265009608a7e",
-			"targetNodeId": "b6dec368-949a-4f0b-a570-dc2382ecf97d",
-			"names": [
-				"FadeOutOrDoneCondition"
-			],
-			"arrow": {
-				"type": "fat",
-				"pikeWidth": 24,
-				"pikeLength": 36,
-				"depth": 2,
-				"color": 16777215
-			},
-			"font": {
-				"name": "helvetiker",
-				"size": 4,
-				"color": 14533903
-			}
-		},
-		{
-			"id": "fed0ad3d-3c8e-47a6-904f-8ffc1b4e65b8",
-			"originNodeId": "671ce3b4-a173-447e-9036-16cee3ebe77b",
-			"targetNodeId": "26b7335f-8867-410c-9d7f-18e18e93c82b",
-			"names": [
-				""
-			],
-			"arrow": {
-				"type": "fat",
-				"pikeWidth": 24,
-				"pikeLength": 1,
-				"depth": 2,
-				"color": 16777215
-			},
-			"font": {
-				"name": "helvetiker",
-				"size": 4,
-				"color": 14533903
-			}
-		},
-		{
-			"id": "08dfd3c0-f1b6-42a9-9363-84f32cefd6f8",
-			"originNodeId": "26b7335f-8867-410c-9d7f-18e18e93c82b",
-			"targetNodeId": "139b00ab-ebc2-4d9f-a32d-6eb235b8b2c2",
-			"names": [
-				"SignalCondition: PasSignal",
-				"FadeOutOrDoneCondition"
-			],
-			"arrow": {
-				"type": "fat",
-				"pikeWidth": 24,
-				"pikeLength": 36,
-				"depth": 2,
-				"color": 16777215
-			},
-			"font": {
-				"name": "helvetiker",
-				"size": 4,
-				"color": 14533903
-			}
-		},
-		{
-			"id": "e257b7a6-5ea2-448d-b883-bcf9d9d06f70",
-			"originNodeId": "139b00ab-ebc2-4d9f-a32d-6eb235b8b2c2",
-			"targetNodeId": "ad8079e5-d85e-48e3-b90d-3f3b0734553b",
-			"names": [
-				""
-			],
-			"arrow": {
-				"type": "fat",
-				"pikeWidth": 24,
-				"pikeLength": 1,
-				"depth": 2,
-				"color": 16777215
-			},
-			"font": {
-				"name": "helvetiker",
-				"size": 4,
-				"color": 14533903
-			}
-		},
-		{
-			"id": "df0346db-52db-4d4e-94df-6cc95536523e",
-			"originNodeId": "ad8079e5-d85e-48e3-b90d-3f3b0734553b",
-			"targetNodeId": "b6dec368-949a-4f0b-a570-dc2382ecf97d",
-			"names": [
-				"FadeOutOrDoneCondition"
-			],
-			"arrow": {
-				"type": "fat",
-				"pikeWidth": 24,
-				"pikeLength": 36,
-				"depth": 2,
-				"color": 16777215
-			},
-			"font": {
-				"name": "helvetiker",
-				"size": 4,
-				"color": 14533903
-			}
-		},
-		{
-			"id": "c55493e9-eae4-443f-9a83-27065790f711",
-			"originNodeId": "e18a1028-b722-43ef-9014-f029c02385ad",
-			"targetNodeId": "2eebe329-be50-4004-bf06-92b9ead3223a",
-			"names": [
-				"From"
-			],
-			"arrow": {
-				"type": "slim",
-				"pikeWidth": 6,
-				"pikeLength": 10,
-				"depth": 2,
-				"color": 6728040
-			},
-			"font": {
-				"name": "helvetiker",
-				"size": 6,
-				"color": 14533903
-			}
-		},
-		{
-			"id": "0d1bf6ff-7b5b-4889-8b62-940360b38ff8",
-			"originNodeId": "afebf0a2-cea9-4843-8765-eb6b8195fd71",
-			"targetNodeId": "2eebe329-be50-4004-bf06-92b9ead3223a",
-			"names": [
-				"To"
-			],
-			"arrow": {
-				"type": "slim",
-				"pikeWidth": 6,
-				"pikeLength": 10,
-				"depth": 2,
-				"color": 6728040
-			},
-			"font": {
-				"name": "helvetiker",
-				"size": 6,
-				"color": 14533903
-			}
-		},
-		{
-			"id": "99f0e7f0-5ac7-4d6a-b0c2-519e3e5c38ec",
-			"originNodeId": "2eebe329-be50-4004-bf06-92b9ead3223a",
-			"targetNodeId": "ed7a055f-fa70-45fe-ae27-a3e873180f5f",
-			"names": [
-				"From"
-			],
-			"arrow": {
-				"type": "slim",
-				"pikeWidth": 6,
-				"pikeLength": 10,
-				"depth": 2,
-				"color": 6728040
-			},
-			"font": {
-				"name": "helvetiker",
-				"size": 6,
-				"color": 14533903
-			}
-		},
-		{
-			"id": "2cbc3f76-f118-4c8a-82c8-9b7dab166024",
-			"originNodeId": "7d84c9ef-545f-4b2a-8b44-283105143e3d",
-			"targetNodeId": "ed7a055f-fa70-45fe-ae27-a3e873180f5f",
-			"names": [
-				"To"
-			],
-			"arrow": {
-				"type": "slim",
-				"pikeWidth": 6,
-				"pikeLength": 10,
-				"depth": 2,
-				"color": 6728040
-			},
-			"font": {
-				"name": "helvetiker",
-				"size": 6,
-				"color": 14533903
-			}
-		},
-		{
-			"id": "59393029-e7ab-441c-93e6-abb3a4731e4d",
-			"originNodeId": "7d84c9ef-545f-4b2a-8b44-283105143e3d",
-			"targetNodeId": "77df573b-ea69-4362-9419-0c97364b388a",
-			"names": [
-				"From"
-			],
-			"arrow": {
-				"type": "slim",
-				"pikeWidth": 6,
-				"pikeLength": 10,
-				"depth": 2,
-				"color": 6728040
-			},
-			"font": {
-				"name": "helvetiker",
-				"size": 6,
-				"color": 14533903
-			}
-		},
-		{
-			"id": "78f73a31-38c1-4611-b2cd-82cb96cdb43b",
-			"originNodeId": "2eebe329-be50-4004-bf06-92b9ead3223a",
-			"targetNodeId": "77df573b-ea69-4362-9419-0c97364b388a",
-			"names": [
-				"To"
-			],
-			"arrow": {
-				"type": "slim",
-				"pikeWidth": 6,
-				"pikeLength": 10,
-				"depth": 2,
-				"color": 6728040
-			},
-			"font": {
-				"name": "helvetiker",
-				"size": 6,
-				"color": 14533903
-			}
-		},
-		{
-			"id": "82dd554f-f204-44bf-afb6-e25b43ae0c47",
-			"originNodeId": "7d84c9ef-545f-4b2a-8b44-283105143e3d",
-			"targetNodeId": "a1a30fdc-6e35-40eb-bef8-d78341a9ba1d",
-			"names": [
-				"From"
-			],
-			"arrow": {
-				"type": "slim",
-				"pikeWidth": 6,
-				"pikeLength": 10,
-				"depth": 2,
-				"color": 6728040
-			},
-			"font": {
-				"name": "helvetiker",
-				"size": 6,
-				"color": 14533903
-			}
-		},
-		{
-			"id": "489f1d8a-cc3f-4086-9c76-dac7363a1bcc",
-			"originNodeId": "320faf4b-f36e-4272-9ea2-56a6c71a230a",
-			"targetNodeId": "a1a30fdc-6e35-40eb-bef8-d78341a9ba1d",
-			"names": [
-				"To"
-			],
-			"arrow": {
-				"type": "slim",
-				"pikeWidth": 6,
-				"pikeLength": 10,
-				"depth": 2,
-				"color": 6728040
-			},
-			"font": {
-				"name": "helvetiker",
-				"size": 6,
-				"color": 14533903
-			}
-		},
-		{
-			"id": "08a2cb9b-6129-4ffa-bfa9-176d482b2826",
-			"originNodeId": "320faf4b-f36e-4272-9ea2-56a6c71a230a",
-			"targetNodeId": "13fd88b2-d3d9-4c22-81f6-b22b575ff361",
-			"names": [
-				"From"
-			],
-			"arrow": {
-				"type": "slim",
-				"pikeWidth": 6,
-				"pikeLength": 10,
-				"depth": 2,
-				"color": 6728040
-			},
-			"font": {
-				"name": "helvetiker",
-				"size": 6,
-				"color": 14533903
-			}
-		},
-		{
-			"id": "756f3f46-2789-4c54-a08f-02306d774f72",
-			"originNodeId": "2eebe329-be50-4004-bf06-92b9ead3223a",
-			"targetNodeId": "13fd88b2-d3d9-4c22-81f6-b22b575ff361",
-			"names": [
-				"To"
-			],
-			"arrow": {
-				"type": "slim",
-				"pikeWidth": 6,
-				"pikeLength": 10,
-				"depth": 2,
-				"color": 6728040
-			},
-			"font": {
-				"name": "helvetiker",
-				"size": 6,
-				"color": 14533903
-			}
-		},
-		{
-			"id": "f2ed9354-08b1-4d53-8997-976aa9250dd5",
-			"originNodeId": "b6dec368-949a-4f0b-a570-dc2382ecf97d",
-			"targetNodeId": "2eebe329-be50-4004-bf06-92b9ead3223a",
-			"names": [
-				""
-			],
-			"arrow": {
-				"type": "slim",
-				"pikeWidth": 6,
-				"pikeLength": 10,
-				"depth": 2,
-				"color": 4802889
-			},
-			"font": {
-				"name": "helvetiker",
-				"size": 6,
-				"color": 14533903
-			}
-		},
-		{
-			"id": "f1fbef37-2401-4e8e-9aa9-0d8405e0273e",
-			"originNodeId": "2019e61b-a13e-4bd8-a3f4-b2e9fe52f3cb",
-			"targetNodeId": "ed7a055f-fa70-45fe-ae27-a3e873180f5f",
-			"names": [
-				""
-			],
-			"arrow": {
-				"type": "slim",
-				"pikeWidth": 6,
-				"pikeLength": 10,
-				"depth": 2,
-				"color": 4802889
-			},
-			"font": {
-				"name": "helvetiker",
-				"size": 6,
-				"color": 14533903
-			}
-		},
-		{
-			"id": "fdafb4a1-2760-4dc2-87f9-f05b3d7b250e",
-			"originNodeId": "671ce3b4-a173-447e-9036-16cee3ebe77b",
-			"targetNodeId": "7d84c9ef-545f-4b2a-8b44-283105143e3d",
-			"names": [
-				""
-			],
-			"arrow": {
-				"type": "slim",
-				"pikeWidth": 6,
-				"pikeLength": 10,
-				"depth": 2,
-				"color": 4802889
-			},
-			"font": {
-				"name": "helvetiker",
-				"size": 6,
-				"color": 14533903
-			}
-		},
-		{
-			"id": "902b6079-e284-4d18-a063-147e9eb66616",
-			"originNodeId": "2f6476ac-1b97-4743-9634-265009608a7e",
-			"targetNodeId": "77df573b-ea69-4362-9419-0c97364b388a",
-			"names": [
-				""
-			],
-			"arrow": {
-				"type": "slim",
-				"pikeWidth": 6,
-				"pikeLength": 10,
-				"depth": 2,
-				"color": 4802889
-			},
-			"font": {
-				"name": "helvetiker",
-				"size": 6,
-				"color": 14533903
-			}
-		},
-		{
-			"id": "42b15cf9-00ae-4527-ad7c-95e6c99928b7",
-			"originNodeId": "139b00ab-ebc2-4d9f-a32d-6eb235b8b2c2",
-			"targetNodeId": "320faf4b-f36e-4272-9ea2-56a6c71a230a",
-			"names": [
-				""
-			],
-			"arrow": {
-				"type": "slim",
-				"pikeWidth": 6,
-				"pikeLength": 10,
-				"depth": 2,
-				"color": 4802889
-			},
-			"font": {
-				"name": "helvetiker",
-				"size": 6,
-				"color": 14533903
-			}
-		},
-		{
-			"id": "578fa9ad-36c1-473a-81f5-7e013c54f1f3",
-			"originNodeId": "26b7335f-8867-410c-9d7f-18e18e93c82b",
-			"targetNodeId": "a1a30fdc-6e35-40eb-bef8-d78341a9ba1d",
-			"names": [
-				""
-			],
-			"arrow": {
-				"type": "slim",
-				"pikeWidth": 6,
-				"pikeLength": 10,
-				"depth": 2,
-				"color": 4802889
-			},
-			"font": {
-				"name": "helvetiker",
-				"size": 6,
-				"color": 14533903
-			}
-		},
-		{
-			"id": "5f23d782-45a2-4747-bf9e-0c29c43f1d15",
-			"originNodeId": "ad8079e5-d85e-48e3-b90d-3f3b0734553b",
-			"targetNodeId": "13fd88b2-d3d9-4c22-81f6-b22b575ff361",
-			"names": [
-				""
-			],
-			"arrow": {
-				"type": "slim",
-				"pikeWidth": 6,
-				"pikeLength": 10,
-				"depth": 2,
-				"color": 4802889
-			},
-			"font": {
-				"name": "helvetiker",
-				"size": 6,
-				"color": 14533903
-			}
-		}
-	]
+		]
+	}
 }

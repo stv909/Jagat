@@ -22,10 +22,10 @@
 				if (!viewer)
 					return;
 				var buffer = document.getElementById('viewDataBuffer');
-				var nodeGalaxyDesc;
+				var scriptDesc = {};
 				try
 				{
-					nodeGalaxyDesc = JSON.parse(buffer.value);
+					var scriptDesc = JSON.parse(buffer.value);
 				}
 				catch (e)
 				{
@@ -33,9 +33,8 @@
 						'Can not parse given content string as JSON. String: ' +
 						buffer.value + '; Name: ' + e.name + '; Desc: ' + e.message
 					);
-					nodeGalaxyDesc = {};
 				}
-				viewer.load(nodeGalaxyDesc);
+				viewer.load(scriptDesc);
 			}
 
 			function onStopView()

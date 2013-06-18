@@ -867,9 +867,10 @@ NG.Galaxy = function(initOptions)
 		return resultLinks;
 	};
 
-	this.load = function(nodeGalaxyDesc)
+	this.load = function(scriptDesc)
 	{
 		this.clear();
+		var nodeGalaxyDesc = scriptDesc.NodeGalaxy;
 		if (nodeGalaxyDesc.nodes)
 		{
 			for (var nodeIndex = 0; nodeIndex < nodeGalaxyDesc.nodes.length; ++nodeIndex)
@@ -906,7 +907,8 @@ NG.Galaxy = function(initOptions)
 			nodeGalaxyDesc.links.push(links[linkId].desc);
 		}
 
-		return JSON.stringify(nodeGalaxyDesc, null, '\t');
+		var scriptDesc = {NodeGalaxy: nodeGalaxyDesc};
+		return JSON.stringify(scriptDesc, null, '\t');
 	};
 	this.clear = function()
 	{
