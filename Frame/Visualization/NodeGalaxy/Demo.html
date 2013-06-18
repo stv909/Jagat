@@ -11,10 +11,12 @@
 
 			function onSaveView()
 			{
-				if (!viewer)
-					return;
 				var buffer = document.getElementById('viewDataBuffer');
-				buffer.value = viewer.save();
+				if (!viewer || !buffer)
+					return;
+				var nodeGalaxyDesc = viewer.save();
+				var scriptDesc = {NodeGalaxy: nodeGalaxyDesc};
+				buffer.value = JSON.stringify(scriptDesc, null, '\t');
 			}
 
 			function onLoadView()
@@ -34,7 +36,7 @@
 						buffer.value + '; Name: ' + e.name + '; Desc: ' + e.message
 					);
 				}
-				viewer.load(scriptDesc);
+				viewer.load(scriptDesc.NodeGalaxy);
 			}
 
 			function onStopView()

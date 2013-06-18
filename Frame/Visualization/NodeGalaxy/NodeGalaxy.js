@@ -867,10 +867,9 @@ NG.Galaxy = function(initOptions)
 		return resultLinks;
 	};
 
-	this.load = function(scriptDesc)
+	this.load = function(nodeGalaxyDesc)
 	{
 		this.clear();
-		var nodeGalaxyDesc = scriptDesc.NodeGalaxy;
 		if (!nodeGalaxyDesc)
 			return;
 		if (nodeGalaxyDesc.nodes)
@@ -893,7 +892,6 @@ NG.Galaxy = function(initOptions)
 	this.save = function()
 	{
 		var nodeGalaxyDesc = {};
-
 		nodeGalaxyDesc.nodes = [];
 		for (var nodeId in nodes)
 		{
@@ -902,15 +900,12 @@ NG.Galaxy = function(initOptions)
 			desc.position = {x: pos.x, y: pos.y, z: pos.z};
 			nodeGalaxyDesc.nodes.push(desc);
 		}
-
 		nodeGalaxyDesc.links = [];
 		for (var linkId in links)
 		{
 			nodeGalaxyDesc.links.push(links[linkId].desc);
 		}
-
-		var scriptDesc = {NodeGalaxy: nodeGalaxyDesc};
-		return JSON.stringify(scriptDesc, null, '\t');
+		return nodeGalaxyDesc;
 	};
 	this.clear = function()
 	{
