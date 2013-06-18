@@ -871,6 +871,8 @@ NG.Galaxy = function(initOptions)
 	{
 		this.clear();
 		var nodeGalaxyDesc = scriptDesc.NodeGalaxy;
+		if (!nodeGalaxyDesc)
+			return;
 		if (nodeGalaxyDesc.nodes)
 		{
 			for (var nodeIndex = 0; nodeIndex < nodeGalaxyDesc.nodes.length; ++nodeIndex)
