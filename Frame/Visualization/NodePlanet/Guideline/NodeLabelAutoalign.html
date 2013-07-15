@@ -4,19 +4,18 @@
 		<meta charset="utf-8">
 		<title>Node Labels Autoalign - Node Planet Guideline</title>
 		<!-- Origin: https://gist.github.com/MoritzStefaner/1377729 -->
-		<script type="text/javascript" src="../D3/d3.v2.js" charset="utf-8"></script>
+		<script type="text/javascript" src="../D3/d3.v3.js" charset="utf-8"></script>
 	</head>
 	<body>
 		<script type="text/javascript" charset="utf-8">
 			var w = 960, h = 500;
-			var labelDistance = 0;
 			var vis = d3.select("body").append("svg:svg").attr("width", w).attr("height", h);
 			var nodes = [];
 			var labelAnchors = [];
 			var labelAnchorLinks = [];
 			var links = [];
 
-			for(var i = 0; i < 30; i++) {
+			for(var i = 0; i < 10; i++) {
 				var node = {
 					label : "node " + i
 				};
@@ -49,15 +48,15 @@
 			});
 			force.start();
 
-			var force2 = d3.layout.force().nodes(labelAnchors).links(labelAnchorLinks).gravity(0).linkDistance(0).linkStrength(8).charge(-100).size([w, h]);
+			var force2 = d3.layout.force().nodes(labelAnchors).links(labelAnchorLinks).gravity(0).linkDistance(15).linkStrength(8).charge(-100).size([w, h]);
 			force2.start();
 
-			var link = vis.selectAll("line.link").data(links).enter().append("svg:line").attr("class", "link").style("stroke", "#CCC");
+			var link = vis.selectAll("line.link").data(links).enter().append("svg:line").attr("class", "link").style("stroke", "#EEE");
 			var node = vis.selectAll("g.node").data(force.nodes()).enter().append("svg:g").attr("class", "node");
-			node.append("svg:circle").attr("r", 5).style("fill", "#555").style("stroke", "#FFF").style("stroke-width", 3);
+			node.append("svg:circle").attr("r", 12).style("fill", "#777").style("stroke", "#FFF").style("stroke-width", 2);
 			node.call(force.drag);
 
-			var anchorLink = vis.selectAll("line.anchorLink").data(labelAnchorLinks)//.enter().append("svg:line").attr("class", "anchorLink").style("stroke", "#999");
+			var anchorLink = vis.selectAll("line.anchorLink").data(labelAnchorLinks);//.enter().append("svg:line").attr("class", "anchorLink").style("stroke", "#999");
 			var anchorNode = vis.selectAll("g.anchorNode").data(force2.nodes()).enter().append("svg:g").attr("class", "anchorNode");
 			anchorNode.append("svg:circle").attr("r", 0).style("fill", "#FFF");
 				anchorNode.append("svg:text").text(function(d, i) {
