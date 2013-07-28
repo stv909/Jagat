@@ -27,7 +27,7 @@
 
 
 
-			svg:not(.active):not(.ctrl) {
+			svg:not(.active):not(.nodeMove) {
 			  cursor: crosshair;
 			}
 
@@ -38,7 +38,7 @@
 			  cursor: default;
 			}
 
-			svg:not(.active):not(.ctrl) path.link {
+			svg:not(.active):not(.moveNode) path.link {
 			  cursor: pointer;
 			}
 
@@ -130,13 +130,6 @@
 					.charge(-500)
 					.on('tick', tick);
 				updateSvgSize();
-
-				function onResize(event)
-				{
-					updateSvgSize();
-					restart();
-				}
-				window.onresize = onResize;
 
 				// define arrow markers for graph links
 				function defineSvgArrow(id, refX, d)
@@ -273,7 +266,7 @@
 
 				function pathOnMouseDown(d)
 				{
-					if(d3.event.ctrlKey)
+					if (!isDefaultEditMode())
 						return;
 					// select link
 					mousedown_link = d;
@@ -290,9 +283,8 @@
 					if(!mousedown_node || d === mousedown_node)
 						return;
 					// enlarge target node
-					d3.select(this).attr('transform', 'scale(1.1)');
+					d3.select(this).attr('transform', 'scale(1.3)');
 				}
-
 				function circleOnMouseOut(d)
 				{
 					if(!mousedown_node || d === mousedown_node)
@@ -300,29 +292,32 @@
 					// unenlarge target node
 					d3.select(this).attr('transform', '');
 				}
-
 				function circleOnMouseDown(d)
 				{
-					if(d3.event.ctrlKey)
-						return;
-					// select node
 					mousedown_node = d;
-					if (mousedown_node === selected_node)
-						selected_node = null;
-					else
-						selected_node = mousedown_node;
-					selected_link = null;
+					// select node
+					if (isDefaultEditMode())
+					{
+						if (mousedown_node === selected_node)
+							selected_node = null;
+						else
+							selected_node = mousedown_node;
+						selected_link = null;
+						restart();
+					}
 					// reposition drag line
-					drag_line
-						.style('marker-end', 'url(#end-arrow)')
-						.classed('hidden', false)
-						.attr('d',
-							'M' + mousedown_node.x + ',' + mousedown_node.y +
-							'L' + mousedown_node.x + ',' + mousedown_node.y
-						);
-					restart();
+					if (editMode.linkDraw.active)
+					{
+						drag_line
+							.style('marker-end', 'url(#end-arrow)')
+							.classed('hidden', false)
+							.attr('d',
+								'M' + mousedown_node.x + ',' + mousedown_node.y +
+								'L' + mousedown_node.x + ',' + mousedown_node.y
+							);
+						restart();
+					}
 				}
-
 				function circleOnMouseUp(d)
 				{
 					if (!mousedown_node)
@@ -383,7 +378,9 @@
 					//d3.event.preventDefault();
 					// because :active only works in WebKit?
 					svg.classed('active', true);
-					if (d3.event.ctrlKey || mousedown_node || mousedown_link)
+					if (!isDefaultEditMode())
+						return;
+					if (mousedown_node || mousedown_link)
 						return;
 					// insert new node at point
 					var newNodeId = '';
@@ -402,7 +399,6 @@
 						restart();
 					}
 				}
-
 				function svgOnMouseUp()
 				{
 					if (mousedown_node)
@@ -417,7 +413,6 @@
 					// clear mouse event vars
 					resetMouseVars();
 				}
-
 				function svgOnMouseMove()
 				{
 					if(!mousedown_node)
@@ -431,94 +426,166 @@
 				}
 
 				// keyboard handlers
+				function onNodeModeToggle(activated)
+				{
+					circleForceDrag(activated);
+				}
+				function onLinkDrawToggle(activated)
+				{
+				}
+
+				var editMode = {
+					nodeMove: {
+						active: false,
+						ontoggle: onNodeModeToggle
+					},
+					linkDraw: {
+						active: false,
+						ontoggle: onLinkDrawToggle
+					}
+				};
+				function isDefaultEditMode()
+				{
+					for (var mode in editMode)
+					{
+						if (editMode[mode].active)
+							return false;
+					}
+					return true;
+				}
+				// TODO: implement svg field pan on dragging in default edit mode
+				function refreshEditMode(keyCode, keyDown)
+				{
+					var KC_SHIFT = 16;
+					var KC_CTRL = 17;
+					function toggleMode(mode, newState)
+					{
+						if (mode.active != newState)
+						{
+							mode.active = newState;
+							mode.ontoggle(newState);
+						}
+					}
+					if (keyCode == KC_SHIFT)
+						toggleMode(editMode.nodeMove, keyDown);
+					if (keyCode == KC_CTRL)
+						toggleMode(editMode.linkDraw, keyDown);
+				}
 
 				var lastKeyDown = -1; // only respond once per keydown
-
 				function windowOnKeyDown()
 				{
+					// implement single response
 					if (lastKeyDown !== -1)
 						return;
 					lastKeyDown = d3.event.keyCode;
-
-					// ctrl
-					if (d3.event.keyCode === 17)
-					{
-						circle.call(force.drag);
-						svg.classed('ctrl', true);
-						d3.event.preventDefault();
-					}
-
-					if (!selected_node && !selected_link)
-						return;
+					// handle keyboard states
+					refreshEditMode(d3.event.keyCode, true);
+					// handle keyboard commands
 					switch (d3.event.keyCode)
 					{
 						case 8: // backspace
 						case 46: // delete
+
+							///
 							if (selected_node)
 							{
 								nodes.splice(nodes.indexOf(selected_node), 1);
 								spliceLinksForNode(selected_node);
 							}
-							else
-							if (selected_link)
+							else if (selected_link)
 							{
 								links.splice(links.indexOf(selected_link), 1);
 							}
 							selected_link = null;
 							selected_node = null;
-							d3.event.preventDefault();
 							restart();
+
+							d3.event.preventDefault();
 							break;
 						case 66: // B
+
+							///
 							if (selected_link)
 							{
 								// set link direction to both left and right
 								selected_link.left = true;
 								selected_link.right = true;
 							}
-							d3.event.preventDefault();
 							restart();
+
+							d3.event.preventDefault();
 							break;
 						case 76: // L
+
+							///
 							if (selected_link)
 							{
 								// set link direction to left only
 								selected_link.left = true;
 								selected_link.right = false;
 							}
-							d3.event.preventDefault();
 							restart();
+
+							d3.event.preventDefault();
 							break;
 						case 82: // R
-							if (selected_node)
-							{
-								// toggle node reflexivity
-								selected_node.reflexive = !selected_node.reflexive;
-							}
-							else
+
+							///
 							if (selected_link)
 							{
 								// set link direction to right only
 								selected_link.left = false;
 								selected_link.right = true;
 							}
-							d3.event.preventDefault();
 							restart();
+
+							d3.event.preventDefault();
+							break;
+						case 70: // F
+
+							///
+							if (selected_node)
+							{
+								// toggle node reflexivity
+								selected_node.reflexive = !selected_node.reflexive;
+							}
+							restart();
+
+							d3.event.preventDefault();
 							break;
 					}
 				}
-
 				function windowOnKeyUp()
 				{
 					lastKeyDown = -1;
-					// ctrl
-					if (d3.event.keyCode === 17)
+					// handle keyboard states
+					refreshEditMode(d3.event.keyCode, false);
+				}
+
+				// TODO: move non-handlers functions to handlers above code
+
+				function circleForceDrag(enable) // TODO: make analog for linkDraw
+				{
+					if (enable)
+					{
+						circle.call(force.drag);
+						svg.classed('nodeMove', true);
+					}
+					else
 					{
 						circle
 							.on('mousedown.drag', null)
 							.on('touchstart.drag', null);
-						svg.classed('ctrl', false);
+						svg.classed('nodeMove', false);
 					}
+				}
+
+				// window handlers
+				function windowOnResize(d)
+				{
+					updateSvgSize();
+					restart();
 				}
 
 				// app starts here
@@ -527,7 +594,8 @@
 					.on('mousemove', svgOnMouseMove);
 				d3.select(window)
 					.on('keydown', windowOnKeyDown)
-					.on('keyup', windowOnKeyUp);
+					.on('keyup', windowOnKeyUp)
+					.on('onresize', windowOnResize);
 				restart();
 			}
 		</script>
