@@ -201,7 +201,7 @@
 					);
 				}
 
-				// update graph (called when needed)
+				// update graph (called when needed) // TODO: optimize restart() calls
 				function restart()
 				{
 					// path (link) group
@@ -216,21 +216,7 @@
 						.classed('selected', function(d) { return d === selected_link; })
 						.style('marker-start', function(d) { return d.left ? 'url(#start-arrow)' : ''; })
 						.style('marker-end', function(d) { return d.right ? 'url(#end-arrow)' : ''; })
-						.on('mousedown',
-							function(d)
-							{
-								if(d3.event.ctrlKey)
-									return;
-								// select link
-								mousedown_link = d;
-								if (mousedown_link === selected_link)
-									selected_link = null;
-								else
-									selected_link = mousedown_link;
-								selected_node = null;
-								restart();
-							}
-						);
+						.on('mousedown', pathOnMouseDown);
 					// remove old links
 					path.exit().remove();
 
@@ -256,102 +242,10 @@
 						.style('fill', function(d) { return (d === selected_node) ? d3.rgb(colors(d.id)).brighter().toString() : colors(d.id); })
 						.style('stroke', function(d) { return d3.rgb(colors(d.id)).darker().toString(); })
 						.classed('reflexive', function(d) { return d.reflexive; })
-						.on('mouseover',
-							function(d)
-							{
-								if(!mousedown_node || d === mousedown_node)
-									return;
-								// enlarge target node
-								d3.select(this).attr('transform', 'scale(1.1)');
-							}
-						)
-						.on('mouseout',
-							function(d)
-							{
-								if(!mousedown_node || d === mousedown_node)
-									return;
-								// unenlarge target node
-								d3.select(this).attr('transform', '');
-							}
-						)
-						.on('mousedown',
-							function(d)
-							{
-								if(d3.event.ctrlKey)
-									return;
-								// select node
-								mousedown_node = d;
-								if (mousedown_node === selected_node)
-									selected_node = null;
-								else
-									selected_node = mousedown_node;
-								selected_link = null;
-								// reposition drag line
-								drag_line
-									.style('marker-end', 'url(#end-arrow)')
-									.classed('hidden', false)
-									.attr('d',
-										'M' + mousedown_node.x + ',' + mousedown_node.y +
-										'L' + mousedown_node.x + ',' + mousedown_node.y
-									);
-								restart();
-							}
-						)
-						.on('mouseup',
-							function(d)
-							{
-								if (!mousedown_node)
-									return;
-								// needed by FF
-								drag_line
-									.classed('hidden', true)
-									.style('marker-end', '');
-								// check for drag-to-self
-								mouseup_node = d;
-								if (mouseup_node === mousedown_node)
-								{
-									resetMouseVars();
-									return;
-								}
-								// unenlarge target node
-								d3.select(this).attr('transform', '');
-								// add link to graph (update if exists)
-								// NB: links are strictly source < target; arrows separately specified by booleans
-								var source, target, direction;
-								if (mousedown_node.id < mouseup_node.id)
-								{
-									source = mousedown_node;
-									target = mouseup_node;
-									direction = 'right';
-								}
-								else
-								{
-									source = mouseup_node;
-									target = mousedown_node;
-									direction = 'left';
-								}
-								var link;
-								link = links.filter(
-									function(l)
-									{
-										return (l.source === source && l.target === target);
-									}
-								)[0];
-								if (link)
-								{
-									link[direction] = true;
-								} else
-								{
-									link = {source: source, target: target, left: false, right: false};
-									link[direction] = true;
-									links.push(link);
-								}
-								// select new link
-								selected_link = link;
-								selected_node = null;
-								restart();
-							}
-						);
+						.on('mouseover', circleOnMouseOver)
+						.on('mouseout', circleOnMouseOut)
+						.on('mousedown', circleOnMouseDown)
+						.on('mouseup', circleOnMouseUp);
 					// show node IDs
 					g.append('svg:text')
 						.attr('x', 0)
@@ -365,7 +259,125 @@
 					force.start();
 				}
 
-				function mousedown()
+				function spliceLinksForNode(node)
+				{
+					var toSplice = links.filter(
+						function(l) { return (l.source === node || l.target === node); }
+					);
+					toSplice.map(
+						function(l) { links.splice(links.indexOf(l), 1); }
+					);
+				}
+
+				// mouse handlers
+
+				function pathOnMouseDown(d)
+				{
+					if(d3.event.ctrlKey)
+						return;
+					// select link
+					mousedown_link = d;
+					if (mousedown_link === selected_link)
+						selected_link = null;
+					else
+						selected_link = mousedown_link;
+					selected_node = null;
+					restart();
+				}
+
+				function circleOnMouseOver(d)
+				{
+					if(!mousedown_node || d === mousedown_node)
+						return;
+					// enlarge target node
+					d3.select(this).attr('transform', 'scale(1.1)');
+				}
+
+				function circleOnMouseOut(d)
+				{
+					if(!mousedown_node || d === mousedown_node)
+						return;
+					// unenlarge target node
+					d3.select(this).attr('transform', '');
+				}
+
+				function circleOnMouseDown(d)
+				{
+					if(d3.event.ctrlKey)
+						return;
+					// select node
+					mousedown_node = d;
+					if (mousedown_node === selected_node)
+						selected_node = null;
+					else
+						selected_node = mousedown_node;
+					selected_link = null;
+					// reposition drag line
+					drag_line
+						.style('marker-end', 'url(#end-arrow)')
+						.classed('hidden', false)
+						.attr('d',
+							'M' + mousedown_node.x + ',' + mousedown_node.y +
+							'L' + mousedown_node.x + ',' + mousedown_node.y
+						);
+					restart();
+				}
+
+				function circleOnMouseUp(d)
+				{
+					if (!mousedown_node)
+						return;
+					// needed by FF
+					drag_line
+						.classed('hidden', true)
+						.style('marker-end', '');
+					// check for drag-to-self
+					mouseup_node = d;
+					if (mouseup_node === mousedown_node)
+					{
+						resetMouseVars();
+						return;
+					}
+					// unenlarge target node
+					d3.select(this).attr('transform', '');
+					// add link to graph (update if exists)
+					// NB: links are strictly source < target; arrows separately specified by booleans
+					var source, target, direction;
+					if (mousedown_node.id < mouseup_node.id)
+					{
+						source = mousedown_node;
+						target = mouseup_node;
+						direction = 'right';
+					}
+					else
+					{
+						source = mouseup_node;
+						target = mousedown_node;
+						direction = 'left';
+					}
+					var link;
+					link = links.filter(
+						function(l)
+						{
+							return (l.source === source && l.target === target);
+						}
+					)[0];
+					if (link)
+					{
+						link[direction] = true;
+					} else
+					{
+						link = {source: source, target: target, left: false, right: false};
+						link[direction] = true;
+						links.push(link);
+					}
+					// select new link
+					selected_link = link;
+					selected_node = null;
+					restart();
+				}
+
+				function svgOnMouseDown()
 				{
 					// prevent I-bar on drag
 					//d3.event.preventDefault();
@@ -391,7 +403,22 @@
 					}
 				}
 
-				function mousemove()
+				function svgOnMouseUp()
+				{
+					if (mousedown_node)
+					{
+						// hide drag line
+						drag_line
+							.classed('hidden', true)
+							.style('marker-end', '');
+					}
+					// because :active only works in WebKit?
+					svg.classed('active', false);
+					// clear mouse event vars
+					resetMouseVars();
+				}
+
+				function svgOnMouseMove()
 				{
 					if(!mousedown_node)
 						return;
@@ -403,38 +430,12 @@
 					restart();
 				}
 
-				function mouseup()
+				// keyboard handlers
+
+				var lastKeyDown = -1; // only respond once per keydown
+
+				function windowOnKeyDown()
 				{
-					if (mousedown_node)
-					{
-						// hide drag line
-						drag_line
-						.classed('hidden', true)
-						.style('marker-end', '');
-					}
-					// because :active only works in WebKit?
-					svg.classed('active', false);
-					// clear mouse event vars
-					resetMouseVars();
-				}
-
-				function spliceLinksForNode(node)
-				{
-					var toSplice = links.filter(
-						function(l) { return (l.source === node || l.target === node); }
-					);
-					toSplice.map(
-						function(l) { links.splice(links.indexOf(l), 1); }
-					);
-				}
-
-				// only respond once per keydown
-				var lastKeyDown = -1;
-
-				function keydown()
-				{
-					d3.event.preventDefault();
-
 					if (lastKeyDown !== -1)
 						return;
 					lastKeyDown = d3.event.keyCode;
@@ -444,6 +445,7 @@
 					{
 						circle.call(force.drag);
 						svg.classed('ctrl', true);
+						d3.event.preventDefault();
 					}
 
 					if (!selected_node && !selected_link)
@@ -464,6 +466,7 @@
 							}
 							selected_link = null;
 							selected_node = null;
+							d3.event.preventDefault();
 							restart();
 							break;
 						case 66: // B
@@ -473,6 +476,7 @@
 								selected_link.left = true;
 								selected_link.right = true;
 							}
+							d3.event.preventDefault();
 							restart();
 							break;
 						case 76: // L
@@ -482,6 +486,7 @@
 								selected_link.left = true;
 								selected_link.right = false;
 							}
+							d3.event.preventDefault();
 							restart();
 							break;
 						case 82: // R
@@ -497,12 +502,13 @@
 								selected_link.left = false;
 								selected_link.right = true;
 							}
+							d3.event.preventDefault();
 							restart();
 							break;
 					}
 				}
 
-				function keyup()
+				function windowOnKeyUp()
 				{
 					lastKeyDown = -1;
 					// ctrl
@@ -516,12 +522,12 @@
 				}
 
 				// app starts here
-				svg.on('mousedown', mousedown)
-					.on('mousemove', mousemove)
-					.on('mouseup', mouseup);
+				svg.on('mousedown', svgOnMouseDown)
+					.on('mouseup', svgOnMouseUp)
+					.on('mousemove', svgOnMouseMove);
 				d3.select(window)
-					.on('keydown', keydown)
-					.on('keyup', keyup);
+					.on('keydown', windowOnKeyDown)
+					.on('keyup', windowOnKeyUp);
 				restart();
 			}
 		</script>
